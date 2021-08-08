@@ -1,6 +1,8 @@
-import React from 'react';
+import { Socket } from 'dgram';
+import socket from './config/socketConfig';
 
 function App() {
+  const s = socket;
   return (
     <div>
       Initial Commits
