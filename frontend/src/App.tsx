@@ -1,12 +1,14 @@
-import { Socket } from 'dgram';
 import socket from './config/socketConfig';
+import { Button, makeStyles, MuiThemeProvider } from '@material-ui/core';
+import { theme } from './config/theme';
+import ButtonTest from './components/ButtonTest';
+
 
 function App() {
-  const s = socket;
   return (
-    <div>
-      Initial Commits
-    </div>
+    <MuiThemeProvider theme={theme}>
+      <ButtonTest />
+    </MuiThemeProvider>
   );
 }
 

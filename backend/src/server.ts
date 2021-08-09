@@ -1,8 +1,10 @@
+import { Socket } from "socket.io";
+
 const express = require('express');
 const cors = require('cors');
-const app = express();
 const socket = require('socket.io');
 
+const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 3001;
@@ -17,6 +19,15 @@ const io = socket(server, {
     },
 });
 
-io.on('connection', () => {
-    console.log('Connection Received');
+io.on('connection', (socket: Socket) => {
+    console.log('Connection Received:', socket.id);
+    socket.on('joinRoon', (data: {gameCode: string}) => {
+        // if (roomIsFull(data)) {
+        //     socket.emit('error', 'full');
+        // } else if (invalidCode(data)) {
+        //     socket.emit('error', 'invalid code');
+        // } else {
+        //     socket.join(data.gameCode);
+        // }
+    });
 });
