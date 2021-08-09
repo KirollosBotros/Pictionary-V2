@@ -1182,6 +1182,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fontsource/passion-one@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/passion-one/-/passion-one-4.5.0.tgz#d54db20a341574c342ee607684b7cca088003955"
+  integrity sha512-QFLxxW/RpxxrwYBKKiyti9QENcnjolgapKmB9A/CdRcb0D5kwx/U5qCcfnxU6oK1QOWcZm9L9t5ok6+o/vOwfQ==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"

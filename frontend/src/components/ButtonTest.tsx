@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, makeStyles, MuiThemeProvider } from '@material-ui/core';
+import { Button, makeStyles, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     title: {
@@ -10,8 +10,17 @@ const useStyles = makeStyles(theme => ({
 export default function ButtonTest() {
     const styles = useStyles();
     return (
-        <Button onClick={() => console.log('clicked')}>
-          Click Me
-        </Button>
+      <Grid container direction="row" justifyContent="space-evenly">
+        <Grid item>
+          <Button onClick={() => console.log('clicked')}>
+            Click Me
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button onClick={() => console.log('clicked')}>
+            Click Me 2
+          </Button>
+        </Grid>
+      </Grid>
     )
 }
