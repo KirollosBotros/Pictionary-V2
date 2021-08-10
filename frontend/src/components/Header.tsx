@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme => ({
         color: 'white',
         fontSize: 36,
         textAlign: 'center',
+        background: theme.palette.primary.main,
     },
 }));
 
@@ -25,14 +26,12 @@ export default function Header() {
             <Toolbar className={styles.toolbar}>
                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
                     <Grid item>
-                        <Button disableRipple className={styles.title}>
-                            PictoBear
+                        <Button 
+                            disableRipple
+                            disableFocusRipple
+                            className={styles.title}>
+                          PictoBear
                         </Button>
-                    </Grid>
-                    <Grid item>
-                        <Typography className={styles.title}>
-                            Right
-                        </Typography>
                     </Grid>
                 </Grid>
                 
