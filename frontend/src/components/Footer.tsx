@@ -54,7 +54,7 @@ export default function Footer() {
               <Grid item>
                 <Typography className={styles.bottomText}>
                   Made by&nbsp;
-                  <a target="_blank" href="http://www.linkedin.com/in/kirollos-botros" className={styles.click}>
+                  <a target="_blank" rel="noreferrer" href="http://www.linkedin.com/in/kirollos-botros" className={styles.click}>
                     Kirollos Botros
                   </a>
                 </Typography>

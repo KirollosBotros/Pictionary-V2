@@ -1,5 +1,6 @@
 import React from 'react'
-import { Toolbar, Button, Typography, Grid, makeStyles } from '@material-ui/core';
+import { Toolbar, Button, Grid, makeStyles } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     toolbar: {
@@ -16,6 +17,10 @@ const useStyles = makeStyles(theme => ({
         textAlign: 'center',
         background: theme.palette.primary.main,
     },
+    link: {
+      textDecoration: 'none',
+      color: 'white',
+    },
 }));
 
 export default function Header() {
@@ -30,11 +35,10 @@ export default function Header() {
                             disableRipple
                             disableFocusRipple
                             className={styles.title}>
-                          PictoBear
+                        <a onClick={() => {window.location.href="/"}}>PictoBear</a>
                         </Button>
                     </Grid>
                 </Grid>
-                
             </Toolbar>
         </header>
     )

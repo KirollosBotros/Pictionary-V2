@@ -21,6 +21,9 @@ const io = socket(server, {
 
 io.on('connection', (socket: Socket) => {
     console.log('Connection Received:', socket.id);
+    socket.on('createGame', () => {
+      console.log('Create Game');
+    });
     socket.on('joinRoon', (data: {gameCode: string}) => {
         // if (roomIsFull(data)) {
         //     socket.emit('error', 'full');
@@ -30,4 +33,14 @@ io.on('connection', (socket: Socket) => {
         //     socket.join(data.gameCode);
         // }
     });
+    socket.on('joinGame', () => {
+      console.log('Join game');
+      // if (roomIsFull(data)) {
+      //     socket.emit('error', 'full');
+      // } else if (invalidCode(data)) {
+      //     socket.emit('error', 'invalid code');
+      // } else {
+      //     socket.join(data.gameCode);
+      // }
+  });
 });

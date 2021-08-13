@@ -1,11 +1,11 @@
+import socket from '.././config/socketConfig';
 import { Grid, makeStyles } from "@material-ui/core";
-import { Socket } from 'socket.io-client';
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
 } from "react-router-dom";
+import ActiveRooms from '../components/ActiveRooms';
+import JoinGameButton from '../components/JoinGameButton';
+import CreateGameButton from '../components/CreateGameButton';
 
 const useStyles = makeStyles(theme => ({
     title: {
@@ -13,22 +13,41 @@ const useStyles = makeStyles(theme => ({
         fontSize: 36,
         textAlign: 'center',
     },
+    button: {
+      marginLeft: 10,
+      marginRight: 10,
+      marginTop: 10,
+    },
+    modal: {
+      width: 'auto',
+    }
 }));
 
-interface LandingPageProps {
-  socket: Socket;
-}
-
-export default function LandingPage({ socket }: LandingPageProps) {
+export default function LandingPage() {
     const styles = useStyles();
 
     return (
       <Router>
-        <Grid container justifyContent="center">
-            <Grid item className={styles.title}>
-                Welcome to PictoBear!
-            </Grid>
-        </Grid>
+        <>
+          <Grid container direction="column" justifyContent="center">
+              <Grid item className={styles.title}>
+                  Welcome to PictoBear!
+              </Grid>
+              <Grid item>
+                <Grid container direction="row" justifyContent="center">
+                  <Grid item>
+                    <JoinGameButton socket={socket} />
+                  </Grid>
+                  <Grid item>
+                    <CreateGameButton socket={socket} />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item>
+                <ActiveRooms />
+              </Grid>
+          </Grid>
+        </>
       </Router>
     )
 }
