@@ -14,13 +14,17 @@ const useStyles = makeStyles(theme => ({
   },
   nameInput: {
     marginBottom: theme.spacing(1),
+    width: '100%',
+
   },  
   modal: {
-    padding: 20,
     marginRight: 5,
     marginLeft: 5,
     [theme.breakpoints.up(650)]: {
       minWidth: 500,
+    },
+    [theme.breakpoints.up(690)]: {
+      padding: 20,
     },
     [theme.breakpoints.down(650)]: {
       minWidth: 400,
@@ -57,6 +61,9 @@ const useStyles = makeStyles(theme => ({
   createGame: {
     margin: '0 auto',
     marginBottom: theme.spacing(2),
+  },
+  scrub: {
+    width: '80%',
   },
 }));
 
@@ -122,15 +129,16 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
 
   const onSubmit = (data: IFormInput) => {
     // socket.emit('createGame');
-    const { name, gameType, password } = data;
+    const { name, password } = data;
     const gameObj = {
       creator: socket.id,
-      name,
-      gameType,
+      name: encodeURI(name),
+      maxPlayers: maxPlayers,
+      gameType: type,
       password,
     };
     console.log(gameObj);
-    //history.push('/game/asd');
+    history.push(`/game/${gameObj.creator}`);
   };
 
   const handleClick = () => {
@@ -143,6 +151,14 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
     setMaxPlayers(2);
   }
   
+  let marks = [];
+  for(let i = 2; i <= 10; ++i) {
+    marks[i - 2] = {
+      value: i,
+      label: i,
+    };
+  }
+
   return (
     <>
       <Button className={styles.button} onClick={handleClick}>Create Game</Button>
@@ -151,7 +167,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
           onClose={handleCloseDialog}
           className={styles.modal}
         >
-          <DialogTitle className={styles.modal}>Create Game</DialogTitle>
+          <DialogTitle>Create Game</DialogTitle>
           <DialogContent>
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl>
@@ -174,14 +190,14 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
               <div className={styles.modal}>
                 <CustomSlider
                   defaultValue={2}
+                  className={styles.scrub}
                   onChange={(_, val: number | number[]) => {
                     if (typeof val === 'number') {
                       setMaxPlayers(val)
                     }
                   }}
-                  valueLabelDisplay="auto"
                   step={1}
-                  marks
+                  marks={marks}
                   min={2}
                   max={10}
                 />
