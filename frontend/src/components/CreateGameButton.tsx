@@ -12,6 +12,9 @@ const useStyles = makeStyles(theme => ({
     marginRight: 10,
     marginTop: 10,
   },
+  nameInput: {
+    marginBottom: theme.spacing(1),
+  },  
   modal: {
     padding: 20,
     marginRight: 5,
@@ -92,17 +95,17 @@ const CustomSlider = withStyles(theme => ({
 }))(Slider);
 
 interface IFormInput {
-  roomName: string;
   maxPlayers: number;
   gameType: 'Public' | 'Private';
   password?: string;
+  name: string;
 }
 
 interface CreateGameButtonProps {
   socket: Socket;
 }
 
-export default function JoinGameButton({ socket }: CreateGameButtonProps) {
+export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   const styles = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
   const [maxPlayers, setMaxPlayers] = useState(2);
@@ -119,8 +122,15 @@ export default function JoinGameButton({ socket }: CreateGameButtonProps) {
 
   const onSubmit = (data: IFormInput) => {
     // socket.emit('createGame');
-    console.log(data);
-    history.push('/game/asd');
+    const { name, gameType, password } = data;
+    const gameObj = {
+      creator: socket.id,
+      name,
+      gameType,
+      password,
+    };
+    console.log(gameObj);
+    //history.push('/game/asd');
   };
 
   const handleClick = () => {
@@ -144,6 +154,22 @@ export default function JoinGameButton({ socket }: CreateGameButtonProps) {
           <DialogTitle className={styles.modal}>Create Game</DialogTitle>
           <DialogContent>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl>
+                <TextField
+                  variant='outlined'
+                  inputProps={{ maxLength: 10 }}
+                  required
+                  label='Enter Game Name'
+                  className={styles.nameInput}
+                  {...register("name", {
+                    required: true,
+                    maxLength: 10,
+                  })}
+                >
+                </TextField>
+                {errors?.name?.type === 'required' && 
+                  <FormHelperText style={{ marginBottom: 15}} error>Please input a game name</FormHelperText>}
+              </FormControl>
               <Typography className={styles.subText}>Max Players: {maxPlayers}</Typography>
               <div className={styles.modal}>
                 <CustomSlider
@@ -159,7 +185,6 @@ export default function JoinGameButton({ socket }: CreateGameButtonProps) {
                   min={2}
                   max={10}
                 />
-                <Typography className={styles.subText} style={{ marginBottom: 15, marginTop: 10 }}>Game Type: {type}</Typography>
                 <ToggleButtonGroup
                   exclusive
                   value={type}
@@ -178,17 +203,19 @@ export default function JoinGameButton({ socket }: CreateGameButtonProps) {
                     <TextField
                       variant='outlined'
                       required
+                      inputProps={{ maxLength: 10 }}
                       label='Enter Password'
                       className={styles.passwordInput}
                       {...register("password", {
                         required: true,
                         maxLength: 10,
-                        pattern: /^[A-Za-z]+$/i
                       })}
                     >
                     </TextField>
                     {errors?.password?.type === 'required' && 
                       <FormHelperText error>Please input a password</FormHelperText>}
+                    {errors?.password?.type === 'maxLength' && 
+                      <FormHelperText error>Password must be less than 10 characters</FormHelperText>}
                     </FormControl>
                   </div>}
               </div>
