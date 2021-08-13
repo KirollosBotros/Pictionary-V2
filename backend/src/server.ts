@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+import { GameObject } from "./types/game";
 
 const express = require('express');
 const cors = require('cors');
@@ -19,10 +20,20 @@ const io = socket(server, {
     },
 });
 
+let publicGames: GameObject[] = [];
+let privateGames: GameObject[] = [];
+
 io.on('connection', (socket: Socket) => {
-    console.log('Connection Received:', socket.id);
-    socket.on('createGame', () => {
-      console.log('Create Game');
+    socket.on('createGame', (data: GameObject) => {
+      data.gameType === 'Public' ? publicGames.push(data) : privateGames.push(data);
+    });
+    socket.on('getGames', () => {
+      console.log(publicGames)
+      console.log('getGames request recieved')
+      socket.emit('getGamesResponse', [
+        publicGames,
+        privateGames,
+      ]);
     });
     socket.on('joinRoon', (data: {gameCode: string}) => {
         // if (roomIsFull(data)) {

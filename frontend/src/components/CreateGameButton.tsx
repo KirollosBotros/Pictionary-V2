@@ -1,10 +1,14 @@
-import { Button, Dialog, DialogTitle, makeStyles, withStyles, Slider, Typography, TextField, DialogActions, DialogContent, FormHelperText, FormControl } from "@material-ui/core";
+import { Button, Dialog, Grid, DialogTitle, makeStyles, withStyles, Slider, Typography, TextField, DialogActions, DialogContent, FormHelperText, FormControl } from "@material-ui/core";
 import { useState } from 'react';
 import { Socket } from "socket.io-client";
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { useForm } from "react-hook-form";
 import history from '../config/history';
+import { isPropertyAccessOrQualifiedName } from "typescript";
+import { GameObject } from "../types/game";
+const Filter = require('bad-words');
+const filter = new Filter();
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -24,7 +28,6 @@ const useStyles = makeStyles(theme => ({
       minWidth: 500,
     },
     [theme.breakpoints.up(690)]: {
-      padding: 20,
     },
     [theme.breakpoints.down(650)]: {
       minWidth: 400,
@@ -61,9 +64,6 @@ const useStyles = makeStyles(theme => ({
   createGame: {
     margin: '0 auto',
     marginBottom: theme.spacing(2),
-  },
-  scrub: {
-    width: '80%',
   },
 }));
 
@@ -105,7 +105,8 @@ interface IFormInput {
   maxPlayers: number;
   gameType: 'Public' | 'Private';
   password?: string;
-  name: string;
+  gameName: string;
+  playerName: string;
 }
 
 interface CreateGameButtonProps {
@@ -119,7 +120,9 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>();
   
   type GameType = 'Public' | 'Private' | null;
-  const [type, setType] = useState<GameType>('Public');
+  type SetGameType = NonNullable<GameType>;
+
+  const [type, setType] = useState<SetGameType>('Public');
 
   const handleAlignment = (event: React.MouseEvent<HTMLElement>, newAlignment: GameType) => {
     if (newAlignment !== null) {
@@ -128,21 +131,26 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   };
 
   const onSubmit = (data: IFormInput) => {
-    // socket.emit('createGame');
-    const { name, password } = data;
-    const gameObj = {
-      creator: socket.id,
-      name: encodeURI(name),
-      maxPlayers: maxPlayers,
+    const { gameName, password, playerName } = data;
+    const { id } = socket;
+    const gameObj: GameObject = {
+      creator: id,
+      gameName: gameName,
       gameType: type,
+      maxPlayers: maxPlayers,
       password,
+      players: [{
+        id,
+        name: playerName,
+      }],
+      status: 'lobby',
     };
     console.log(gameObj);
+    socket.emit('createGame', gameObj);
     history.push(`/game/${gameObj.creator}`);
   };
 
   const handleClick = () => {
-    socket.emit('createGame');
     setOpenDialog(true);
   };
 
@@ -170,71 +178,94 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
           <DialogTitle>Create Game</DialogTitle>
           <DialogContent>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <FormControl>
-                <TextField
-                  variant='outlined'
-                  inputProps={{ maxLength: 10 }}
-                  required
-                  label='Enter Game Name'
-                  className={styles.nameInput}
-                  {...register("name", {
-                    required: true,
-                    maxLength: 10,
-                  })}
-                >
-                </TextField>
-                {errors?.name?.type === 'required' && 
-                  <FormHelperText style={{ marginBottom: 15}} error>Please input a game name</FormHelperText>}
-              </FormControl>
-              <Typography className={styles.subText}>Max Players: {maxPlayers}</Typography>
-              <div className={styles.modal}>
-                <CustomSlider
-                  defaultValue={2}
-                  className={styles.scrub}
-                  onChange={(_, val: number | number[]) => {
-                    if (typeof val === 'number') {
-                      setMaxPlayers(val)
-                    }
-                  }}
-                  step={1}
-                  marks={marks}
-                  min={2}
-                  max={10}
-                />
-                <ToggleButtonGroup
-                  exclusive
-                  value={type}
-                  onChange={handleAlignment}
-                >
-                  <ToggleButton disableRipple value='Public'>
-                    <Typography className={styles.type}>Public</Typography>
-                  </ToggleButton>
-                  <ToggleButton disableRipple value='Private'>
-                  <Typography className={styles.type}>Private</Typography>
-                  </ToggleButton>
-                </ToggleButtonGroup>
-                {type === 'Private' &&
-                  <div>
-                    <FormControl>
+              <Grid container direction="column" justifyContent="space-evenly" >
+                <FormControl>
+                  <Grid item>
                     <TextField
                       variant='outlined'
-                      required
                       inputProps={{ maxLength: 10 }}
-                      label='Enter Password'
-                      className={styles.passwordInput}
-                      {...register("password", {
+                      required
+                      label='Enter Your Name'
+                      className={styles.nameInput}
+                      {...register("playerName", {
+                        required: true,
+                        maxLength: 10,
+                        validate: v => !filter.isProfane(v),
+                      })}
+                    />
+                  </Grid>
+                  {errors?.playerName?.type === 'required' && 
+                    <FormHelperText style={{ marginBottom: 15 }} error>Please enter your name</FormHelperText>}
+                  {errors?.playerName?.type === 'validate' && 
+                    <FormHelperText style={{ marginBottom: 15 }} error>Please enter a clean name</FormHelperText>}
+                  <Grid item>
+                    <TextField
+                      variant='outlined'
+                      inputProps={{ maxLength: 10 }}
+                      required
+                      label='Enter Game Name'
+                      className={styles.nameInput}
+                      {...register("gameName", {
                         required: true,
                         maxLength: 10,
                       })}
+                    />
+                  </Grid>
+                  {errors?.gameName?.type === 'required' && 
+                    <FormHelperText style={{ marginBottom: 15}} error>Please input a game name</FormHelperText>}
+                </FormControl>
+                <Typography className={styles.subText} style={{ textAlign: 'left' }}>Max Players: {maxPlayers}</Typography>
+                <div className={styles.modal}>
+                  <Grid item>
+                    <CustomSlider
+                      defaultValue={2}
+                      onChange={(_, val: number | number[]) => {
+                        if (typeof val === 'number') {
+                          setMaxPlayers(val)
+                        }
+                      }}
+                      step={1}
+                      marks={marks}
+                      min={2}
+                      max={10}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <ToggleButtonGroup
+                      exclusive
+                      value={type}
+                      onChange={handleAlignment}
                     >
-                    </TextField>
-                    {errors?.password?.type === 'required' && 
-                      <FormHelperText error>Please input a password</FormHelperText>}
-                    {errors?.password?.type === 'maxLength' && 
-                      <FormHelperText error>Password must be less than 10 characters</FormHelperText>}
-                    </FormControl>
-                  </div>}
-              </div>
+                      <ToggleButton disableRipple value='Public'>
+                        <Typography className={styles.type}>Public</Typography>
+                      </ToggleButton>
+                      <ToggleButton disableRipple value='Private'>
+                      <Typography className={styles.type}>Private</Typography>
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </Grid>
+                  {type === 'Private' &&
+                      <FormControl>
+                        <Grid item>
+                          <TextField
+                            variant='outlined'
+                            required
+                            inputProps={{ maxLength: 10 }}
+                            label='Enter Password'
+                            className={styles.passwordInput}
+                            {...register("password", {
+                              required: true,
+                              maxLength: 10,
+                            })}
+                          />
+                        </Grid>
+                        {errors?.password?.type === 'required' && 
+                          <FormHelperText error>Please input a password</FormHelperText>}
+                        {errors?.password?.type === 'maxLength' && 
+                          <FormHelperText error>Password must be less than 10 characters</FormHelperText>}
+                      </FormControl>}
+                </div>
+              </Grid>
             </form>
           </DialogContent>
           <DialogActions>

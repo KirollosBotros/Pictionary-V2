@@ -82,7 +82,6 @@ export default function JoinGameButton({ socket }: JoinGameButtonProps) {
   const [maxPlayers, setMaxPlayers] = useState(2);
 
   const handleClick = () => {
-    socket.emit('createGame');
     setOpenDialog(true);
   };
 

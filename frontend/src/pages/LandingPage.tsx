@@ -44,7 +44,7 @@ export default function LandingPage() {
                 </Grid>
               </Grid>
               <Grid item>
-                <ActiveRooms />
+                <ActiveRooms socket={socket} />
               </Grid>
           </Grid>
         </>
