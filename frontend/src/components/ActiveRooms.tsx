@@ -25,8 +25,8 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
       setPublicRooms(data[0]);
       setPrivateRooms(data[1]);
     });
-  }, []);
-  console.log(privateRooms)
+  }, [socket]);
+  
   return (
       <Grid container direction="column" alignItems="center" className={styles.roomList}>
         <Typography>

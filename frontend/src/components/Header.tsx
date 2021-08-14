@@ -1,6 +1,5 @@
 import React from 'react'
 import { Toolbar, Button, Grid, makeStyles } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     toolbar: {
@@ -35,7 +34,7 @@ export default function Header() {
                             disableRipple
                             disableFocusRipple
                             className={styles.title}>
-                        <a onClick={() => {window.location.href="/"}}>PictoBear</a>
+                        <a href="/" className={styles.link} onClick={() => {window.location.href="/"}}>PictoBear</a>
                         </Button>
                     </Grid>
                 </Grid>

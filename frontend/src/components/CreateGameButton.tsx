@@ -5,7 +5,6 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { useForm } from "react-hook-form";
 import history from '../config/history';
-import { isPropertyAccessOrQualifiedName } from "typescript";
 import { GameObject } from "../types/game";
 const Filter = require('bad-words');
 const filter = new Filter();
