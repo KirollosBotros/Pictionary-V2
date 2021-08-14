@@ -15,11 +15,11 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 10,
     marginRight: 10,
     marginTop: 10,
+    backgroundColor: '#9813F0',
   },
   nameInput: {
     marginBottom: theme.spacing(1),
     width: '100%',
-
   },  
   modal: {
     marginRight: 5,
@@ -145,7 +145,6 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
       }],
       status: 'lobby',
     };
-    console.log(gameObj);
     socket.emit('createGame', gameObj);
     history.push(`/game/${gameObj.creator}`);
   };
@@ -170,110 +169,110 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   return (
     <>
       <Button className={styles.button} onClick={handleClick}>Create Game</Button>
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          className={styles.modal}
-        >
-          <DialogTitle>Create Game</DialogTitle>
-          <DialogContent>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container direction="column" justifyContent="space-evenly" >
-                <FormControl>
-                  <Grid item>
-                    <TextField
-                      variant='outlined'
-                      inputProps={{ maxLength: 10 }}
-                      required
-                      label='Enter Your Name'
-                      className={styles.nameInput}
-                      {...register("playerName", {
-                        required: true,
-                        maxLength: 10,
-                        validate: v => !filter.isProfane(v),
-                      })}
-                    />
-                  </Grid>
-                  {errors?.playerName?.type === 'required' && 
-                    <FormHelperText style={{ marginBottom: 15 }} error>Please enter your name</FormHelperText>}
-                  {errors?.playerName?.type === 'validate' && 
-                    <FormHelperText style={{ marginBottom: 15 }} error>Please enter a clean name</FormHelperText>}
-                  <Grid item>
-                    <TextField
-                      variant='outlined'
-                      inputProps={{ maxLength: 10 }}
-                      required
-                      label='Enter Game Name'
-                      className={styles.nameInput}
-                      {...register("gameName", {
-                        required: true,
-                        maxLength: 10,
-                      })}
-                    />
-                  </Grid>
-                  {errors?.gameName?.type === 'required' && 
-                    <FormHelperText style={{ marginBottom: 15}} error>Please input a game name</FormHelperText>}
-                </FormControl>
-                <Typography className={styles.subText} style={{ textAlign: 'left' }}>Max Players: {maxPlayers}</Typography>
-                <div className={styles.modal}>
-                  <Grid item>
-                    <CustomSlider
-                      defaultValue={2}
-                      onChange={(_, val: number | number[]) => {
-                        if (typeof val === 'number') {
-                          setMaxPlayers(val)
-                        }
-                      }}
-                      step={1}
-                      marks={marks}
-                      min={2}
-                      max={10}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <ToggleButtonGroup
-                      exclusive
-                      value={type}
-                      onChange={handleAlignment}
-                    >
-                      <ToggleButton disableRipple value='Public'>
-                        <Typography className={styles.type}>Public</Typography>
-                      </ToggleButton>
-                      <ToggleButton disableRipple value='Private'>
-                      <Typography className={styles.type}>Private</Typography>
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  </Grid>
-                  {type === 'Private' &&
-                      <FormControl>
-                        <Grid item>
-                          <TextField
-                            variant='outlined'
-                            required
-                            inputProps={{ maxLength: 10 }}
-                            label='Enter Password'
-                            className={styles.passwordInput}
-                            {...register("password", {
-                              required: true,
-                              maxLength: 10,
-                            })}
-                          />
-                        </Grid>
-                        {errors?.password?.type === 'required' && 
-                          <FormHelperText error>Please input a password</FormHelperText>}
-                        {errors?.password?.type === 'maxLength' && 
-                          <FormHelperText error>Password must be less than 10 characters</FormHelperText>}
-                      </FormControl>}
-                </div>
-              </Grid>
-            </form>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleSubmit(onSubmit)} className={styles.createGame}>
-              Create Game
-            </Button>
-          </DialogActions>
-        </Dialog>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        className={styles.modal}
+      >
+        <DialogTitle>Create Game</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container direction="column" justifyContent="space-evenly" >
+              <FormControl>
+                <Grid item>
+                  <TextField
+                    variant='outlined'
+                    inputProps={{ maxLength: 10 }}
+                    required
+                    label='Enter Your Name'
+                    className={styles.nameInput}
+                    {...register("playerName", {
+                      required: true,
+                      maxLength: 10,
+                      validate: v => !filter.isProfane(v),
+                    })}
+                  />
+                </Grid>
+                {errors?.playerName?.type === 'required' && 
+                  <FormHelperText style={{ marginBottom: 15 }} error>Please enter your name</FormHelperText>}
+                {errors?.playerName?.type === 'validate' && 
+                  <FormHelperText style={{ marginBottom: 15 }} error>Please enter a clean name</FormHelperText>}
+                <Grid item>
+                  <TextField
+                    variant='outlined'
+                    inputProps={{ maxLength: 10 }}
+                    required
+                    label='Enter Game Name'
+                    className={styles.nameInput}
+                    {...register("gameName", {
+                      required: true,
+                      maxLength: 10,
+                    })}
+                  />
+                </Grid>
+                {errors?.gameName?.type === 'required' && 
+                  <FormHelperText style={{ marginBottom: 15}} error>Please input a game name</FormHelperText>}
+              </FormControl>
+              <Typography className={styles.subText} style={{ textAlign: 'left' }}>Max Players: {maxPlayers}</Typography>
+              <div className={styles.modal}>
+                <Grid item>
+                  <CustomSlider
+                    defaultValue={2}
+                    onChange={(_, val: number | number[]) => {
+                      if (typeof val === 'number') {
+                        setMaxPlayers(val)
+                      }
+                    }}
+                    step={1}
+                    marks={marks}
+                    min={2}
+                    max={10}
+                  />
+                </Grid>
+                <Grid item>
+                  <ToggleButtonGroup
+                    exclusive
+                    value={type}
+                    onChange={handleAlignment}
+                  >
+                    <ToggleButton disableRipple value='Public'>
+                      <Typography className={styles.type}>Public</Typography>
+                    </ToggleButton>
+                    <ToggleButton disableRipple value='Private'>
+                    <Typography className={styles.type}>Private</Typography>
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </Grid>
+                {type === 'Private' &&
+                    <FormControl>
+                      <Grid item>
+                        <TextField
+                          variant='outlined'
+                          required
+                          inputProps={{ maxLength: 10 }}
+                          label='Enter Password'
+                          className={styles.passwordInput}
+                          {...register("password", {
+                            required: true,
+                            maxLength: 10,
+                          })}
+                        />
+                      </Grid>
+                      {errors?.password?.type === 'required' && 
+                        <FormHelperText error>Please input a password</FormHelperText>}
+                      {errors?.password?.type === 'maxLength' && 
+                        <FormHelperText error>Password must be less than 10 characters</FormHelperText>}
+                    </FormControl>}
+              </div>
+            </Grid>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSubmit(onSubmit)} className={styles.createGame}>
+            Create Game
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

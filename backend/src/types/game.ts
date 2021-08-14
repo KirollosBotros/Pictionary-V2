@@ -10,3 +10,10 @@ export interface GameObject {
   }[];
   status: 'lobby' | 'game';
 }
+
+export interface JoinGameProps {
+  name: string;
+  id: string;
+  gameId: string;
+}
+
