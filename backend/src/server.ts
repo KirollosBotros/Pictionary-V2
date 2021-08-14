@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { GameObject, JoinGameProps } from "./types/game";
 import express = require('express');
-import { findGame } from "./utils/findPrivateGame";
+import { findGame } from "./utils/findGame";
 
 const cors = require('cors');
 const socket = require('socket.io');
@@ -35,20 +35,32 @@ let privateGames: GameObject[] = [];
 // http://localhost:3001/validate?creator=asd&password=passss
 app.get('/validate', (req: express.Request, res: express.Response) => {
   const { creator, password } = req.query;
-
-  const gameObj: GameObject = findGame(creator as string, privateGames);
+  const gameObj: GameObject | null= findGame(creator as string, privateGames);
   console.log(gameObj)
-
+  if (!gameObj) {
+    res.json({
+      status: 'error',
+      reason: 'Error: game not found',
+    });
+    return;
+  }
   const { password: gamePass, maxPlayers, players } = gameObj;
-
   if (gamePass === password) {
     if (maxPlayers > players.length) {
-      res.json({ result: true });
+      res.json({ 
+        status: 'success',
+       });
     } else {
-      res.json({ result: 'Room is Full' });
+      res.json({
+        status: 'unsuccessful',
+        reason: 'Room is full',
+      });
     }
   } else {
-    res.json({ result: 'Incorrect Password' });
+    res.json({
+      status: 'unsuccessful',
+      reason: 'Incorrect password'
+    });
   }
 });
 
@@ -66,7 +78,10 @@ io.on('connection', (socket: Socket) => {
     });
     socket.on('joinGame', (data: JoinGameProps) => {
       const { name, id, gameId } = data;
-      const gameObj: GameObject = findGame(gameId, publicGames.concat(privateGames));
+      const gameObj: GameObject | null = findGame(gameId, publicGames.concat(privateGames));
+      if (!gameObj) {
+        throw new Error('Error: game not found');
+      }
       socket.join(gameId);
       const newPlayer= {
         id,

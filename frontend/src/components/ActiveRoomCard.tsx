@@ -1,9 +1,8 @@
 import { Button, makeStyles, Grid, Dialog, DialogContent, DialogTitle, TextField, FormHelperText, FormControl } from '@material-ui/core'
-import { Link } from 'react-router-dom';
 import history from '../config/history';
 import LockSharpIcon from '@material-ui/icons/LockSharp';
 import { useState } from 'react';
-import { useForm, Validate } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Socket } from 'socket.io-client';
 import { GameObject } from '../types/game';
 
@@ -88,18 +87,22 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
   };
 
   const validatePassword = (async (v: any) => {
-    socket.emit('joinRoom', {
-      game,
-      inputtedPassword: v,
-    });
-    const res = await fetch(`http://localhost:3001/validate?creator=${game.creator}&password=${v}`);
-    const resJSON = await res.json();
-    const validation = resJSON.result;
-    if (validation === true) {
-      return true;
+    const link = `http://localhost:3001/validate?creator=${game.creator}&password=${v}`;
+    try {
+      const res = await fetch(link);
+      const resJSON = await res.json();
+      const { status } = resJSON;
+      if (status === 'success') {
+        return true;
+      } else {
+        const { reason } = resJSON;
+        setError(reason);
+        return false;
+      }
+    } catch(err) {
+      setError(err.message);
+      return false;
     }
-    setError(validation);
-    return false;
   });
 
   return (

@@ -16,6 +16,9 @@ const useStyles = makeStyles(theme => ({
     marginRight: 10,
     marginTop: 10,
     backgroundColor: '#9813F0',
+    '&:hover': {
+      backgroundColor: '#b553d4',
+    },
   },
   nameInput: {
     marginBottom: theme.spacing(1),
