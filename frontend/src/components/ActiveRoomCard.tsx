@@ -1,42 +1,61 @@
-import { Button, makeStyles, Grid, Dialog, DialogContent, DialogTitle, TextField, FormHelperText, FormControl } from '@material-ui/core'
+import { Button, makeStyles, Grid, Dialog, DialogContent, DialogTitle, TextField, FormHelperText, FormControl, Typography, Theme, createStyles, CircularProgress } from '@material-ui/core'
 import history from '../config/history';
 import LockSharpIcon from '@material-ui/icons/LockSharp';
 import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Socket } from 'socket.io-client';
 import { GameObject } from '../types/game';
+import PersonIcon from '@material-ui/icons/Person';
+import { ThumbUpTwoTone } from '@material-ui/icons';
 
-const useStyles = makeStyles(theme => ({
-  roomCard: {
-    textDecoration: 'none',
-    marginBottom: 10,
-    [theme.breakpoints.down('sm')]: {
-      width: 350,
-    },
-    [theme.breakpoints.up('md')]: {
-      width: 600,
-    },
-    [theme.breakpoints.up('lg')]: {
-      width: 650,
-    },
-  },
-  nameInput: {
-    marginBottom: theme.spacing(2),
-  },
-  link: {
-    textDecoration: 'none',
-    color: 'white',
-  },
-  modal: {
+type StyleProps = {
+  error: boolean;
+};
 
-  },
-  passwordInput: {
-  },
-  button: {
-    margin: '0 auto',
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  },
+const useStyles = makeStyles<Theme, StyleProps>(theme => 
+  createStyles({
+    roomCard: {
+      textDecoration: 'none',
+      marginBottom: 10,
+      [theme.breakpoints.down('sm')]: {
+        width: 350,
+      },
+      [theme.breakpoints.up('md')]: {
+        width: 600,
+      },
+      [theme.breakpoints.up('lg')]: {
+        width: 650,
+      },
+    },
+    personIcon: {
+      marginTop: 5,
+      lineHeight: 0, 
+      marginRight: 6,
+      color: '#1bb33c',
+    },
+    nameInput: {
+      marginBottom: ({ error }) => error ? theme.spacing(0) : theme.spacing(2),
+    },
+    roomText: {
+      fontSize: 20,
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 16,
+      },
+    },
+    link: {
+      textDecoration: 'none',
+      color: 'white',
+    },
+    modal: {
+  
+    },
+    passwordInput: {
+    },
+    button: {
+      margin: '0 auto',
+      marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(2),
+    },
 }));
 
 interface IFormInput {
@@ -52,17 +71,20 @@ interface ActiveRoomCardProps {
 }
 
 export default function ActiveRoomCard({ room, isPrivate, game, socket }: ActiveRoomCardProps) {
-  const styles = useStyles();
   const redirectLink = '/game/' + room;
   const [openPassword, setOpenPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>();
+  const [loading, setLoading] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
+    mode: 'onSubmit', 
+    reValidateMode: 'onSubmit' 
+  });
+  const styles = useStyles({ error: errors.name != null });
 
   const redirect = () => {
     if (isPrivate) {
       setOpenPassword(true);
     } else {
-      // const { name } = data;
       socket.emit('joinGame', {
         name: 'john',
         id: socket.id,
@@ -76,15 +98,35 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
     setOpenPassword(false);
   };
 
-  const onSubmit = (data: IFormInput) => {
-    const { name } = data;
-    console.log('submit');
-    socket.emit('joinGame', {
-      name,
-      id: socket.id,
-      gameId: game.creator,
-    });
-    history.push(redirectLink);
+  const onSubmit = async (data: IFormInput) => {
+    setLoading(true);
+    const { name, password } = data;
+    const { id } = socket;
+    try {
+      const res = await fetch('http://localhost:3001/join-game', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          creator: game.creator,
+          password,
+          name,
+          id,
+        }),
+      });
+      const resJSON = await res.json();
+      const { status } = resJSON;
+      if (status === 'successful') {
+        history.push(redirectLink);
+      } else {
+        setError('Internal server error. Please refresh and try again.');
+      }
+      setLoading(false);
+      return;
+    } catch(err) {
+      setError(err);
+    }
   };
 
   const validatePassword = (async (v: any) => {
@@ -109,12 +151,22 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
   return (
     <>
       <Button onClick={redirect} className={styles.roomCard}>
-        <Grid container direction="row" alignItems="center">
-          <Grid item xs={1} style={{textAlign: 'left'}}>
-            {isPrivate && <LockSharpIcon style={{ marginBottom: -6 }} />}
+        <Grid container direction="row" alignItems="center" justifyContent="space-between">
+          <Grid item xs={2} style={{ textAlign: 'left' }}>
+            {isPrivate && <LockSharpIcon style={{ marginBottom: -7 }} />}
           </Grid>
-          <Grid item xs={10}>
-            {room}
+          <Grid item xs={8}>
+            <Typography className={styles.roomText}>{room}</Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Grid container direction="row" alignItems="center" justifyContent="flex-end">
+              <Grid item>
+                <PersonIcon className={styles.personIcon} />
+              </Grid>
+              <Grid item>
+                {game.players.length}/{game.maxPlayers}
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Button>
@@ -123,7 +175,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
         onClose={handleClose}
         className={styles.modal}
       >
-        <DialogTitle>Enter Password</DialogTitle>
+        <DialogTitle style={{ textAlign: 'center' }}>Join {game.gameName}</DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl>
@@ -149,14 +201,16 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                   validate: validatePassword,
                 })}
               />
-              {errors?.password?.type === 'validate' && 
+              {(errors?.password?.type === 'validate' || error) && 
                 <FormHelperText style={{ marginBottom: 15 }} error>{error}</FormHelperText>}
               {errors?.password?.type === 'required' && 
                 <FormHelperText style={{ marginBottom: 15 }} error>Please enter the password</FormHelperText>}
             </FormControl>
           </form>
         </DialogContent>
-        <Button className={styles.button} onClick={handleSubmit(onSubmit)}>Join Game</Button>
+        <Button className={styles.button} onClick={handleSubmit(onSubmit)}>
+          {loading ? <CircularProgress size={24} /> : 'Join Game'}
+        </Button>
       </Dialog>
     </>
   )

@@ -1,13 +1,16 @@
 import { Socket } from "socket.io";
-import { GameObject, JoinGameProps } from "./types/game";
 import express = require('express');
+import { GameObject, JoinGameProps } from "./types/game";
 import { findGame } from "./utils/findGame";
+import { authenticatePassword } from "./utils/authenticatePassword";
+const bodyParser = require('body-parser');
 
 const cors = require('cors');
 const socket = require('socket.io');
 
 const app = express();
 app.use(cors());
+app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 3001;
 
@@ -32,49 +35,38 @@ let privateGames: GameObject[] = [];
 //   return newGames;
 // };
 
+app.get('/get-games', (req: express.Request, res: express.Response) => {
+  res.json({
+    privateGames,
+    publicGames,
+  });
+  console.log('sent games');
+});
+
+
+app.post('/join-game', (req: express.Request, res: express.Response) => {
+  const valid = authenticatePassword({ req, res, privateGames, method: 'POST', app });
+  if (!valid) {
+    return res.status(200).json({ status: 'unsuccessful '});
+  }
+  
+  return res.status(200).json({ status: 'successful' });
+});
+
 // http://localhost:3001/validate?creator=asd&password=passss
 app.get('/validate', (req: express.Request, res: express.Response) => {
-  const { creator, password } = req.query;
-  const gameObj: GameObject | null= findGame(creator as string, privateGames);
-  console.log(gameObj)
-  if (!gameObj) {
-    res.json({
-      status: 'error',
-      reason: 'Error: game not found',
-    });
-    return;
-  }
-  const { password: gamePass, maxPlayers, players } = gameObj;
-  if (gamePass === password) {
-    if (maxPlayers > players.length) {
-      res.json({ 
-        status: 'success',
-       });
-    } else {
-      res.json({
-        status: 'unsuccessful',
-        reason: 'Room is full',
-      });
-    }
-  } else {
-    res.json({
-      status: 'unsuccessful',
-      reason: 'Incorrect password'
-    });
-  }
+  authenticatePassword({ req, res, privateGames, method: 'GET', app});
 });
 
 io.on('connection', (socket: Socket) => {
     socket.on('createGame', (data: GameObject) => {
       data.gameType === 'Public' ? publicGames.push(data) : privateGames.push(data);
-      console.log(privateGames);
     });
     socket.on('getGames', () => {
       socket.emit('getGamesResponse', [
         publicGames,
         privateGames,
       ]);
-      console.log(privateGames)
     });
     socket.on('joinGame', (data: JoinGameProps) => {
       const { name, id, gameId } = data;
@@ -88,6 +80,5 @@ io.on('connection', (socket: Socket) => {
         name,
       };
       gameObj.players.push(newPlayer);
-      console.log(gameObj.players);
     });
 });

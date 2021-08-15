@@ -19,13 +19,17 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   const [publicRooms, setPublicRooms] = useState<GameObject[]>([]);
   const [privateRooms, setPrivateRooms] = useState<GameObject[]>([]);
 
+  const getGames = async () => {
+    const res = await fetch('http://localhost:3001/get-games');
+    const resJSON = await res.json();
+    const { privateGames, publicGames } = resJSON;
+    setPrivateRooms(privateGames);
+    setPublicRooms(publicGames);
+  };
+
   useEffect(() => {
-    socket.emit('getGames');
-    socket.on('getGamesResponse', (data: GameObject[][]) => {
-      setPublicRooms(data[0]);
-      setPrivateRooms(data[1]);
-    });
-  }, [socket]);
+    getGames();
+  }, []);
   
   return (
       <Grid container direction="column" alignItems="center" className={styles.roomList}>
