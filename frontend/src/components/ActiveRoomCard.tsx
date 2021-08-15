@@ -8,12 +8,7 @@ import { GameObject } from '../types/game';
 import PersonIcon from '@material-ui/icons/Person';
 import { ThumbUpTwoTone } from '@material-ui/icons';
 
-type StyleProps = {
-  error: boolean;
-};
-
-const useStyles = makeStyles<Theme, StyleProps>(theme => 
-  createStyles({
+const useStyles = makeStyles(theme => ({
     roomCard: {
       textDecoration: 'none',
       marginBottom: 10,
@@ -34,7 +29,6 @@ const useStyles = makeStyles<Theme, StyleProps>(theme =>
       color: '#1bb33c',
     },
     nameInput: {
-      marginBottom: ({ error }) => error ? theme.spacing(0) : theme.spacing(2),
     },
     roomText: {
       fontSize: 20,
@@ -50,11 +44,11 @@ const useStyles = makeStyles<Theme, StyleProps>(theme =>
   
     },
     passwordInput: {
+      marginTop: theme.spacing(2),
     },
     button: {
       margin: '0 auto',
       marginBottom: theme.spacing(2),
-      marginTop: theme.spacing(2),
     },
 }));
 
@@ -71,36 +65,31 @@ interface ActiveRoomCardProps {
 }
 
 export default function ActiveRoomCard({ room, isPrivate, game, socket }: ActiveRoomCardProps) {
+  const styles = useStyles();
   const redirectLink = '/game/' + room;
   const [openPassword, setOpenPassword] = useState(false);
+  const [openName, setOpenName] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
     mode: 'onSubmit', 
     reValidateMode: 'onSubmit' 
   });
-  const styles = useStyles({ error: errors.name != null });
 
   const redirect = () => {
     if (isPrivate) {
       setOpenPassword(true);
     } else {
-      socket.emit('joinGame', {
-        name: 'john',
-        id: socket.id,
-        gameId: game.creator,
-      });
-      history.push(redirectLink);
+      setOpenName(true);
     }
   };
   
   const handleClose = () => {
     setOpenPassword(false);
+    setOpenName(false);
   };
 
-  const onSubmit = async (data: IFormInput) => {
-    setLoading(true);
-    const { name, password } = data;
+  const callJoinGame = async (name?: string, password?: string) => {
     const { id } = socket;
     try {
       const res = await fetch('http://localhost:3001/join-game', {
@@ -120,13 +109,21 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
       if (status === 'successful') {
         history.push(redirectLink);
       } else {
-        setError('Internal server error. Please refresh and try again.');
+        setError(resJSON.reason);
       }
-      setLoading(false);
       return;
     } catch(err) {
       setError(err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const onSubmit = async (data: IFormInput) => {
+    console.log('asd')
+    setLoading(true);
+    const { name, password } = data;
+    callJoinGame(name, password);
   };
 
   const validatePassword = (async (v: any) => {
@@ -171,7 +168,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
         </Grid>
       </Button>
       <Dialog 
-        open={openPassword} 
+        open={openPassword || openName} 
         onClose={handleClose}
         className={styles.modal}
       >
@@ -190,21 +187,22 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                 })}
               />
               {errors?.name?.type === 'required' && 
-                <FormHelperText style={{ marginBottom: 15 }} error>Please enter your name</FormHelperText>}
-              <TextField
-                variant='outlined'
-                required
-                className={styles.passwordInput}
-                label='Enter Password'
-                {...register("password", {
-                  required: true,
-                  validate: validatePassword,
-                })}
-              />
-              {(errors?.password?.type === 'validate' || error) && 
-                <FormHelperText style={{ marginBottom: 15 }} error>{error}</FormHelperText>}
-              {errors?.password?.type === 'required' && 
-                <FormHelperText style={{ marginBottom: 15 }} error>Please enter the password</FormHelperText>}
+                <FormHelperText error style={{ marginBottom: 15 }}>Please enter your name</FormHelperText>}
+              {isPrivate && 
+                <TextField
+                  variant='outlined'
+                  required
+                  className={styles.passwordInput}
+                  label='Enter Password'
+                  {...register("password", {
+                    required: isPrivate,
+                    validate: validatePassword,
+                  })}
+                />}
+              {(errors?.password?.type === 'validate' || error) ? 
+                <FormHelperText error>{error}</FormHelperText>
+              : errors?.password?.type === 'required' && 
+                <FormHelperText error>Please enter the password</FormHelperText>}
             </FormControl>
           </form>
         </DialogContent>

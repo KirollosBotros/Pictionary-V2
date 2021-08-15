@@ -135,6 +135,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   const onSubmit = (data: IFormInput) => {
     const { gameName, password, playerName } = data;
     const { id } = socket;
+    console.log(id)
     const gameObj: GameObject = {
       creator: id,
       gameName: gameName,

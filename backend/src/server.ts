@@ -43,14 +43,41 @@ app.get('/get-games', (req: express.Request, res: express.Response) => {
   console.log('sent games');
 });
 
-
 app.post('/join-game', (req: express.Request, res: express.Response) => {
-  const valid = authenticatePassword({ req, res, privateGames, method: 'POST', app });
-  if (!valid) {
-    return res.status(200).json({ status: 'unsuccessful '});
+  const { creator, name, id } = req.body;
+  console.log(req.body)
+  const gameObj = findGame(creator, privateGames.concat(publicGames));
+  if (!gameObj) {
+    return res.status(200).json({ 
+      status: 'unsuccessful',
+      reason: 'Game does not exist'
+    });
   }
-  
-  return res.status(200).json({ status: 'successful' });
+  if (gameObj.players.length >= gameObj.maxPlayers) {
+    return res.status(200).json({
+      status: 'unsuccessful',
+      reason: 'Game is full',
+    });
+  }
+  if (gameObj.gameType === 'Private') {
+    const valid = authenticatePassword({ req, res, privateGames, method: 'POST', app });
+    if (!valid) {
+      return res.status(200).json({
+        status: 'unsuccessful',
+        reason: 'Unauthenticated',
+      });
+    }
+  }
+
+  const newPlayer = {
+    id,
+    name,
+  };
+
+  gameObj.players.push(newPlayer);
+  return res.status(200).json({
+    status: 'successful',
+  });
 });
 
 // http://localhost:3001/validate?creator=asd&password=passss
