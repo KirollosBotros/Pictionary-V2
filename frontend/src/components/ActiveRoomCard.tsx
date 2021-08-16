@@ -22,8 +22,23 @@ const useStyles = makeStyles(theme => ({
     roomCard: {
       textDecoration: 'none',
       marginBottom: 10,
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down(960)]: {
+        width: 500,
+      },
+      [theme.breakpoints.down(600)]: {
+        width: 400,
+      },
+      [theme.breakpoints.down(450)]: {
         width: 350,
+      },
+      [theme.breakpoints.down(385)]: {
+        width: 340,
+      },
+      [theme.breakpoints.down(356)]: {
+        width: 300,
+      },
+      [theme.breakpoints.down(317)]: {
+        width: 250,
       },
       [theme.breakpoints.up('md')]: {
         width: 600,
@@ -37,6 +52,9 @@ const useStyles = makeStyles(theme => ({
       lineHeight: 0, 
       marginRight: 6,
       color: '#1bb33c',
+      [theme.breakpoints.down(356)]: {
+        display: 'none',
+      },
     },
     nameInput: {
     },
