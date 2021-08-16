@@ -1,12 +1,12 @@
 import { Socket } from "socket.io";
-import express = require('express');
 import { GameObject, JoinGameProps } from "./types/game";
 import { findGame } from "./utils/findGame";
 import { authenticatePassword } from "./utils/authenticatePassword";
 import { removePasswords } from "./utils/removePasswords";
-const bodyParser = require('body-parser');
-
+import express = require('express');
+import { getPlayerGame } from "./utils/getPlayerGame";
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const socket = require('socket.io');
 
 const app = express();
@@ -33,8 +33,6 @@ app.get('/get-games', (req: express.Request, res: express.Response) => {
     privateGames: removePasswords(privateGames),
     publicGames,
   });
-  console.log(privateGames)
-  console.log('sent games');
 });
 
 app.post('/create-game', (req: express.Request, res: express.Response) => {
@@ -58,7 +56,6 @@ app.post('/create-game', (req: express.Request, res: express.Response) => {
 
 app.post('/join-game', (req: express.Request, res: express.Response) => {
   const { creator, name, id } = req.body;
-  console.log(req.body)
   const gameObj = findGame(creator, privateGames.concat(publicGames));
   if (!gameObj) {
     return res.status(200).json({ 
@@ -93,6 +90,12 @@ app.get('/validate', (req: express.Request, res: express.Response) => {
   authenticatePassword({ req, res, privateGames, method: 'GET', app});
 });
 
+app.get('/get-game', (req: express.Request, res: express.Response) => {
+  const { userId } = req.query;
+  const gameObj = getPlayerGame(privateGames.concat(publicGames), userId as string);
+  return res.status(200).json(gameObj);
+});
+
 io.on('connection', (socket: Socket) => {
     socket.on('createGame', (data: GameObject) => {
       data.type === 'Public' ? publicGames.push(data) : privateGames.push(data);
@@ -104,16 +107,8 @@ io.on('connection', (socket: Socket) => {
       ]);
     });
     socket.on('joinGame', (data: JoinGameProps) => {
-      const { name, id, gameId } = data;
-      const gameObj: GameObject | null = findGame(gameId, publicGames.concat(privateGames));
-      if (!gameObj) {
-        throw new Error('Game not found');
-      }
+      const { gameId } = data;
       socket.join(gameId);
-      const newPlayer= {
-        id,
-        name,
-      };
-      gameObj.players.push(newPlayer);
+      io.to(gameId).emit('userConnection');
     });
 });

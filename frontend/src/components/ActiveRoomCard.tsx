@@ -94,7 +94,7 @@ interface ActiveRoomCardProps {
 
 export default function ActiveRoomCard({ room, isPrivate, game, socket }: ActiveRoomCardProps) {
   const styles = useStyles();
-  const redirectLink = '/game/' + room;
+  const redirectLink = '/game/' + game.creator;
   const [openPassword, setOpenPassword] = useState(false);
   const [openName, setOpenName] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -135,6 +135,11 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
       const resJSON = await res.json();
       const { status } = resJSON;
       if (status === 'successful') {
+        socket.emit('joinGame', ({
+          name,
+          id,
+          gameId: game.creator,
+        }));
         history.push(redirectLink);
       } else {
         setError(resJSON.reason);
