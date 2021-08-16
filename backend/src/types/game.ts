@@ -1,7 +1,7 @@
 export interface GameObject {
   creator: string,
-  gameName: string,
-  gameType: 'Public' | 'Private',
+  name: string,
+  type: 'Public' | 'Private',
   maxPlayers: number,
   password?: string,
   players: {

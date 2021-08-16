@@ -39,14 +39,14 @@ app.get('/get-games', (req: express.Request, res: express.Response) => {
 
 app.post('/create-game', (req: express.Request, res: express.Response) => {
   const gameObj: GameObject = req.body
-  const { gameType } = gameObj;
+  const { type } = gameObj;
   if (!gameObj) {
     return res.status(200).json({
       status: 'error',
       reason: 'Cannot find game',
     });
   }
-  if (gameType === 'Private') {
+  if (type === 'Private') {
     privateGames.push(gameObj);
   } else {
     publicGames.push(gameObj);
@@ -72,7 +72,7 @@ app.post('/join-game', (req: express.Request, res: express.Response) => {
       reason: 'Game is full',
     });
   }
-  if (gameObj.gameType === 'Private') {
+  if (gameObj.type === 'Private') {
     const valid = authenticatePassword({ req, res, privateGames, method: 'POST', app });
     if (!valid) {
       return res.status(200).json({
@@ -95,7 +95,7 @@ app.get('/validate', (req: express.Request, res: express.Response) => {
 
 io.on('connection', (socket: Socket) => {
     socket.on('createGame', (data: GameObject) => {
-      data.gameType === 'Public' ? publicGames.push(data) : privateGames.push(data);
+      data.type === 'Public' ? publicGames.push(data) : privateGames.push(data);
     });
     socket.on('getGames', () => {
       socket.emit('getGamesResponse', [

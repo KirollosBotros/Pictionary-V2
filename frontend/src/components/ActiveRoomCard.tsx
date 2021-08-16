@@ -182,7 +182,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
         onClose={handleClose}
         className={styles.modal}
       >
-        <DialogTitle style={{ textAlign: 'center' }}>Join {game.gameName}</DialogTitle>
+        <DialogTitle style={{ textAlign: 'center' }}>Join {game.name}</DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl>

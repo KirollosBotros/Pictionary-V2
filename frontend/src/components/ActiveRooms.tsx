@@ -40,7 +40,7 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
         </Typography>
         {publicRooms?.map(room => (
           <Grid item key={room.creator}>
-            <ActiveRoomCard isPrivate={false} game={room} room={room.gameName} socket={socket} />
+            <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />
           </Grid>))}
         <Typography>
           {privateRooms.length !== 0 && 
@@ -48,7 +48,7 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
         </Typography>
         {privateRooms?.map(room => (
           <Grid item key={room.creator}>
-            <ActiveRoomCard isPrivate game={room} room={room.gameName} socket={socket} />
+            <ActiveRoomCard isPrivate game={room} room={room.name} socket={socket} />
           </Grid>))}
       </Grid>
   )

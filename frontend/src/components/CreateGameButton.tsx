@@ -105,9 +105,9 @@ const CustomSlider = withStyles(theme => ({
 
 interface IFormInput {
   maxPlayers: number;
-  gameType: 'Public' | 'Private';
+  type: 'Public' | 'Private';
   password?: string;
-  gameName: string;
+  name: string;
   playerName: string;
 }
 
@@ -133,12 +133,12 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   };
 
   const onSubmit = async (data: IFormInput) => {
-    const { gameName, password, playerName } = data;
+    const { name, password, playerName } = data;
     const { id } = socket;
     const gameObj: GameObject = {
       creator: id,
-      gameName: gameName,
-      gameType: type,
+      name,
+      type,
       maxPlayers: maxPlayers,
       password,
       players: [{
@@ -223,13 +223,13 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                     required
                     label='Enter Game Name'
                     className={styles.nameInput}
-                    {...register("gameName", {
+                    {...register("name", {
                       required: true,
                       maxLength: 10,
                     })}
                   />
                 </Grid>
-                {errors?.gameName?.type === 'required' && 
+                {errors?.name?.type === 'required' && 
                   <FormHelperText style={{ marginBottom: 15}} error>Please input a game name</FormHelperText>}
               </FormControl>
               <Typography className={styles.subText} style={{ textAlign: 'left' }}>Max Players: {maxPlayers}</Typography>
