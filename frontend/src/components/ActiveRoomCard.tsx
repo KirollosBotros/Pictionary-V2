@@ -1,4 +1,15 @@
-import { Button, makeStyles, Grid, Dialog, DialogContent, DialogTitle, TextField, FormHelperText, FormControl, Typography, Theme, createStyles, CircularProgress } from '@material-ui/core'
+import {
+  Button, 
+  makeStyles,
+  Grid, 
+  Dialog,
+  DialogContent,
+  DialogTitle, 
+  TextField, 
+  FormHelperText, 
+  FormControl, 
+  Typography, 
+  CircularProgress } from '@material-ui/core'
 import history from '../config/history';
 import LockSharpIcon from '@material-ui/icons/LockSharp';
 import { useState } from 'react';
@@ -6,7 +17,6 @@ import { useForm } from "react-hook-form";
 import { Socket } from 'socket.io-client';
 import { GameObject } from '../types/game';
 import PersonIcon from '@material-ui/icons/Person';
-import { ThumbUpTwoTone } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
     roomCard: {

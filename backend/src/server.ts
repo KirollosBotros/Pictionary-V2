@@ -3,6 +3,7 @@ import express = require('express');
 import { GameObject, JoinGameProps } from "./types/game";
 import { findGame } from "./utils/findGame";
 import { authenticatePassword } from "./utils/authenticatePassword";
+import { removePasswords } from "./utils/removePasswords";
 const bodyParser = require('body-parser');
 
 const cors = require('cors');
@@ -27,20 +28,32 @@ const io = socket(server, {
 let publicGames: GameObject[] = [];
 let privateGames: GameObject[] = [];
 
-// const removePassword = (games: GameObject[]) => {
-//   const tempGames = games;
-//   const newGames = tempGames.map(game => {
-//     delete game.password;
-//   });
-//   return newGames;
-// };
-
 app.get('/get-games', (req: express.Request, res: express.Response) => {
   res.json({
-    privateGames,
+    privateGames: removePasswords(privateGames),
     publicGames,
   });
+  console.log(privateGames)
   console.log('sent games');
+});
+
+app.post('/create-game', (req: express.Request, res: express.Response) => {
+  const gameObj: GameObject = req.body
+  const { gameType } = gameObj;
+  if (!gameObj) {
+    return res.status(200).json({
+      status: 'error',
+      reason: 'Cannot find game',
+    });
+  }
+  if (gameType === 'Private') {
+    privateGames.push(gameObj);
+  } else {
+    publicGames.push(gameObj);
+  }
+  return res.status(200).json({
+    status: 'successful',
+  });
 });
 
 app.post('/join-game', (req: express.Request, res: express.Response) => {
@@ -68,12 +81,7 @@ app.post('/join-game', (req: express.Request, res: express.Response) => {
       });
     }
   }
-
-  const newPlayer = {
-    id,
-    name,
-  };
-
+  const newPlayer = { id, name };
   gameObj.players.push(newPlayer);
   return res.status(200).json({
     status: 'successful',
@@ -99,7 +107,7 @@ io.on('connection', (socket: Socket) => {
       const { name, id, gameId } = data;
       const gameObj: GameObject | null = findGame(gameId, publicGames.concat(privateGames));
       if (!gameObj) {
-        throw new Error('Error: game not found');
+        throw new Error('Game not found');
       }
       socket.join(gameId);
       const newPlayer= {

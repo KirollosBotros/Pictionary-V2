@@ -14,13 +14,12 @@ interface AuthenticatePasswordParams {
 export const authenticatePassword = ({ req, res, privateGames, method, app } : AuthenticatePasswordParams) => {
   app.use(bodyParser.json());
   const { creator, password } = method === 'POST' ? req.body : req.query;
-  console.log(creator);
   const gameObj: GameObject | null= findGame(creator as string, privateGames);
   if (!gameObj) {
     if (method === 'POST') return false;
     return res.json({
       status: 'error',
-      reason: 'Error: game not found',
+      reason: 'Game not found',
     });
   }
   const { password: gamePass, maxPlayers, players } = gameObj;

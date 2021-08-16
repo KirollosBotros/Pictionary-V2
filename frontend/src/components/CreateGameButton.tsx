@@ -132,10 +132,9 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
     }
   };
 
-  const onSubmit = (data: IFormInput) => {
+  const onSubmit = async (data: IFormInput) => {
     const { gameName, password, playerName } = data;
     const { id } = socket;
-    console.log(id)
     const gameObj: GameObject = {
       creator: id,
       gameName: gameName,
@@ -148,8 +147,25 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
       }],
       status: 'lobby',
     };
-    socket.emit('createGame', gameObj);
-    history.push(`/game/${gameObj.creator}`);
+    try {
+      const res = await fetch('http://localhost:3001/create-game', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(gameObj),
+      });
+      const resJSON = await res.json();
+      const { status } = resJSON;
+      if (status === 'successful') {
+        history.push(`/game/${gameObj.creator}`);
+      } else {
+        const { reason } = resJSON;
+        console.log(reason);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleClick = () => {
