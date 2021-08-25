@@ -120,7 +120,7 @@ io.on('connection', (socket: Socket) => {
           if (player.id === socket.id) {
             const idx = game.players.indexOf(player);
             game.players.splice(idx, 1);
-            io.to(game.creator).emit('userDisconnect');
+            io.to(game.creator).emit('userDisconnect', game.players);
           }
         });
       });

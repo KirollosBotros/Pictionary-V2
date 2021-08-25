@@ -41,14 +41,7 @@ export default function Game({ socket }: GameProps) {
         if (player.id === socket.id) {
           setInGame(true);
         }
-      })
-      if (!inGame) {
-        socket.emit('joinGame', ({
-          name: 'jon',
-          id: socketId,
-          gameId: gameObj.creator
-        }))
-      }
+      });
       setPlayers(gameObj.players);
     }
   };
@@ -58,8 +51,8 @@ export default function Game({ socket }: GameProps) {
       setGame(gameObj);
       setPlayers(gameObj.players)
     });
-    socket.on('userDisconnect', () => {
-      getPlayers();
+    socket.on('userDisconnect', (players: Player[]) => {
+      setPlayers(players);
     });
     getPlayers();
     getGame();
