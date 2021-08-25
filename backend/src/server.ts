@@ -109,6 +109,20 @@ io.on('connection', (socket: Socket) => {
     socket.on('joinGame', (data: JoinGameProps) => {
       const { gameId } = data;
       socket.join(gameId);
-      io.to(gameId).emit('userConnection');
+      const gameObj = findGame(gameId, privateGames.concat(publicGames));
+      io.to(gameId).emit('userConnection', gameObj);
+    });
+    socket.on('disconnect', () => {
+      console.log('disconnect');
+      const totalGames = publicGames.concat(privateGames);
+      totalGames.forEach(game => {
+        game.players.forEach(player => {
+          if (player.id === socket.id) {
+            const idx = game.players.indexOf(player);
+            game.players.splice(idx, 1);
+            io.to(game.creator).emit('userDisconnect');
+          }
+        });
+      });
     });
 });

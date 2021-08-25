@@ -160,9 +160,9 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
   };
 
   const validatePassword = (async (v: any) => {
-    const link = `http://localhost:3001/validate?creator=${game.creator}&password=${v}`;
+    const validationEndpoint = `http://localhost:3001/validate?creator=${game.creator}&password=${v}`;
     try {
-      const res = await fetch(link);
+      const res = await fetch(validationEndpoint);
       const resJSON = await res.json();
       const { status } = resJSON;
       if (status === 'success') {
@@ -212,6 +212,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
               <TextField
                 variant='outlined'
                 required
+                style={{ marginBottom: 20 }}
                 className={styles.nameInput}
                 label='Enter Name'
                 {...register("name", {

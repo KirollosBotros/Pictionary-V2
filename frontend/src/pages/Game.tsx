@@ -32,7 +32,7 @@ export default function Game({ socket }: GameProps) {
       }
     })
   }
-  console.log(game);
+
   const getPlayers = async () => {
     const res = await fetch(`http://localhost:3001/get-game?userId=${socketId}`);
     const gameObj: GameObject | null = await res.json();
@@ -54,11 +54,17 @@ export default function Game({ socket }: GameProps) {
   };
 
   useEffect(() => {
+    socket.on('userConnection', (gameObj: GameObject) => {
+      setGame(gameObj);
+      setPlayers(gameObj.players)
+    });
+    socket.on('userDisconnect', () => {
+      getPlayers();
+    });
     getPlayers();
     getGame();
   }, []);
 
-  socket.on('userConnection', () => getPlayers());
 
   if (!game) {
     return (
@@ -67,6 +73,8 @@ export default function Game({ socket }: GameProps) {
       </div>
     )
   }
+  const { maxPlayers } = game;
+  const fullGame = maxPlayers <= players.length;
 
   return (
     <>
@@ -78,8 +86,10 @@ export default function Game({ socket }: GameProps) {
         ))}
       </Grid>
       <Dialog open={!inGame && game?.type === 'Private'}>
-        <DialogTitle style={{ textAlign: 'center' }}>Join {game?.name}</DialogTitle>
-        <Button>
+        <DialogTitle style={{ textAlign: 'center' }}>
+          {fullGame? `Join ${game?.name}` : 'Game is full'}
+        </DialogTitle>
+        <Button disabled={fullGame}>
           Join Game
         </Button>
       </Dialog>
