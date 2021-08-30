@@ -49,6 +49,7 @@ app.post('/create-game', (req: express.Request, res: express.Response) => {
   } else {
     publicGames.push(gameObj);
   }
+  console.log(gameObj);
   return res.status(200).json({
     status: 'successful',
   });
@@ -80,6 +81,7 @@ app.post('/join-game', (req: express.Request, res: express.Response) => {
   }
   const newPlayer = { id, name };
   gameObj.players.push(newPlayer);
+  console.log(gameObj);
   return res.status(200).json({
     status: 'successful',
   });

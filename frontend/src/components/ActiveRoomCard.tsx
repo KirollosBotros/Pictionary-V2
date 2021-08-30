@@ -77,6 +77,7 @@ const useStyles = makeStyles(theme => ({
     button: {
       margin: '0 auto',
       marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(1.5),
     },
 }));
 
@@ -134,6 +135,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
       });
       const resJSON = await res.json();
       const { status } = resJSON;
+      socket.emit('updatePlayers', game);
       if (status === 'successful') {
         socket.emit('joinGame', ({
           name,
@@ -212,7 +214,6 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
               <TextField
                 variant='outlined'
                 required
-                style={{ marginBottom: 20 }}
                 className={styles.nameInput}
                 label='Enter Name'
                 {...register("name", {

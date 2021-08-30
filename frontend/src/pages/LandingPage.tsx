@@ -36,9 +36,6 @@ export default function LandingPage() {
               <Grid item>
                 <Grid container direction="row" justifyContent="center">
                   <Grid item>
-                    <JoinGameButton socket={socket} />
-                  </Grid>
-                  <Grid item>
                     <CreateGameButton socket={socket} />
                   </Grid>
                 </Grid>

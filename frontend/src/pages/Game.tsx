@@ -3,9 +3,15 @@ import { Socket } from "socket.io-client";
 import { useState, useEffect } from 'react';
 import { GameObject, Player } from "../types/game";
 import { Button, Dialog, DialogTitle, Grid } from "@material-ui/core";
+import { useForm } from "react-hook-form";
 
 interface GameProps {
   socket: Socket;
+}
+
+interface IFormInput {
+  password?: string;
+  name: string;
 }
 
 export default function Game({ socket }: GameProps) {
@@ -14,6 +20,10 @@ export default function Game({ socket }: GameProps) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [inGame, setInGame] = useState(false);
   const [game, setGame] = useState<GameObject | null>(null);
+  const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
+    mode: 'onSubmit', 
+    reValidateMode: 'onSubmit' 
+  });
 
   interface GetGamesResponse {
     publicGames: GameObject[];
@@ -80,7 +90,7 @@ export default function Game({ socket }: GameProps) {
       </Grid>
       <Dialog open={!inGame && game?.type === 'Private'}>
         <DialogTitle style={{ textAlign: 'center' }}>
-          {fullGame? `Join ${game?.name}` : 'Game is full'}
+          {fullGame ? 'Game is full' : `Join ${game?.name}`}
         </DialogTitle>
         <Button disabled={fullGame}>
           Join Game
