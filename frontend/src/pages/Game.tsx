@@ -2,8 +2,10 @@ import { useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { useState, useEffect } from 'react';
 import { GameObject, Player } from "../types/game";
-import { Button, Dialog, DialogTitle, Grid } from "@material-ui/core";
+import { Button, Dialog, makeStyles, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, TextField, Typography } from "@material-ui/core";
 import { useForm } from "react-hook-form";
+import { joinGame } from "../utils/joinGame";
+import { validatePassword } from "../utils/validatePassword";
 
 interface GameProps {
   socket: Socket;
@@ -14,11 +16,25 @@ interface IFormInput {
   name: string;
 }
 
+const useStyles = makeStyles(theme => ({
+  passwordInput: {
+    marginTop: theme.spacing(1.5),
+  },
+  button: {
+    margin: '0 auto',
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(1.5),
+  },
+}));
+
 export default function Game({ socket }: GameProps) {
   const { id }: any = useParams();
   const { id: socketId } = socket;
+  const styles = useStyles();
   const [players, setPlayers] = useState<Player[]>([]);
   const [inGame, setInGame] = useState(false);
+  const [successJoin, setSuccessJoin] = useState(false);
+  const [error, setError] = useState(false);
   const [game, setGame] = useState<GameObject | null>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
     mode: 'onSubmit', 
@@ -79,6 +95,31 @@ export default function Game({ socket }: GameProps) {
   const { maxPlayers } = game;
   const fullGame = maxPlayers <= players.length;
 
+  const onSubmit = async (data: IFormInput) => {
+    const { name, password } = data;
+    const joinGameRes = await joinGame({
+      playerId: socketId,
+      game,
+      name,
+      password,
+      socket,
+    });
+    if (joinGameRes === 'success') {
+      setSuccessJoin(true);
+    }
+  };
+
+  const validatePass = (async (v: any) => {
+    const validationResponse = await validatePassword({ game, v });
+    if (validationResponse === true) {
+      return true;
+    } else {
+      const err = validationResponse.error;
+      setError(err);
+      return false;
+    }
+  });
+
   return (
     <>
       <Grid container direction="column">
@@ -88,12 +129,47 @@ export default function Game({ socket }: GameProps) {
           </Grid>
         ))}
       </Grid>
-      <Dialog open={!inGame && game?.type === 'Private'}>
+      <Dialog open={!inGame && game?.type === 'Private' && !successJoin}>
         <DialogTitle style={{ textAlign: 'center' }}>
           {fullGame ? 'Game is full' : `Join ${game?.name}`}
         </DialogTitle>
-        <Button disabled={fullGame}>
-          Join Game
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl>
+              <TextField 
+                variant='outlined'
+                required
+                label='Enter Name'
+                {...register("name", {
+                  required: true,
+                  maxLength: 10,
+                })}
+              />
+              {errors?.name?.type === 'required' && 
+                <FormHelperText error style={{ marginBottom: 15 }}>Please enter your name</FormHelperText>}
+              {game?.type === 'Private' &&
+                <TextField 
+                  variant='outlined'
+                  label='Enter Password'
+                  className={styles.passwordInput}
+                  required
+                  {...register("password", {
+                    required: game?.type === 'Private',
+                    validate: validatePass,
+                  })}
+                />}
+                {(errors?.password?.type === 'validate' || error) ? 
+                <FormHelperText error>{error}</FormHelperText>
+              : errors?.password?.type === 'required' && 
+                <FormHelperText error>Please enter the password</FormHelperText>}
+            </FormControl>
+          </form>
+        </DialogContent>
+        <Button className={styles.button} disabled={fullGame} onClick={handleSubmit(onSubmit)} style={{color: fullGame ? 'red' : ''}}>
+            {fullGame ? 
+            <Typography style={{ color: 'white' }}>
+              Room is Full
+            </Typography> : 'Join Game'}
         </Button>
       </Dialog>
     </>
