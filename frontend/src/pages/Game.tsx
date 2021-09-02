@@ -129,7 +129,7 @@ export default function Game({ socket }: GameProps) {
           </Grid>
         ))}
       </Grid>
-      <Dialog open={!inGame && game?.type === 'Private' && !successJoin}>
+      <Dialog open={!inGame && !successJoin}>
         <DialogTitle style={{ textAlign: 'center' }}>
           {fullGame ? 'Game is full' : `Join ${game?.name}`}
         </DialogTitle>
@@ -165,7 +165,7 @@ export default function Game({ socket }: GameProps) {
             </FormControl>
           </form>
         </DialogContent>
-        <Button className={styles.button} disabled={fullGame} onClick={handleSubmit(onSubmit)} style={{color: fullGame ? 'red' : ''}}>
+        <Button className={styles.button} disabled={fullGame} onClick={handleSubmit(onSubmit)}>
             {fullGame ? 
             <Typography style={{ color: 'white' }}>
               Room is Full
