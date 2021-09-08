@@ -6,6 +6,7 @@ import { Button, Dialog, makeStyles, DialogContent, DialogTitle, FormControl, Fo
 import { useForm } from "react-hook-form";
 import { joinGame } from "../utils/joinGame";
 import { validatePassword } from "../utils/validatePassword";
+import MainGame from "./MainGame";
 
 interface GameProps {
   socket: Socket;
@@ -35,6 +36,7 @@ export default function Game({ socket }: GameProps) {
   const [inGame, setInGame] = useState(false);
   const [successJoin, setSuccessJoin] = useState(false);
   const [error, setError] = useState(false);
+  const [redirectToGame, setRedirectToGame] = useState(false);
   const [game, setGame] = useState<GameObject | null>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
     mode: 'onSubmit', 
@@ -80,6 +82,9 @@ export default function Game({ socket }: GameProps) {
     socket.on('userDisconnect', (players: Player[]) => {
       setPlayers(players);
     });
+    socket.on('startGame', () => {
+      setRedirectToGame(true);
+    });
     getPlayers();
     getGame();
   }, []);
@@ -120,9 +125,21 @@ export default function Game({ socket }: GameProps) {
     }
   });
 
+  const startGame = () => {
+    socket.emit('startedGame', game.creator);
+  };
+
+  if (redirectToGame || game.status === 'game') {
+    return <MainGame />
+  }
+
   return (
     <>
       <Grid container direction="column">
+        {socket.id === game.creator &&
+          <Grid item>
+            <Button onClick={startGame}>Start Game</Button>
+          </Grid>}
         {players?.map(player => (
           <Grid item>
             {player.name}
