@@ -30,20 +30,33 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   useEffect(() => {
     getGames();
   }, []);
+
+  let totalPublic = 0;
+  const activePublicRooms = publicRooms.forEach((room) => {
+    if (room.status !== 'game') ++totalPublic;
+  });
+
+  let totalPrivate = 0;
+  const activePrivateRooms = privateRooms.forEach((room) => {
+    if (room.status !== 'game') ++totalPrivate;
+  });
   
   return (
       <Grid container direction="column" alignItems="center" className={styles.roomList}>
         <Typography>
-          {publicRooms.length !== 0 && 
-            `Public Rooms (${publicRooms.length})`}
+          {totalPublic !== 0 && 
+            `Public Rooms (${totalPublic})`}
         </Typography>
-        {publicRooms?.map(room => (
-          <Grid item key={room.creator}>
-            <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />
-          </Grid>))}
+        {publicRooms?.map(room => {
+          if (room.status !== 'game') {
+            <Grid item key={room.creator}>
+              <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />
+            </Grid>
+          }
+          })}
         <Typography>
-          {privateRooms.length !== 0 && 
-            `Private Rooms (${privateRooms.length})`}
+          {totalPrivate !== 0 && 
+            `Private Rooms (${totalPrivate})`}
         </Typography>
         {privateRooms?.map(room => (
           <Grid item key={room.creator}>
