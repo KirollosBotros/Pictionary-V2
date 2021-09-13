@@ -27,7 +27,6 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
     setPublicRooms(publicGames);
   };
 
-  console.log(privateRooms)
   useEffect(() => {
     getGames();
   }, []);

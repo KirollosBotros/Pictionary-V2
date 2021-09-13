@@ -17,3 +17,8 @@ export interface JoinGameProps {
   gameId: string;
 }
 
+export interface Player {
+  name: string;
+  id: string;
+}
+
