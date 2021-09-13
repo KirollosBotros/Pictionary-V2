@@ -129,8 +129,8 @@ export default function Game({ socket }: GameProps) {
     socket.emit('startedGame', game.creator);
   };
 
-  if (redirectToGame || game.status === 'game') {
-    return <MainGame />
+  if (redirectToGame) {
+    return <MainGame game={game} socket={socket} />
   }
 
   return (
@@ -146,48 +146,51 @@ export default function Game({ socket }: GameProps) {
           </Grid>
         ))}
       </Grid>
-      <Dialog open={!inGame && !successJoin}>
+      <Dialog open={(!inGame && !successJoin || game.status === 'game')}>
         <DialogTitle style={{ textAlign: 'center' }}>
-          {fullGame ? 'Game is full' : `Join ${game?.name}`}
+          {fullGame ? 'Game is full' : game.status === 'game' ? 'Game Already Started' : `Join ${game?.name}`}
         </DialogTitle>
-        <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl>
-              <TextField 
-                variant='outlined'
-                required
-                label='Enter Name'
-                {...register("name", {
-                  required: true,
-                  maxLength: 10,
-                })}
-              />
-              {errors?.name?.type === 'required' && 
-                <FormHelperText error style={{ marginBottom: 15 }}>Please enter your name</FormHelperText>}
-              {game?.type === 'Private' &&
+        {game.status !== 'game' &&
+        <>
+          <DialogContent>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl>
                 <TextField 
                   variant='outlined'
-                  label='Enter Password'
-                  className={styles.passwordInput}
                   required
-                  {...register("password", {
-                    required: game?.type === 'Private',
-                    validate: validatePass,
+                  label='Enter Name'
+                  {...register("name", {
+                    required: true,
+                    maxLength: 10,
                   })}
-                />}
-                {(errors?.password?.type === 'validate' || error) ? 
-                <FormHelperText error>{error}</FormHelperText>
-              : errors?.password?.type === 'required' && 
-                <FormHelperText error>Please enter the password</FormHelperText>}
-            </FormControl>
-          </form>
-        </DialogContent>
-        <Button className={styles.button} disabled={fullGame} onClick={handleSubmit(onSubmit)}>
-            {fullGame ? 
-            <Typography style={{ color: 'white' }}>
-              Room is Full
-            </Typography> : 'Join Game'}
-        </Button>
+                />
+                {errors?.name?.type === 'required' && 
+                  <FormHelperText error style={{ marginBottom: 15 }}>Please enter your name</FormHelperText>}
+                {game?.type === 'Private' &&
+                  <TextField 
+                    variant='outlined'
+                    label='Enter Password'
+                    className={styles.passwordInput}
+                    required
+                    {...register("password", {
+                      required: game?.type === 'Private',
+                      validate: validatePass,
+                    })}
+                  />}
+                  {(errors?.password?.type === 'validate' || error) ? 
+                  <FormHelperText error>{error}</FormHelperText>
+                : errors?.password?.type === 'required' && 
+                  <FormHelperText error>Please enter the password</FormHelperText>}
+              </FormControl>
+            </form>
+          </DialogContent>
+          <Button className={styles.button} disabled={fullGame} onClick={handleSubmit(onSubmit)}>
+              {fullGame ? 
+              <Typography style={{ color: 'white' }}>
+                Room is Full
+              </Typography> : 'Join Game'}
+          </Button>
+        </>}
       </Dialog>
     </>
   )
