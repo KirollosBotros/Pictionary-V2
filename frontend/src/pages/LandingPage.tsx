@@ -1,5 +1,5 @@
 import socket from '.././config/socketConfig';
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
 import {
   BrowserRouter as Router,
 } from "react-router-dom";
@@ -31,13 +31,10 @@ export default function LandingPage() {
         <>
           <Grid container direction="column" justifyContent="center">
               <Grid item className={styles.title}>
-                  Welcome to PictoBear!
+                  <Typography style={{ fontSize: 36 }}>Welcome to PictoBear!</Typography>
               </Grid>
               <Grid item>
                 <Grid container direction="row" justifyContent="center">
-                  <Grid item>
-                    <JoinGameButton socket={socket} />
-                  </Grid>
                   <Grid item>
                     <CreateGameButton socket={socket} />
                   </Grid>
