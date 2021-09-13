@@ -102,18 +102,21 @@ io.on('connection', (socket: Socket) => {
     socket.on('createGame', (data: GameObject) => {
       data.type === 'Public' ? publicGames.push(data) : privateGames.push(data);
     });
+   
     socket.on('getGames', () => {
       socket.emit('getGamesResponse', [
         publicGames,
         privateGames,
       ]);
     });
+  
     socket.on('joinGame', (data: JoinGameProps) => {
       const { gameId } = data;
       socket.join(gameId);
       const gameObj = findGame(gameId, privateGames.concat(publicGames));
       io.to(gameId).emit('userConnection', gameObj);
     });
+    
     socket.on('startedGame', (data: string) => {
       const totalGames = privateGames.concat(publicGames);
       let startedGame: GameObject = totalGames[0];
@@ -128,6 +131,16 @@ io.on('connection', (socket: Socket) => {
         io.to(startedGame.creator).emit('startGame');
       }
     });
+   
+    socket.on('mouse', (data: (string | number[])[]) => {
+      const lineCords = data[1];
+      io.to(data[0]).emit('drawing', lineCords);
+    });
+
+    socket.on('clearedBoard', (creator: string) => {
+      io.to(creator).emit('clearBoard');
+    });
+
     socket.on('disconnect', () => {
       console.log('disconnect');
       const totalGames = publicGames.concat(privateGames);
