@@ -1,4 +1,4 @@
-import { Grid, makeStyles } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core'
 import React, { useEffect } from 'react'
 import { Socket } from 'socket.io-client';
 import Sketch from 'react-p5'
@@ -11,6 +11,7 @@ interface GameCanvasProps {
   game: GameObject;
   players: Player[];
   onNextTurn: (currentDrawer: string) => void;
+  getHeight: (height: number) => void;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -21,19 +22,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function GameCanvas({ socket, game, players, onNextTurn }: GameCanvasProps) {
+export default function GameCanvas({ socket, game, players, onNextTurn, getHeight }: GameCanvasProps) {
   const styles = useStyles();
   const { creator } = game;
   let counter = 0;
   const [currentDrawer, setCurrentDrawer] = useState<string>(players[counter].id);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  var canvasHeight = 0;
-  var canvasWidth = 0;
-
-  useEffect(() => {
-
-  }, [width, height]);
 
   const setup = async (p5: p5Types, parent: Element) => {
     let CNV_WIDTH = p5.displayWidth / 2.55;
@@ -41,7 +36,7 @@ export default function GameCanvas({ socket, game, players, onNextTurn }: GameCa
       CNV_WIDTH = p5.displayWidth * .80;
     }
     let CNV_HEIGHT = CNV_WIDTH / 1.176;
-    canvasWidth = CNV_WIDTH;
+    getHeight(CNV_HEIGHT);
     setWidth(CNV_WIDTH);
     setHeight(CNV_HEIGHT);
     p5.createCanvas(CNV_WIDTH, CNV_HEIGHT).parent(parent);
@@ -49,8 +44,7 @@ export default function GameCanvas({ socket, game, players, onNextTurn }: GameCa
 
     // socket listeners
     socket.on('drawing', (data: number[]) => {
-      p5.strokeWeight(4);
-      p5.line(data[0] * CNV_WIDTH, data[1] * CNV_HEIGHT, data[2] * CNV_WIDTH, data[3] * CNV_HEIGHT);
+      drawLine(p5, data, [CNV_WIDTH, CNV_HEIGHT]);
     });
 
     socket.on('clearBoard', () => {
@@ -66,14 +60,31 @@ export default function GameCanvas({ socket, game, players, onNextTurn }: GameCa
     });
   };
 
+  const drawLine = (p5: p5Types, data: number[], normalize: number[]) => {
+    p5.strokeWeight(4);
+    p5.line(
+      data[0] * normalize[0],
+      data[1] * normalize[1],
+      data[2] * normalize[0],
+      data[3] * normalize[1]
+    );
+  };
+
   const windowResized = (p5: p5Types) => {
     let RESIZED_WIDTH = p5.windowWidth / 2;
+    if (p5.windowWidth > 1400) {
+      RESIZED_WIDTH = p5.windowWidth / 2.55;
+    }
     if (p5.windowWidth < 800) {
       RESIZED_WIDTH = p5.windowWidth / 1.2;
     }
     let RESIZED_HEIGHT = RESIZED_WIDTH / 1.176;
-    canvasHeight = RESIZED_HEIGHT;
-    canvasWidth = RESIZED_WIDTH;
+    socket.off('drawing');
+    socket.on('drawing', (data: number[]) => {
+      drawLine(p5, data, [RESIZED_WIDTH, RESIZED_HEIGHT]);
+    });
+    setWidth(RESIZED_WIDTH);
+    setHeight(RESIZED_HEIGHT);
     p5.resizeCanvas(RESIZED_WIDTH, RESIZED_HEIGHT);
     p5.background(245,245,245);
   };
@@ -112,5 +123,5 @@ export default function GameCanvas({ socket, game, players, onNextTurn }: GameCa
       windowResized={windowResized}
       draw={draw}
     />
-  )
+  );
 }

@@ -44,19 +44,57 @@ const useStyles = makeStyles(theme => ({
     height: 550,
     width: '90%',
     maxWidth: 300,
+    textAlign: 'center',
     [theme.breakpoints.down(800)]: {
       height: 200,
-      width: '100%',
-      display: 'inline-block'
+      width: 625,
+      maxWidth: 625,
+    },
+    [theme.breakpoints.down(700)]: {
+      height: 200,
+      width: 535,
+      maxWidth: 700,
+    },
+    [theme.breakpoints.down(615)]: {
+      height: 200,
+      width: 400,
+      maxWidth: 700,
+    },
+    [theme.breakpoints.down(450)]: {
+      height: 200,
+      width: 330,
+      maxWidth: 700,
+    },
+    [theme.breakpoints.down(380)]: {
+      height: 135,
+      width: 260,
+      maxWidth: 700,
+    },
+    [theme.breakpoints.down(340)]: {
+      height: 80,
+      width: 260,
+      maxWidth: 700,
     },
   },
   word: {
     fontSize: 30,
     [theme.breakpoints.down('sm')]: {
       fontSize: 22,
+      marginTop: theme.spacing(2),
     },
     fontWeight: 300,
-  }
+  },
+  mobile: {
+    [theme.breakpoints.down(1230)]: {
+      display: 'none',
+    },
+  },
+  mobileTimer: {
+    [theme.breakpoints.up(1230)]: {
+      display: 'none',
+    },
+    textAlign: 'center',
+  },
 }));
 
 export default function MainGame({ game, socket, currWord }: MainGameProps) {
@@ -65,6 +103,7 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
   const [secondsLeft, setSecondsLeft] = useState<number>();
   const [currentDrawer, setCurrentDrawer] = useState<string>(game.players[0].id);
   const [chatCtl] = useState(new ChatController());
+  const [cnvHeight, setCnvHeight] = useState(0);
 
   useEffect(() => {
     socket.on('userDisconnect', (players: Player[]) => {
@@ -99,9 +138,22 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
     console.log(currDrawer)
   };
 
+  console.log(cnvHeight);
+
   return (
     <Grid container direction="column" alignItems="center" justifyContent="center" spacing={3}>
-      <Grid item>
+      <Grid container direction="row" alignItems="center" className={styles.mobileTimer}>
+        <Grid item xs={2} className={styles.mobileTimer}>
+          <Typography style={{ fontSize: 36, marginTop: 15 }}>{secondsLeft}</Typography>
+        </Grid>
+        <Grid item xs={8} style={{textAlign: 'center'}}>
+          {socket.id === currentDrawer ?
+            <Typography className={styles.word}>Your word to draw is: <strong>{currWord}</strong></Typography>
+          : <Typography className={styles.word}>{'_ '.repeat(currWord.length)}</Typography>}
+        </Grid>
+        <Grid item xs={2} />
+      </Grid>
+      <Grid item className={styles.mobile}>
         {socket.id === currentDrawer ?
           <Typography className={styles.word}>Your word to draw is: <strong>{currWord}</strong></Typography>
         : <Typography className={styles.word}>{'_ '.repeat(currWord.length)}</Typography>}
@@ -132,6 +184,7 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
                   socket={socket} 
                   game={game} 
                   players={players} 
+                  getHeight={(height: number) => setCnvHeight(height)}
                   onNextTurn={(player: string) => handleTurnChange(player)}
                 />
               </Grid>

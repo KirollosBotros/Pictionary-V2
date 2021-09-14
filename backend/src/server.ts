@@ -129,7 +129,7 @@ io.on('connection', (socket: Socket) => {
         return;
       });
       if (startedGame?.creator) {
-        const TIMER = 10;
+        const TIMER = 20;
         const words = [... new Set(ranWords(100))];
         let secondsLeft = TIMER;
         let wordPointer = 0;
