@@ -28,6 +28,7 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
       verticalAlign: 'middle',
     },
     desktopCarosel: {
+      maxHeight: 100,
       [theme.breakpoints.down(1230)]: {
         display: 'none',
       },
@@ -178,14 +179,14 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
       </Grid>
       <Grid item>
         <Grid container direction="row" spacing={2} justifyContent="center">
-          <Grid item className={styles.desktopCarosel}>
+          <Grid item className={styles.desktopCarosel} style={{ maxHeight: cnvHeight, overflowY: 'auto' }}>
             <Grid 
               container 
               direction="column"
               spacing={2} 
               justifyContent="flex-start"
               alignItems="center" 
-              style={{ minHeight: 700 }}
+              
             >
               <Grid item>
                 <Typography style={{ fontSize: 42 }}>{secondsLeft}</Typography>
