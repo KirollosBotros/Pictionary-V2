@@ -152,7 +152,6 @@ io.on('connection', (socket: Socket) => {
             const player = startedGame.players[playerPointer];
             currWord = words[wordPointer];
             io.to(startedGame.creator).emit('nextTurn', [currWord, player]);
-            console.log('sent')
             secondsLeft = TIMER;
           } else {
             --secondsLeft;
@@ -186,7 +185,7 @@ io.on('connection', (socket: Socket) => {
           if (player.id === socket.id) {
             const idx = game.players.indexOf(player);
             game.players.splice(idx, 1);
-            io.to(game.creator).emit('userDisconnect', game.players);
+            io.to(game.creator).emit('userDisconnect', [player.name, game.players]);
           }
         });
       });

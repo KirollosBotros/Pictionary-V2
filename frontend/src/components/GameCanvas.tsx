@@ -10,7 +10,7 @@ interface GameCanvasProps {
   socket: Socket;
   game: GameObject;
   players: Player[];
-  onNextTurn: (currentDrawer: string) => void;
+  onNextTurn: (currentDrawer: string, word: string) => void;
   getHeight: (height: number) => void;
 }
 
@@ -56,7 +56,8 @@ export default function GameCanvas({ socket, game, players, onNextTurn, getHeigh
       p5.clear();
       p5.background(245,245,245);
       setCurrentDrawer(player.id);
-      onNextTurn(player.id);
+      console.log(word)
+      onNextTurn(player.id, word);
     });
   };
 

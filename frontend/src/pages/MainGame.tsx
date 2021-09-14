@@ -96,6 +96,7 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
   const [secondsLeft, setSecondsLeft] = useState<number>();
   const [currentDrawer, setCurrentDrawer] = useState<string>(game.players[0].id);
   const [chatCtl] = useState(new ChatController());
+  const [currentWord, setCurrentWord] = useState(currWord);
 
   useEffect(() => {
     socket.on('userDisconnect', (players: Player[]) => {
@@ -103,6 +104,9 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
     });
     socket.on('updateTime', (secondsLeft: number) => {
       setSecondsLeft(secondsLeft);
+    });
+    socket.on('nextTurn', ([word, player]) => {
+      setCurrentWord(word);
     });
   }, []);
 
@@ -116,8 +120,20 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
     });
     socket.off('new message');
     socket.on('new message', ([msg, author]) => {
-      if (author !== socket.id) {
-        console.log(msg);
+      if (msg.toLowerCase() === currentWord.toLowerCase()) {
+        let name: string = '';
+        game.players.forEach(player => {
+          if (player.id === author) {
+            name = player.name;
+          }
+        });
+        const guessedRightMsg = `${name} guessed the word!`;
+        chatCtl.addMessage({
+          type: 'text',
+          content: guessedRightMsg,
+          self: false,
+        });
+      } else if (author !== socket.id) {
         chatCtl.addMessage({
           type: 'text',
           content: msg,
@@ -125,7 +141,17 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
         });
       }
     });
-  }, [chatCtl]);
+    socket.off('userDisconnect');
+    socket.on('userDisconnect', ([name, players]) => {
+      setPlayers(players);
+      const disconnectedMsg = `${name} has left the game`;
+      chatCtl.addMessage({
+        type: 'text',
+        content: disconnectedMsg,
+        self: false,
+      });
+    });
+  }, [chatCtl, currentWord]);
 
   const handleTurnChange = (currDrawer: string) => {
     setCurrentDrawer(currDrawer);
@@ -135,20 +161,20 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
   return (
     <Grid container direction="column" alignItems="center" justifyContent="center" spacing={3}>
       <Grid container direction="row" alignItems="center" className={styles.mobileTimer}>
-        <Grid item xs={2} className={styles.mobileTimer}>
+        <Grid item xs={2}>
           <Typography style={{ fontSize: 24, marginTop: 15 }}>{secondsLeft}</Typography>
         </Grid>
         <Grid item xs={8} style={{textAlign: 'center'}}>
           {socket.id === currentDrawer ?
-            <Typography className={styles.word}>Your word to draw is: <strong>{currWord}</strong></Typography>
-          : <Typography className={styles.word}>{'_ '.repeat(currWord.length)}</Typography>}
+            <Typography className={styles.word}>Your word to draw is: <strong>{currentWord}</strong></Typography>
+          : <Typography className={styles.word}>{'_ '.repeat(currentWord.length)}</Typography>}
         </Grid>
         <Grid item xs={2} />
       </Grid>
       <Grid item className={styles.mobile}>
         {socket.id === currentDrawer ?
-          <Typography className={styles.word}>Your word to draw is: <strong>{currWord}</strong></Typography>
-        : <Typography className={styles.word}>{'_ '.repeat(currWord.length)}</Typography>}
+          <Typography className={styles.word}>Your word to draw is: <strong>{currentWord}</strong></Typography>
+        : <Typography className={styles.word}>{'_ '.repeat(currentWord.length)}</Typography>}
       </Grid>
       <Grid item>
         <Grid container direction="row" spacing={2} justifyContent="center">
@@ -177,7 +203,10 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
                   game={game} 
                   players={players} 
                   getHeight={(height: number) => setCnvHeight(height)}
-                  onNextTurn={(player: string) => handleTurnChange(player)}
+                  onNextTurn={(player: string, word: string) => {
+                    handleTurnChange(player);
+                    setCurrentWord(word);
+                  }}
                 />
               </Grid>
             </Grid>
