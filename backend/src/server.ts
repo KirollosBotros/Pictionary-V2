@@ -8,6 +8,7 @@ import { getPlayerGame } from "./utils/getPlayerGame";
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const socket = require('socket.io');
+const ranWords = require('word-pictionary-list');
 
 const app = express();
 app.use(cors());
@@ -128,12 +129,48 @@ io.on('connection', (socket: Socket) => {
         return;
       });
       if (startedGame?.creator) {
-        io.to(startedGame.creator).emit('startGame');
+        const TIMER = 10;
+        const words = [... new Set(ranWords(100))];
+        let secondsLeft = TIMER;
+        let wordPointer = 0;
+        let playerPointer = 0;
+        let currWord = words[wordPointer];
+        io.to(startedGame.creator).emit('startGame', currWord);
+        setInterval(() => {
+          io.to(startedGame.creator).emit('updateTime', secondsLeft);
+          if (secondsLeft === 0) {
+            if (playerPointer + 1 >= startedGame.players.length) {
+              playerPointer = 0;
+            } else {
+              ++playerPointer;
+            }
+            if (wordPointer + 1 >= words.length) {
+              wordPointer = 0;
+            } else {
+              ++wordPointer;
+            }
+            const player = startedGame.players[playerPointer];
+            currWord = words[wordPointer];
+            io.to(startedGame.creator).emit('nextTurn', [currWord, player]);
+            console.log('sent')
+            secondsLeft = TIMER;
+          } else {
+            --secondsLeft;
+          }
+        }, 1000);
       }
     });
    
+    socket.on('message', ([creator, message, author]: string[]) => {
+      console.log(creator);
+      console.log(message);
+      io.to(creator).emit('new message', [message, author]);
+    })
+
     socket.on('mouse', (data: (string | number[])[]) => {
       const lineCords = data[1];
+      console.log(data);
+      console.log(lineCords)
       io.to(data[0]).emit('drawing', lineCords);
     });
 

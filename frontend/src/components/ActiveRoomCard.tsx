@@ -105,7 +105,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
     mode: 'onSubmit', 
     reValidateMode: 'onSubmit' 
   });
-
+  console.log(game);
   const redirect = () => {
     if (isPrivate) {
       setOpenPassword(true);
@@ -144,7 +144,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
       setError(err);
     }
   });
-
+  console.log('asdasd')
   return (
     <>
       <Button onClick={redirect} className={styles.roomCard}>

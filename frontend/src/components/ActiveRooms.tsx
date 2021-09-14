@@ -32,14 +32,16 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   }, []);
 
   let totalPublic = 0;
-  const activePublicRooms = publicRooms.forEach((room) => {
+  publicRooms.forEach((room) => {
     if (room.status !== 'game') ++totalPublic;
   });
 
   let totalPrivate = 0;
-  const activePrivateRooms = privateRooms.forEach((room) => {
+  privateRooms.forEach((room) => {
     if (room.status !== 'game') ++totalPrivate;
   });
+
+  console.log(publicRooms)
   
   return (
       <Grid container direction="column" alignItems="center" className={styles.roomList}>
@@ -47,13 +49,12 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
           {totalPublic !== 0 && 
             `Public Rooms (${totalPublic})`}
         </Typography>
-        {publicRooms?.map(room => {
-          if (room.status !== 'game') {
-            <Grid item key={room.creator}>
-              <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />
-            </Grid>
-          }
-          })}
+        {publicRooms?.map(room => (
+          <Grid item key={room.creator}>
+            <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />
+          </Grid>
+          ))
+        }
         <Typography>
           {totalPrivate !== 0 && 
             `Private Rooms (${totalPrivate})`}

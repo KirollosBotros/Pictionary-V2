@@ -17,6 +17,7 @@
     "@types/react-router-dom": "^5.1.8",
     "@types/socket.io-client": "^3.0.0",
     "bad-words": "^3.0.4",
+    "chat-ui-react": "^0.2.14",
     "p5": "1.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

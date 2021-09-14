@@ -21,3 +21,7 @@ export interface Player {
   name: string;
   id: string;
 }
+
+export interface GameInfo {
+  words: string[];
+}

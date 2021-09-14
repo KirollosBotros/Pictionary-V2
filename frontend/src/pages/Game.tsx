@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { useState, useEffect } from 'react';
-import { GameObject, Player } from "../types/game";
+import { GameObject, Player, GameInfo } from "../types/game";
 import { Button, Dialog, makeStyles, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, TextField, Typography } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { joinGame } from "../utils/joinGame";
@@ -38,6 +38,7 @@ export default function Game({ socket }: GameProps) {
   const [error, setError] = useState(false);
   const [redirectToGame, setRedirectToGame] = useState(false);
   const [game, setGame] = useState<GameObject | null>(null);
+  const [currWord, setCurrWord] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
     mode: 'onSubmit', 
     reValidateMode: 'onSubmit' 
@@ -82,7 +83,8 @@ export default function Game({ socket }: GameProps) {
     socket.on('userDisconnect', (players: Player[]) => {
       setPlayers(players);
     });
-    socket.on('startGame', () => {
+    socket.on('startGame', (currWord: string) => {
+      setCurrWord(currWord);
       setRedirectToGame(true);
     });
     getPlayers();
@@ -129,8 +131,8 @@ export default function Game({ socket }: GameProps) {
     socket.emit('startedGame', game.creator);
   };
 
-  if (redirectToGame) {
-    return <MainGame game={game} socket={socket} />
+  if (redirectToGame && currWord) {
+    return <MainGame game={game} socket={socket} currWord={currWord} />
   }
 
   return (
