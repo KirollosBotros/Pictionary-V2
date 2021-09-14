@@ -6,10 +6,7 @@ import GameCanvas from '../components/GameCanvas';
 import PlayerCard from '../components/PlayerCard';
 import { GameObject, Player } from '../types/game'
 import {
-  ActionRequest,
-  AudioActionResponse,
   ChatController,
-  FileActionResponse,
   MuiChat,
 } from 'chat-ui-react';
 
@@ -49,11 +46,6 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
       [theme.breakpoints.down(800)]: {
         width: (props: Props) => props.cnvHeight * 1.176,
       },
-      // [theme.breakpoints.down(1100)]: {
-      //   height: 200,
-      //   width: 625,
-      //   maxWidth: 625,
-      // },
       [theme.breakpoints.down(700)]: {
         height: 200,
       },
@@ -87,6 +79,12 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
       [theme.breakpoints.up(1230)]: {
         display: 'none',
       },
+      [theme.breakpoints.down(1100)]: {
+        marginTop: theme.spacing(2),
+      },
+      [theme.breakpoints.down(600)]: {
+        marginTop: theme.spacing(1),
+      },
       textAlign: 'center',
     },
 }));
@@ -106,15 +104,6 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
     socket.on('updateTime', (secondsLeft: number) => {
       setSecondsLeft(secondsLeft);
     });
-    socket.on('new message', ([msg, author]) => {
-      if (author !== socket.id) {
-        chatCtl.addMessage({
-          type: 'text',
-          content: msg,
-          self: false,
-        });
-      }
-    });
   }, []);
 
   useMemo(async () => {
@@ -125,20 +114,29 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
     }, (response) => {
       socket.emit('message', [game.creator, response.value, socket.id]);
     });
+    socket.off('new message');
+    socket.on('new message', ([msg, author]) => {
+      if (author !== socket.id) {
+        console.log(msg);
+        chatCtl.addMessage({
+          type: 'text',
+          content: msg,
+          self: false,
+        });
+      }
+    });
   }, [chatCtl]);
 
   const handleTurnChange = (currDrawer: string) => {
     setCurrentDrawer(currDrawer);
-    console.log(currDrawer)
   };
 
-  console.log(cnvHeight);
 
   return (
     <Grid container direction="column" alignItems="center" justifyContent="center" spacing={3}>
       <Grid container direction="row" alignItems="center" className={styles.mobileTimer}>
         <Grid item xs={2} className={styles.mobileTimer}>
-          <Typography style={{ fontSize: 36, marginTop: 15 }}>{secondsLeft}</Typography>
+          <Typography style={{ fontSize: 24, marginTop: 15 }}>{secondsLeft}</Typography>
         </Grid>
         <Grid item xs={8} style={{textAlign: 'center'}}>
           {socket.id === currentDrawer ?
