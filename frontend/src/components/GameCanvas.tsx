@@ -32,7 +32,7 @@ export default function GameCanvas({ socket, game, players, onNextTurn, getHeigh
 
   const setup = async (p5: p5Types, parent: Element) => {
     let CNV_WIDTH = p5.displayWidth / 2.55;
-    if (p5.displayWidth < 400) {
+    if (p5.displayWidth < 500) {
       CNV_WIDTH = p5.displayWidth * .80;
     }
     let CNV_HEIGHT = CNV_WIDTH / 1.176;
@@ -76,13 +76,14 @@ export default function GameCanvas({ socket, game, players, onNextTurn, getHeigh
       RESIZED_WIDTH = p5.windowWidth / 2.55;
     }
     if (p5.windowWidth < 800) {
-      RESIZED_WIDTH = p5.windowWidth / 1.2;
+      RESIZED_WIDTH = p5.windowWidth / 1.35;
     }
     let RESIZED_HEIGHT = RESIZED_WIDTH / 1.176;
     socket.off('drawing');
     socket.on('drawing', (data: number[]) => {
       drawLine(p5, data, [RESIZED_WIDTH, RESIZED_HEIGHT]);
     });
+    getHeight(RESIZED_HEIGHT);
     setWidth(RESIZED_WIDTH);
     setHeight(RESIZED_HEIGHT);
     p5.resizeCanvas(RESIZED_WIDTH, RESIZED_HEIGHT);

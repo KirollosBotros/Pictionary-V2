@@ -1,10 +1,10 @@
-import { Grid, makeStyles, TextField, Typography } from '@material-ui/core'
+import { createStyles, Grid, makeStyles, Typography, Theme } from '@material-ui/core'
 import { useEffect, useState, useMemo } from 'react'
 import * as React from 'react';
 import { Socket } from 'socket.io-client';
 import GameCanvas from '../components/GameCanvas';
 import PlayerCard from '../components/PlayerCard';
-import { GameInfo, GameObject, Player } from '../types/game'
+import { GameObject, Player } from '../types/game'
 import {
   ActionRequest,
   AudioActionResponse,
@@ -19,91 +19,85 @@ interface MainGameProps {
   currWord: string;
 }
 
-const useStyles = makeStyles(theme => ({
-  playerCard: {
-    height: 50,
-    backgroundColor: '#98c9fa',
-    verticalAlign: 'middle',
-  },
-  desktopCarosel: {
-    [theme.breakpoints.down(1230)]: {
-      display: 'none',
+type Props = {
+  cnvHeight: number;
+}
+
+const useStyles = makeStyles<Theme, Props>((theme: Theme) => 
+  createStyles({
+    playerCard: {
+      height: 50,
+      backgroundColor: '#98c9fa',
+      verticalAlign: 'middle',
     },
-  },
-  desktopCanvas: {
-    [theme.breakpoints.down(800)]: {
+    desktopCarosel: {
+      [theme.breakpoints.down(1230)]: {
+        display: 'none',
+      },
+    },
+    textBox: {
       width: '100%',
+      height: '100%',
+      border: '3px solid black',
     },
-  },
-  textBox: {
-    width: '100%',
-    height: '100%',
-    border: '3px solid black',
-  },
-  chatBox: {
-    height: 550,
-    width: '90%',
-    maxWidth: 300,
-    textAlign: 'center',
-    [theme.breakpoints.down(800)]: {
+    chatBox: {
       height: 200,
-      width: 625,
-      maxWidth: 625,
+      textAlign: 'center',
+      [theme.breakpoints.up(800)]: {
+        height: (props: Props) => props.cnvHeight - 15,
+      },
+      [theme.breakpoints.down(800)]: {
+        width: (props: Props) => props.cnvHeight * 1.176,
+      },
+      // [theme.breakpoints.down(1100)]: {
+      //   height: 200,
+      //   width: 625,
+      //   maxWidth: 625,
+      // },
+      [theme.breakpoints.down(700)]: {
+        height: 200,
+      },
+      [theme.breakpoints.down(615)]: {
+        height: 200,
+      },
+      [theme.breakpoints.down(450)]: {
+        height: 200,
+      },
+      [theme.breakpoints.down(380)]: {
+        height: 135,
+      },
+      [theme.breakpoints.down(340)]: {
+        height: 80,
+      },
     },
-    [theme.breakpoints.down(700)]: {
-      height: 200,
-      width: 535,
-      maxWidth: 700,
+    word: {
+      fontSize: 30,
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 22,
+        marginTop: theme.spacing(2),
+      },
+      fontWeight: 300,
     },
-    [theme.breakpoints.down(615)]: {
-      height: 200,
-      width: 400,
-      maxWidth: 700,
+    mobile: {
+      [theme.breakpoints.down(1230)]: {
+        display: 'none',
+      },
     },
-    [theme.breakpoints.down(450)]: {
-      height: 200,
-      width: 330,
-      maxWidth: 700,
+    mobileTimer: {
+      [theme.breakpoints.up(1230)]: {
+        display: 'none',
+      },
+      textAlign: 'center',
     },
-    [theme.breakpoints.down(380)]: {
-      height: 135,
-      width: 260,
-      maxWidth: 700,
-    },
-    [theme.breakpoints.down(340)]: {
-      height: 80,
-      width: 260,
-      maxWidth: 700,
-    },
-  },
-  word: {
-    fontSize: 30,
-    [theme.breakpoints.down('sm')]: {
-      fontSize: 22,
-      marginTop: theme.spacing(2),
-    },
-    fontWeight: 300,
-  },
-  mobile: {
-    [theme.breakpoints.down(1230)]: {
-      display: 'none',
-    },
-  },
-  mobileTimer: {
-    [theme.breakpoints.up(1230)]: {
-      display: 'none',
-    },
-    textAlign: 'center',
-  },
 }));
 
 export default function MainGame({ game, socket, currWord }: MainGameProps) {
-  const styles = useStyles();
+  const [cnvHeight, setCnvHeight] = useState(0);
+  const styles = useStyles({ cnvHeight });
   const [players, setPlayers] = useState(game.players);
   const [secondsLeft, setSecondsLeft] = useState<number>();
   const [currentDrawer, setCurrentDrawer] = useState<string>(game.players[0].id);
   const [chatCtl] = useState(new ChatController());
-  const [cnvHeight, setCnvHeight] = useState(0);
 
   useEffect(() => {
     socket.on('userDisconnect', (players: Player[]) => {
