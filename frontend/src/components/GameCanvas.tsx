@@ -37,6 +37,9 @@ export default function GameCanvas({ socket, game, players, onNextTurn }: GameCa
 
   const setup = async (p5: p5Types, parent: Element) => {
     let CNV_WIDTH = p5.displayWidth / 2.55;
+    if (p5.displayWidth < 400) {
+      CNV_WIDTH = p5.displayWidth * .80;
+    }
     let CNV_HEIGHT = CNV_WIDTH / 1.176;
     canvasWidth = CNV_WIDTH;
     setWidth(CNV_WIDTH);

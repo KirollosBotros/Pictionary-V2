@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
   chatBox: {
     height: 550,
     width: '90%',
+    maxWidth: 300,
     [theme.breakpoints.down(800)]: {
       height: 200,
       width: '100%',
