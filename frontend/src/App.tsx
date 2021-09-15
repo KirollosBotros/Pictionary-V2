@@ -1,10 +1,25 @@
-import React from 'react';
+import socket from './config/socketConfig';
+import { MuiThemeProvider } from '@material-ui/core';
+import { theme } from './config/theme';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import LandingPage from './pages/LandingPage';
+import { Router, Route } from "react-router-dom";
+import Game from './pages/Game';
+import Player from './pages/Player';
+import history from './config/history';
 
 function App() {
   return (
-    <div>
-      Initial Commits
-    </div>
+      <MuiThemeProvider theme={theme}>
+        <Header />
+        <Router history={history}>
+          <Route path="/" exact component={LandingPage} />
+          <Route path="/game/:id" render={props => <Game socket={socket} />} />
+          <Route path="/player/:id" component={Player} />
+        </Router>
+        <Footer />
+      </MuiThemeProvider>
   );
 }
 
