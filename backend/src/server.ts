@@ -169,6 +169,7 @@ io.on('connection', (socket: Socket) => {
         });
         io.to(startedGame.creator).emit('startGame', [currWord, scoreBoard]);
         let playersLength = startedGame.players.length;
+        // used to rotate players
         const updateTurn = () => {
           guessedRight = 0;
           if (playerPointer + 1 >= startedGame.players.length) {
