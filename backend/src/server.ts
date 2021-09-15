@@ -169,7 +169,7 @@ io.on('connection', (socket: Socket) => {
         let playersLength = startedGame.players.length;
         const updateTurn = () => {
           guessedRight = 0;
-          if (playerPointer + 1 >= playersLength) {
+          if (playerPointer + 1 >= startedGame.players.length) {
             playerPointer = 0;
           } else {
             ++playerPointer;
@@ -191,6 +191,7 @@ io.on('connection', (socket: Socket) => {
           if (startedGame.players.length === 0) return;
           if (startedGame.players.length !== playersLength) {
             let notCurr = 0;
+            playersLength = startedGame.players.length;
             startedGame.players.forEach(player => {
               if (player.id !== currDrawer) {
                 ++notCurr;
@@ -199,7 +200,6 @@ io.on('connection', (socket: Socket) => {
             if (notCurr === startedGame.players.length) {
               updateTurn();
             }
-            playersLength = startedGame.players.length;
           } else {
             io.to(startedGame.creator).emit('updateTime', secondsLeft);
             if (secondsLeft === 0 || (guessedRight === playersLength - 1 && guessedRight !== 0)) {
