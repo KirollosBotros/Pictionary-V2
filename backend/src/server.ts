@@ -5,10 +5,10 @@ import { authenticatePassword } from "./utils/authenticatePassword";
 import { removePasswords } from "./utils/removePasswords";
 import express = require('express');
 import { getPlayerGame } from "./utils/getPlayerGame";
+import { shuffleWords, wordList } from "./utils/wordList";
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const socket = require('socket.io');
-const ranWords = require('word-pictionary-list');
 
 const app = express();
 app.use(cors());
@@ -134,7 +134,7 @@ io.on('connection', (socket: Socket) => {
       });
       if (startedGame?.creator && startedGame.players && startedGame.players.length > 0) {
         const TIMER = 20;
-        const words = [... new Set(ranWords(100))];
+        const words = [... new Set(shuffleWords(wordList))];
         let secondsLeft = TIMER;
         let wordPointer = 0;
         let playerPointer = 0;
