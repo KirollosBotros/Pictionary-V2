@@ -211,6 +211,26 @@ io.on('connection', (socket: Socket) => {
             io.to(game.creator).emit('userDisconnect', [player.name, game.players, player.id]);
           }
         });
+        if (game.players.length === 0) {
+          if (game.type === 'Public') {
+            const newPublic = publicGames.filter(publicGame => {
+              if (game.creator === publicGame.creator) {
+                return false;
+              }
+              return true;
+            });
+            publicGames = newPublic;
+          }
+          if (game.type === 'Private') {
+            const newPrivate = privateGames.filter(privateGame => {
+              if (game.creator === privateGame.creator) {
+                return false;
+              }
+              return true;
+            });
+            privateGames = newPrivate;
+          }
+        }
       });
     });
 });

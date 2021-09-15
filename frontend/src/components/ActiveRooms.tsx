@@ -30,24 +30,12 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   useEffect(() => {
     getGames();
   }, []);
-
-  let totalPublic = 0;
-  publicRooms.forEach((room) => {
-    if (room.status !== 'game') ++totalPublic;
-  });
-
-  let totalPrivate = 0;
-  privateRooms.forEach((room) => {
-    if (room.status !== 'game') ++totalPrivate;
-  });
-
-  console.log(publicRooms)
   
   return (
       <Grid container direction="column" alignItems="center" className={styles.roomList}>
         <Typography>
-          {totalPublic !== 0 && 
-            `Public Rooms (${totalPublic})`}
+          {publicRooms.length !== 0 && 
+            `Public Rooms (${publicRooms.length})`}
         </Typography>
         {publicRooms?.map(room => (
           <Grid item key={room.creator}>
@@ -56,8 +44,8 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
           ))
         }
         <Typography>
-          {totalPrivate !== 0 && 
-            `Private Rooms (${totalPrivate})`}
+          {privateRooms.length !== 0 && 
+            `Private Rooms (${privateRooms.length})`}
         </Typography>
         {privateRooms?.map(room => (
           <Grid item key={room.creator}>
