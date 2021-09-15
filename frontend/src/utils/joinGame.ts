@@ -1,6 +1,7 @@
 import { Socket } from "socket.io-client";
 import { GameObject } from "../types/game";
 import history from '../config/history';
+import host from "../config/host";
 
 interface JoinGameProps {
   playerId: string;
@@ -13,7 +14,7 @@ interface JoinGameProps {
 export const joinGame = async ({ playerId, game, name, password, socket }: JoinGameProps) => {
   const redirectLink = '/game/' + game.creator;
     try {
-      const res = await fetch('http://localhost:3001/join-game', {
+      const res = await fetch(`http://${host}/join-game`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

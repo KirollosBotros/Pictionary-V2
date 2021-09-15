@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { joinGame } from "../utils/joinGame";
 import { validatePassword } from "../utils/validatePassword";
 import MainGame from "./MainGame";
+import host from "../config/host";
 
 interface GameProps {
   socket: Socket;
@@ -51,7 +52,7 @@ export default function Game({ socket }: GameProps) {
   }
 
   const getGame = async () => {
-    const res = await fetch('http://localhost:3001/get-games');
+    const res = await fetch(`http://${host}/get-games`);
     const resJSON = await res.json();
     const { publicGames, privateGames } = resJSON as GetGamesResponse;
     const totalGames = publicGames.concat(privateGames);
@@ -64,7 +65,7 @@ export default function Game({ socket }: GameProps) {
   }
 
   const getPlayers = async () => {
-    const res = await fetch(`http://localhost:3001/get-game?userId=${socketId}`);
+    const res = await fetch(`http://${host}/get-game?userId=${socketId}`);
     const gameObj: GameObject | null = await res.json();
     if (gameObj) {
       gameObj.players.forEach(player => {

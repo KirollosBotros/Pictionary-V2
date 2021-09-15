@@ -1,3 +1,4 @@
+import host from "../config/host";
 import { GameObject } from "../types/game";
 
 interface ValidatePasswordProps {
@@ -6,7 +7,7 @@ interface ValidatePasswordProps {
 }
 
 export const validatePassword = async ({ game, v }: ValidatePasswordProps) => {
-const validationEndpoint = `http://localhost:3001/validate?creator=${game.creator}&password=${v}`;
+const validationEndpoint = `http://${host}/validate?creator=${game.creator}&password=${v}`;
     try {
       const res = await fetch(validationEndpoint);
       const resJSON = await res.json();

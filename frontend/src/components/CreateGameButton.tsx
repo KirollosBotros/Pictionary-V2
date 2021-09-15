@@ -6,6 +6,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { useForm } from "react-hook-form";
 import history from '../config/history';
 import { GameObject } from "../types/game";
+import host from "../config/host";
 const Filter = require('bad-words');
 const filter = new Filter();
 
@@ -150,7 +151,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
       status: 'lobby',
     };
     try {
-      const res = await fetch('http://localhost:3001/create-game', {
+      const res = await fetch(`http://${host}/create-game`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

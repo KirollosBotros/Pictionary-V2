@@ -3,6 +3,7 @@ import ActiveRoomCard from "./ActiveRoomCard";
 import { useState, useEffect } from 'react';
 import { Socket } from "socket.io-client";
 import { GameObject } from "../types/game";
+import host from "../config/host";
 
 const useStyles = makeStyles(theme => ({
   roomList: {
@@ -20,7 +21,7 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   const [privateRooms, setPrivateRooms] = useState<GameObject[]>([]);
 
   const getGames = async () => {
-    const res = await fetch('http://localhost:3001/get-games');
+    const res = await fetch(`http://${host}/get-games`);
     const resJSON = await res.json();
     const { privateGames, publicGames } = resJSON;
     setPrivateRooms(privateGames);
