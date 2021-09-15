@@ -39,6 +39,7 @@ export default function Game({ socket }: GameProps) {
   const [redirectToGame, setRedirectToGame] = useState(false);
   const [game, setGame] = useState<GameObject | null>(null);
   const [currWord, setCurrWord] = useState<string | null>(null);
+  const [scoreBoard, setScoreBoard] = useState<Record<string, number>>({});
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
     mode: 'onSubmit', 
     reValidateMode: 'onSubmit' 
@@ -83,8 +84,9 @@ export default function Game({ socket }: GameProps) {
     socket.on('userDisconnect', (players: Player[]) => {
       setPlayers(players);
     });
-    socket.on('startGame', (currWord: string) => {
+    socket.on('startGame', ([currWord, scoreBoard]) => {
       setCurrWord(currWord);
+      setScoreBoard(scoreBoard);
       setRedirectToGame(true);
     });
     getPlayers();
@@ -132,7 +134,7 @@ export default function Game({ socket }: GameProps) {
   };
 
   if (redirectToGame && currWord) {
-    return <MainGame game={game} socket={socket} currWord={currWord} />
+    return <MainGame game={game} socket={socket} currWord={currWord} scoreBoard={scoreBoard} />
   }
 
   return (
@@ -160,6 +162,7 @@ export default function Game({ socket }: GameProps) {
                 <TextField 
                   variant='outlined'
                   required
+                  inputProps={{ maxLength: 10 }}
                   label='Enter Name'
                   {...register("name", {
                     required: true,
@@ -188,9 +191,9 @@ export default function Game({ socket }: GameProps) {
           </DialogContent>
           <Button className={styles.button} disabled={fullGame} onClick={handleSubmit(onSubmit)}>
               {fullGame ? 
-              <Typography style={{ color: 'white' }}>
-                Room is Full
-              </Typography> : 'Join Game'}
+                <Typography style={{ color: 'white' }}>
+                  Room is Full
+                </Typography> : 'Join Game'}
           </Button>
         </>}
       </Dialog>

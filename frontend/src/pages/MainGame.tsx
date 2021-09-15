@@ -14,6 +14,7 @@ interface MainGameProps {
   game: GameObject;
   socket: Socket;
   currWord: string;
+  scoreBoard: Record<string, number>;
 }
 
 type Props = {
@@ -90,7 +91,7 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
     },
 }));
 
-export default function MainGame({ game, socket, currWord }: MainGameProps) {
+export default function MainGame({ game, socket, currWord, scoreBoard }: MainGameProps) {
   const [cnvHeight, setCnvHeight] = useState(0);
   const styles = useStyles({ cnvHeight });
   const [players, setPlayers] = useState(game.players);
@@ -98,6 +99,8 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
   const [currentDrawer, setCurrentDrawer] = useState<string>(game.players[0].id);
   const [chatCtl] = useState(new ChatController());
   const [currentWord, setCurrentWord] = useState(currWord);
+  const [scores, setScores] = useState<Record<string, number>>(scoreBoard);
+  const [sortedPlayers, setSortedPlayers] = useState<string[]>(players.map(player => player.id));
 
   useEffect(() => {
     socket.on('userDisconnect', (players: Player[]) => {
@@ -108,6 +111,10 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
     });
     socket.on('nextTurn', ([word, player]) => {
       setCurrentWord(word);
+    });
+    socket.on('updateScore', ([updatedScores, sortedPlayers]) => {
+      setScores(updatedScores);
+      setSortedPlayers(sortedPlayers);
     });
   }, []);
 
@@ -126,6 +133,7 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
         game.players.forEach(player => {
           if (player.id === author) {
             name = player.name;
+            socket.emit('guessedRight', [game.creator, player.id]);
           }
         });
         const guessedRightMsg = `${name} guessed the word!`;
@@ -186,14 +194,19 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
               spacing={2} 
               justifyContent="flex-start"
               alignItems="center" 
-              
             >
               <Grid item>
                 <Typography style={{ fontSize: 42 }}>{secondsLeft}</Typography>
               </Grid>
-              {players?.map(player => (
-                <PlayerCard name={player.name}/>
-              ))}
+              {sortedPlayers?.map((player, idx) => {
+                let name = '';
+                players.forEach(playerObj => {
+                  if (player === playerObj.id) {
+                    name = playerObj.name;
+                  }
+                });
+                return <PlayerCard name={name} score={scores[player]} rank={idx + 1} />
+              })}
             </Grid>
           </Grid>
           <Grid item>
@@ -214,7 +227,7 @@ export default function MainGame({ game, socket, currWord }: MainGameProps) {
           </Grid>
           <Grid item style={{ textAlign: 'center' }}>
             <Grid container direction="column" alignItems="center">
-              <Grid item className={styles.chatBox}>
+              <Grid item className={styles.chatBox} style={{ pointerEvents: socket.id === currentDrawer ? 'none' : 'auto' }}>
                 <MuiChat chatController={chatCtl} />
               </Grid>
             </Grid>

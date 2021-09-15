@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme => ({
     roomCard: {
       textDecoration: 'none',
       marginBottom: 10,
+      borderRadius: 5,
       [theme.breakpoints.down(960)]: {
         width: 500,
       },
@@ -105,7 +106,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
     mode: 'onSubmit', 
     reValidateMode: 'onSubmit' 
   });
-  console.log(game);
+
   const redirect = () => {
     if (isPrivate) {
       setOpenPassword(true);
@@ -178,6 +179,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
             <FormControl>
               <TextField
                 variant='outlined'
+                inputProps={{ maxLength: 10 }}
                 required
                 className={styles.nameInput}
                 label='Enter Name'

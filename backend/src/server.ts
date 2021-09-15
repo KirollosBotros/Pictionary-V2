@@ -134,11 +134,43 @@ io.on('connection', (socket: Socket) => {
         let secondsLeft = TIMER;
         let wordPointer = 0;
         let playerPointer = 0;
+        let guessedRight = 0;
         let currWord = words[wordPointer];
-        io.to(startedGame.creator).emit('startGame', currWord);
+        
+        let scoreBoard = startedGame.players.reduce((acc: {[key: string]: number}, player) => {
+          acc[player.id] = 0;
+          return acc;
+        }, {});
+        socket.on('guessedRight', ([creator, playerId]) => {
+          ++guessedRight;
+          const points = secondsLeft;
+          scoreBoard[playerId] += points;
+          const keys = Object.keys(scoreBoard);
+          const values = Object.values(scoreBoard);
+          const newArr = keys.map((key, idx) => {
+            return [key, values[idx]];
+          });
+          console.log(newArr);
+          const sortedScores = newArr.sort((a, b) => {
+            if (a[1] < b[1]) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+          const sortedPlayers = sortedScores.map(item => item[0]);
+          console.log(sortedScores.map(item => item[1]));
+          io.to(creator).emit('updateScore', [scoreBoard, sortedPlayers]);
+        });
+        io.to(startedGame.creator).emit('startGame', [currWord, scoreBoard]);
+
+        console.log(scoreBoard);
         setInterval(() => {
           io.to(startedGame.creator).emit('updateTime', secondsLeft);
-          if (secondsLeft === 0) {
+          if (secondsLeft === 0 || guessedRight === startedGame.players.length - 1) {
+            if (guessedRight === startedGame.players.length - 1) {
+              guessedRight = 0;
+            }
             if (playerPointer + 1 >= startedGame.players.length) {
               playerPointer = 0;
             } else {
@@ -161,15 +193,11 @@ io.on('connection', (socket: Socket) => {
     });
    
     socket.on('message', ([creator, message, author]: string[]) => {
-      console.log(creator);
-      console.log(message);
       io.to(creator).emit('new message', [message, author]);
     })
 
     socket.on('mouse', (data: (string | number[])[]) => {
       const lineCords = data[1];
-      console.log(data);
-      console.log(lineCords)
       io.to(data[0]).emit('drawing', lineCords);
     });
 
