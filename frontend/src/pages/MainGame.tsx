@@ -131,7 +131,9 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
       placeholder: 'Guess word here',
       always: true,
     }, (response) => {
-      socket.emit('message', [game.creator, response.value, socket.id]);
+      if (!correctGuessers.includes(socket.id) && currentDrawer !== socket.id && currWord !== response.value) {
+        socket.emit('message', [game.creator, response.value, socket.id]);
+      }
     });
     socket.off('new message');
     socket.on('new message', ([msg, author]) => {
@@ -253,7 +255,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
           </Grid>
           <Grid item style={{ textAlign: 'center' }}>
             <Grid container direction="column" alignItems="center">
-              <Grid item className={styles.chatBox} style={{ pointerEvents: socket.id === currentDrawer ? 'none' : 'auto' }}>
+              <Grid item className={styles.chatBox}>
                 <MuiChat chatController={chatCtl} />
               </Grid>
             </Grid>
