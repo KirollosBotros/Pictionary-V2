@@ -4,9 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "node build/server.js",
     "dev": "(lsof -ti:3001 | xargs kill) && (run-p --print-label watch run-server)",
     "run-server": "(lsof -ti:3001 | xargs kill) && (nodemon ./src/server.ts)",
     "build": "tsc",
+    "postinstall": "yarn build",
     "watch": "tsc -w"
   },
   "devDependencies": {
