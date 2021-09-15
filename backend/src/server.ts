@@ -167,7 +167,7 @@ io.on('connection', (socket: Socket) => {
         console.log(scoreBoard);
         setInterval(() => {
           io.to(startedGame.creator).emit('updateTime', secondsLeft);
-          if (secondsLeft === 0 || guessedRight === startedGame.players.length - 1) {
+          if (secondsLeft === 0 || (guessedRight === startedGame.players.length - 1 && guessedRight !== 0)) {
             if (guessedRight === startedGame.players.length - 1) {
               guessedRight = 0;
             }
@@ -213,7 +213,7 @@ io.on('connection', (socket: Socket) => {
           if (player.id === socket.id) {
             const idx = game.players.indexOf(player);
             game.players.splice(idx, 1);
-            io.to(game.creator).emit('userDisconnect', [player.name, game.players]);
+            io.to(game.creator).emit('userDisconnect', [player.name, game.players, player.id]);
           }
         });
       });

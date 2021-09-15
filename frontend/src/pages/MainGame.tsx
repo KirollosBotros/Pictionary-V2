@@ -101,22 +101,30 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
   const [currentWord, setCurrentWord] = useState(currWord);
   const [scores, setScores] = useState<Record<string, number>>(scoreBoard);
   const [sortedPlayers, setSortedPlayers] = useState<string[]>(players.map(player => player.id));
+  const [correctGuessers, setCorrectGuessers] = useState<string[]>([]);
 
   useEffect(() => {
-    socket.on('userDisconnect', (players: Player[]) => {
-      setPlayers(players);
+    socket.on('userDisconnect', (data) => {
+      setPlayers(data[1]);
+      let tempSorted = sortedPlayers;
+      tempSorted.splice(sortedPlayers.indexOf(data[2]), 1);
+      console.log(tempSorted)
+      setSortedPlayers(tempSorted);
     });
     socket.on('updateTime', (secondsLeft: number) => {
       setSecondsLeft(secondsLeft);
     });
     socket.on('nextTurn', ([word, player]) => {
       setCurrentWord(word);
+      setCorrectGuessers([]);
     });
     socket.on('updateScore', ([updatedScores, sortedPlayers]) => {
       setScores(updatedScores);
       setSortedPlayers(sortedPlayers);
     });
   }, []);
+
+  console.log(sortedPlayers);
 
   useMemo(async () => {
     const msg = await chatCtl.setActionRequest({ 
@@ -134,6 +142,10 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
           if (player.id === author) {
             name = player.name;
             socket.emit('guessedRight', [game.creator, player.id]);
+            console.log(correctGuessers);
+            let tempGuessers = correctGuessers;
+            tempGuessers.push(player.id);
+            setCorrectGuessers(tempGuessers);
           }
         });
         const guessedRightMsg = `${name} guessed the word!`;
@@ -151,21 +163,20 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
       }
     });
     socket.off('userDisconnect');
-    socket.on('userDisconnect', ([name, players]) => {
-      setPlayers(players);
-      const disconnectedMsg = `${name} has left the game`;
+    socket.on('userDisconnect', (data) => {
+      setPlayers(data[1]);
+      const disconnectedMsg = `${data[0]} has left the game`;
       chatCtl.addMessage({
         type: 'text',
         content: disconnectedMsg,
         self: false,
       });
     });
-  }, [chatCtl, currentWord]);
+  }, [chatCtl, currentWord, correctGuessers]);
 
   const handleTurnChange = (currDrawer: string) => {
     setCurrentDrawer(currDrawer);
   };
-
 
   return (
     <Grid container direction="column" alignItems="center" justifyContent="center" spacing={3}>
@@ -200,12 +211,25 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
               </Grid>
               {sortedPlayers?.map((player, idx) => {
                 let name = '';
+                let id = '';
                 players.forEach(playerObj => {
                   if (player === playerObj.id) {
                     name = playerObj.name;
+                    id = playerObj.id;
                   }
                 });
-                return <PlayerCard name={name} score={scores[player]} rank={idx + 1} />
+                // change up this stuff to account for rank change
+                if (name !== '') {
+                  return (
+                    <PlayerCard
+                      name={name}
+                      score={scores[player]}
+                      rank={idx + 1}
+                      drawBorder={currentDrawer === id}
+                      guessedRight={correctGuessers.includes(id)}
+                    />
+                  )
+                }
               })}
             </Grid>
           </Grid>

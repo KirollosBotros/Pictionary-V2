@@ -81,8 +81,8 @@ export default function Game({ socket }: GameProps) {
       setGame(gameObj);
       setPlayers(gameObj.players)
     });
-    socket.on('userDisconnect', (players: Player[]) => {
-      setPlayers(players);
+    socket.on('userDisconnect', (data) => {
+      setPlayers(data[1]);
     });
     socket.on('startGame', ([currWord, scoreBoard]) => {
       setCurrWord(currWord);
