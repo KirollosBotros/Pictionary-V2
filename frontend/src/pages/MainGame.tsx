@@ -131,7 +131,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
       placeholder: 'Guess word here',
       always: true,
     }, (response) => {
-      if (!correctGuessers.includes(socket.id) && currentDrawer !== socket.id && currWord !== response.value) {
+      if (!correctGuessers.includes(socket.id) && currentDrawer !== socket.id) {
         socket.emit('message', [game.creator, response.value, socket.id]);
       }
     });
