@@ -150,7 +150,6 @@ io.on('connection', (socket: Socket) => {
           const newArr = keys.map((key, idx) => {
             return [key, values[idx]];
           });
-          console.log(newArr);
           const sortedScores = newArr.sort((a, b) => {
             if (a[1] < b[1]) {
               return 1;
@@ -159,18 +158,14 @@ io.on('connection', (socket: Socket) => {
             }
           });
           const sortedPlayers = sortedScores.map(item => item[0]);
-          console.log(sortedScores.map(item => item[1]));
           io.to(creator).emit('updateScore', [scoreBoard, sortedPlayers]);
         });
         io.to(startedGame.creator).emit('startGame', [currWord, scoreBoard]);
 
-        console.log(scoreBoard);
         setInterval(() => {
           io.to(startedGame.creator).emit('updateTime', secondsLeft);
           if (secondsLeft === 0 || (guessedRight === startedGame.players.length - 1 && guessedRight !== 0)) {
-            if (guessedRight === startedGame.players.length - 1) {
-              guessedRight = 0;
-            }
+            guessedRight = 0;
             if (playerPointer + 1 >= startedGame.players.length) {
               playerPointer = 0;
             } else {

@@ -10,6 +10,8 @@ import {
   MuiChat,
 } from 'chat-ui-react';
 
+const TIMER = 20;
+
 interface MainGameProps {
   game: GameObject;
   socket: Socket;
@@ -95,7 +97,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
   const [cnvHeight, setCnvHeight] = useState(0);
   const styles = useStyles({ cnvHeight });
   const [players, setPlayers] = useState(game.players);
-  const [secondsLeft, setSecondsLeft] = useState<number>();
+  const [secondsLeft, setSecondsLeft] = useState<number>(TIMER);
   const [currentDrawer, setCurrentDrawer] = useState<string>(game.players[0].id);
   const [chatCtl] = useState(new ChatController());
   const [currentWord, setCurrentWord] = useState(currWord);
@@ -124,7 +126,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
     });
   }, []);
 
-  console.log(sortedPlayers);
+  console.log(correctGuessers);
 
   useMemo(async () => {
     const msg = await chatCtl.setActionRequest({ 
