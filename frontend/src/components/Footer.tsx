@@ -14,10 +14,13 @@ const useStyles = makeStyles(theme => ({
       },
     },
     footer: {
-        left: 0,
-        bottom: 0,
-        width: '100%',
-        position: 'fixed',
+      left: 0,
+      bottom: 0,
+      width: '100%',
+      position: 'fixed',
+      [theme.breakpoints.down(400)]: {
+        display: 'none',
+      },
     },
     bottomText: {
       color: 'white',
