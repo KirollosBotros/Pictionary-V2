@@ -7,7 +7,7 @@ interface ValidatePasswordProps {
 }
 
 export const validatePassword = async ({ game, v }: ValidatePasswordProps) => {
-const validationEndpoint = `http://${host}/validate?creator=${game.creator}&password=${v}`;
+const validationEndpoint = `https://${host}/validate?creator=${game.creator}&password=${v}`;
     try {
       const res = await fetch(validationEndpoint);
       const resJSON = await res.json();

@@ -151,7 +151,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
       status: 'lobby',
     };
     try {
-      const res = await fetch(`http://${host}/create-game`, {
+      const res = await fetch(`https://${host}/create-game`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

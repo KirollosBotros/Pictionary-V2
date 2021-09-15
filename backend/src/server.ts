@@ -100,6 +100,8 @@ app.get('/get-game', (req: express.Request, res: express.Response) => {
 });
 
 io.on('connection', (socket: Socket) => {
+
+    console.log('connection');
     socket.on('createGame', (data: GameObject) => {
       data.type === 'Public' ? publicGames.push(data) : privateGames.push(data);
     });
