@@ -3,6 +3,7 @@ import ActiveRoomCard from "./ActiveRoomCard";
 import { useState, useEffect } from 'react';
 import { Socket } from "socket.io-client";
 import { GameObject } from "../types/game";
+import host from "../config/host";
 
 const useStyles = makeStyles(theme => ({
   roomList: {
@@ -19,14 +20,18 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   const [publicRooms, setPublicRooms] = useState<GameObject[]>([]);
   const [privateRooms, setPrivateRooms] = useState<GameObject[]>([]);
 
+  const getGames = async () => {
+    const res = await fetch(`http://${host}/get-games`);
+    const resJSON = await res.json();
+    const { privateGames, publicGames } = resJSON;
+    setPrivateRooms(privateGames);
+    setPublicRooms(publicGames);
+  };
+
   useEffect(() => {
-    socket.emit('getGames');
-    socket.on('getGamesResponse', (data: GameObject[][]) => {
-      setPublicRooms(data[0]);
-      setPrivateRooms(data[1]);
-    });
+    getGames();
   }, []);
-  console.log(privateRooms)
+  
   return (
       <Grid container direction="column" alignItems="center" className={styles.roomList}>
         <Typography>
@@ -35,15 +40,17 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
         </Typography>
         {publicRooms?.map(room => (
           <Grid item key={room.creator}>
-            <ActiveRoomCard isPrivate={false} game={room} room={room.gameName} socket={socket} />
-          </Grid>))}
+            <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />
+          </Grid>
+          ))
+        }
         <Typography>
           {privateRooms.length !== 0 && 
             `Private Rooms (${privateRooms.length})`}
         </Typography>
         {privateRooms?.map(room => (
           <Grid item key={room.creator}>
-            <ActiveRoomCard isPrivate game={room} room={room.gameName} socket={socket} />
+            <ActiveRoomCard isPrivate game={room} room={room.name} socket={socket} />
           </Grid>))}
       </Grid>
   )

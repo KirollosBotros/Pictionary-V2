@@ -1,12 +1,12 @@
-import { Button, Dialog, Grid, DialogTitle, makeStyles, withStyles, Slider, Typography, TextField, DialogActions, DialogContent, FormHelperText, FormControl } from "@material-ui/core";
+import { Button, Dialog, Grid, DialogTitle, makeStyles, withStyles, Slider, Typography, TextField, DialogActions, DialogContent, FormHelperText, FormControl, CircularProgress } from "@material-ui/core";
 import { useState } from 'react';
 import { Socket } from "socket.io-client";
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { useForm } from "react-hook-form";
 import history from '../config/history';
-import { isPropertyAccessOrQualifiedName } from "typescript";
 import { GameObject } from "../types/game";
+import host from "../config/host";
 const Filter = require('bad-words');
 const filter = new Filter();
 
@@ -106,9 +106,9 @@ const CustomSlider = withStyles(theme => ({
 
 interface IFormInput {
   maxPlayers: number;
-  gameType: 'Public' | 'Private';
+  type: 'Public' | 'Private';
   password?: string;
-  gameName: string;
+  name: string;
   playerName: string;
 }
 
@@ -120,6 +120,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   const styles = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
   const [maxPlayers, setMaxPlayers] = useState(2);
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>();
   
   type GameType = 'Public' | 'Private' | null;
@@ -133,13 +134,14 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
     }
   };
 
-  const onSubmit = (data: IFormInput) => {
-    const { gameName, password, playerName } = data;
+  const onSubmit = async (data: IFormInput) => {
+    setLoading(true);
+    const { name, password, playerName } = data;
     const { id } = socket;
     const gameObj: GameObject = {
       creator: id,
-      gameName: gameName,
-      gameType: type,
+      name,
+      type,
       maxPlayers: maxPlayers,
       password,
       players: [{
@@ -148,8 +150,26 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
       }],
       status: 'lobby',
     };
-    socket.emit('createGame', gameObj);
-    history.push(`/game/${gameObj.creator}`);
+    try {
+      const res = await fetch(`http://${host}/create-game`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(gameObj),
+      });
+      console.log('FOUND');
+      const resJSON = await res.json();
+      const { status } = resJSON;
+      if (status === 'successful') {
+        history.push(`/game/${gameObj.creator}`);
+      } else {
+        const { reason } = resJSON;
+        console.log(reason);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleClick = () => {
@@ -207,13 +227,13 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                     required
                     label='Enter Game Name'
                     className={styles.nameInput}
-                    {...register("gameName", {
+                    {...register("name", {
                       required: true,
                       maxLength: 10,
                     })}
                   />
                 </Grid>
-                {errors?.gameName?.type === 'required' && 
+                {errors?.name?.type === 'required' && 
                   <FormHelperText style={{ marginBottom: 15}} error>Please input a game name</FormHelperText>}
               </FormControl>
               <Typography className={styles.subText} style={{ textAlign: 'left' }}>Max Players: {maxPlayers}</Typography>
@@ -272,7 +292,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit(onSubmit)} className={styles.createGame}>
-            Create Game
+            {loading ? <CircularProgress size={24} style={{ color: 'white' }} /> : 'Create Game'}
           </Button>
         </DialogActions>
       </Dialog>

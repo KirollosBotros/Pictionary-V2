@@ -1,7 +1,7 @@
 export interface GameObject {
   creator: string,
-  gameName: string,
-  gameType: 'Public' | 'Private',
+  name: string,
+  type: 'Public' | 'Private',
   maxPlayers: number,
   password?: string,
   players: {
@@ -15,4 +15,13 @@ export interface JoinGameProps {
   name: string;
   id: string;
   gameId: string;
+}
+
+export interface Player {
+  name: string;
+  id: string;
+}
+
+export interface GameInfo {
+  words: string[];
 }
