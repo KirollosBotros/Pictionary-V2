@@ -110,7 +110,6 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
       setPlayers(data[1]);
       let tempSorted = sortedPlayers;
       tempSorted.splice(sortedPlayers.indexOf(data[2]), 1);
-      console.log(tempSorted)
       setSortedPlayers(tempSorted);
     });
     socket.on('updateTime', (secondsLeft: number) => {
@@ -125,8 +124,6 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
       setSortedPlayers(sortedPlayers);
     });
   }, []);
-
-  console.log(correctGuessers);
 
   useMemo(async () => {
     const msg = await chatCtl.setActionRequest({ 
@@ -167,6 +164,9 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
     socket.off('userDisconnect');
     socket.on('userDisconnect', (data) => {
       setPlayers(data[1]);
+      let tempSorted = sortedPlayers;
+      tempSorted.splice(sortedPlayers.indexOf(data[2]), 1);
+      setSortedPlayers(tempSorted);
       const disconnectedMsg = `${data[0]} has left the game`;
       chatCtl.addMessage({
         type: 'text',

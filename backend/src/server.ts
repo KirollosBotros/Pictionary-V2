@@ -121,6 +121,10 @@ io.on('connection', (socket: Socket) => {
     socket.on('startedGame', (data: string) => {
       const totalGames = privateGames.concat(publicGames);
       let startedGame: GameObject = totalGames[0];
+      console.log('startedGame');
+      socket.on('disconnect', () => {
+        console.log('here');
+      });
       totalGames.forEach(game => {
         if (game.creator === data) {
           startedGame = game;
@@ -128,12 +132,13 @@ io.on('connection', (socket: Socket) => {
         }
         return;
       });
-      if (startedGame?.creator) {
+      if (startedGame?.creator && startedGame.players && startedGame.players.length > 0) {
         const TIMER = 20;
         const words = [... new Set(ranWords(100))];
         let secondsLeft = TIMER;
         let wordPointer = 0;
         let playerPointer = 0;
+        let currDrawer: string = startedGame.players[0].id;
         let guessedRight = 0;
         let currWord = words[wordPointer];
         
@@ -161,27 +166,47 @@ io.on('connection', (socket: Socket) => {
           io.to(creator).emit('updateScore', [scoreBoard, sortedPlayers]);
         });
         io.to(startedGame.creator).emit('startGame', [currWord, scoreBoard]);
-
-        setInterval(() => {
-          io.to(startedGame.creator).emit('updateTime', secondsLeft);
-          if (secondsLeft === 0 || (guessedRight === startedGame.players.length - 1 && guessedRight !== 0)) {
-            guessedRight = 0;
-            if (playerPointer + 1 >= startedGame.players.length) {
-              playerPointer = 0;
-            } else {
-              ++playerPointer;
-            }
-            if (wordPointer + 1 >= words.length) {
-              wordPointer = 0;
-            } else {
-              ++wordPointer;
-            }
-            const player = startedGame.players[playerPointer];
-            currWord = words[wordPointer];
-            io.to(startedGame.creator).emit('nextTurn', [currWord, player]);
-            secondsLeft = TIMER;
+        let playersLength = startedGame.players.length;
+        const updateTurn = () => {
+          guessedRight = 0;
+          if (playerPointer + 1 >= playersLength) {
+            playerPointer = 0;
           } else {
-            --secondsLeft;
+            ++playerPointer;
+          }
+          if (wordPointer + 1 >= words.length) {
+            wordPointer = 0;
+          } else {
+            ++wordPointer;
+          }
+          const player = startedGame.players[playerPointer];
+          currDrawer = player.id;
+          currWord = words[wordPointer];
+          console.log(player);
+          console.log(startedGame.players)
+          io.to(startedGame.creator).emit('nextTurn', [currWord, player]);
+          secondsLeft = TIMER;
+        }
+        setInterval(() => {
+          if (startedGame.players.length === 0) return;
+          if (startedGame.players.length !== playersLength) {
+            let notCurr = 0;
+            startedGame.players.forEach(player => {
+              if (player.id !== currDrawer) {
+                ++notCurr;
+              }
+            });
+            if (notCurr === startedGame.players.length) {
+              updateTurn();
+            }
+            playersLength = startedGame.players.length;
+          } else {
+            io.to(startedGame.creator).emit('updateTime', secondsLeft);
+            if (secondsLeft === 0 || (guessedRight === playersLength - 1 && guessedRight !== 0)) {
+              updateTurn();
+            } else {
+              --secondsLeft;
+            }
           }
         }, 1000);
       }
@@ -202,6 +227,10 @@ io.on('connection', (socket: Socket) => {
 
     socket.on('disconnect', () => {
       console.log('disconnect');
+      onDisconnect(socket);
+    });
+
+    const onDisconnect = (socket: Socket) => {
       const totalGames = publicGames.concat(privateGames);
       totalGames.forEach(game => {
         game.players.forEach(player => {
@@ -232,5 +261,5 @@ io.on('connection', (socket: Socket) => {
           }
         }
       });
-    });
+    }
 });

@@ -1,4 +1,4 @@
-import { Button, Dialog, Grid, DialogTitle, makeStyles, withStyles, Slider, Typography, TextField, DialogActions, DialogContent, FormHelperText, FormControl } from "@material-ui/core";
+import { Button, Dialog, Grid, DialogTitle, makeStyles, withStyles, Slider, Typography, TextField, DialogActions, DialogContent, FormHelperText, FormControl, CircularProgress } from "@material-ui/core";
 import { useState } from 'react';
 import { Socket } from "socket.io-client";
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -119,6 +119,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   const styles = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
   const [maxPlayers, setMaxPlayers] = useState(2);
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>();
   
   type GameType = 'Public' | 'Private' | null;
@@ -133,6 +134,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
   };
 
   const onSubmit = async (data: IFormInput) => {
+    setLoading(true);
     const { name, password, playerName } = data;
     const { id } = socket;
     const gameObj: GameObject = {
@@ -155,6 +157,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
         },
         body: JSON.stringify(gameObj),
       });
+      console.log('FOUND');
       const resJSON = await res.json();
       const { status } = resJSON;
       if (status === 'successful') {
@@ -288,7 +291,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSubmit(onSubmit)} className={styles.createGame}>
-            Create Game
+            {loading ? <CircularProgress size={24} style={{ color: 'white' }} /> : 'Create Game'}
           </Button>
         </DialogActions>
       </Dialog>
