@@ -10,7 +10,7 @@ import {
   MuiChat,
 } from 'chat-ui-react';
 
-const TIMER = 20;
+const TIMER = 45;
 
 interface MainGameProps {
   game: GameObject;

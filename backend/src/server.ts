@@ -135,7 +135,7 @@ io.on('connection', (socket: Socket) => {
         return;
       });
       if (startedGame?.creator && startedGame.players && startedGame.players.length > 0) {
-        const TIMER = 20;
+        const TIMER = 45;
         const words = [... new Set(shuffleWords(wordList))];
         let secondsLeft = TIMER;
         let wordPointer = 0;
