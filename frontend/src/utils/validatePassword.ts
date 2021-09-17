@@ -7,22 +7,22 @@ interface ValidatePasswordProps {
 }
 
 export const validatePassword = async ({ game, v }: ValidatePasswordProps) => {
-const validationEndpoint = `https://${host}/validate?creator=${game.creator}&password=${v}`;
-    try {
-      const res = await fetch(validationEndpoint);
-      const resJSON = await res.json();
-      const { status } = resJSON;
-      if (status === 'success') {
-        return true;
-      } else {
-        const { reason } = resJSON;
-        return {
-          error: reason,
-        };
-      }
-    } catch(err) {
+  const validationEndpoint = `${host}/validate?creator=${game.creator}&password=${v}`;
+  try {
+    const res = await fetch(validationEndpoint);
+    const resJSON = await res.json();
+    const { status } = resJSON;
+    if (status === 'success') {
+      return true;
+    } else {
+      const { reason } = resJSON;
       return {
-        error: err,
+        error: reason,
       };
     }
+  } catch(err) {
+    return {
+      error: err,
+    };
   }
+}

@@ -21,7 +21,7 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   const [privateRooms, setPrivateRooms] = useState<GameObject[]>([]);
 
   const getGames = async () => {
-    const res = await fetch(`https://${host}/get-games`);
+    const res = await fetch(`${host}/get-games`);
     const resJSON = await res.json();
     const { privateGames, publicGames } = resJSON;
     setPrivateRooms(privateGames);

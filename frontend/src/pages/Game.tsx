@@ -52,7 +52,7 @@ export default function Game({ socket }: GameProps) {
   }
 
   const getGame = async () => {
-    const res = await fetch(`https://${host}/get-games`);
+    const res = await fetch(`${host}/get-games`);
     const resJSON = await res.json();
     const { publicGames, privateGames } = resJSON as GetGamesResponse;
     const totalGames = publicGames.concat(privateGames);
@@ -65,7 +65,7 @@ export default function Game({ socket }: GameProps) {
   }
 
   const getPlayers = async () => {
-    const res = await fetch(`https://${host}/get-game?userId=${socketId}`);
+    const res = await fetch(`${host}/get-game?userId=${socketId}`);
     const gameObj: GameObject | null = await res.json();
     if (gameObj) {
       gameObj.players.forEach(player => {
@@ -151,7 +151,7 @@ export default function Game({ socket }: GameProps) {
           </Grid>
         ))}
       </Grid>
-      <Dialog open={(!inGame && !successJoin || game.status === 'game')}>
+      <Dialog open={(!inGame && !successJoin) || game.status === 'game'}>
         <DialogTitle style={{ textAlign: 'center' }}>
           {fullGame ? 'Game is full' : game.status === 'game' ? 'Game Already Started' : `Join ${game?.name}`}
         </DialogTitle>

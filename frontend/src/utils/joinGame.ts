@@ -14,7 +14,7 @@ interface JoinGameProps {
 export const joinGame = async ({ playerId, game, name, password, socket }: JoinGameProps) => {
   const redirectLink = '/game/' + game.creator;
     try {
-      const res = await fetch(`https://${host}/join-game`, {
+      const res = await fetch(`${host}/join-game`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

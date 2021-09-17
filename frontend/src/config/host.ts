@@ -2,9 +2,9 @@ let host = null;
 
 if (typeof window !== 'undefined') {
   if (window.location.hostname === 'playpictionary.me') {
-    host = 'pictionary-v2-backend.herokuapp.com';
+    host = 'https://pictionary-v2-backend.herokuapp.com';
   } else {
-    host = 'localhost:3001';
+    host = 'http://localhost:3001';
   }
 }
 
