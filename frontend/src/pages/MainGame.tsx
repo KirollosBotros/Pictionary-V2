@@ -143,7 +143,6 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
           if (player.id === author) {
             name = player.name;
             socket.emit('guessedRight', [game.creator, player.id]);
-            console.log(correctGuessers);
             let tempGuessers = correctGuessers;
             tempGuessers.push(player.id);
             setCorrectGuessers(tempGuessers);

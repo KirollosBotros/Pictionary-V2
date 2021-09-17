@@ -1,11 +1,15 @@
-import socket from '.././config/socketConfig';
-import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { CircularProgress, Dialog, DialogContent, DialogTitle, Grid, makeStyles, Typography } from "@material-ui/core";
 import {
   BrowserRouter as Router,
 } from "react-router-dom";
 import ActiveRooms from '../components/ActiveRooms';
-import JoinGameButton from '../components/JoinGameButton';
 import CreateGameButton from '../components/CreateGameButton';
+import { Socket } from "socket.io-client";
+
+interface LandingPageProps {
+  socket: Socket;
+  connectionEstablished: boolean;
+}
 
 const useStyles = makeStyles(theme => ({
     title: {
@@ -20,31 +24,49 @@ const useStyles = makeStyles(theme => ({
     },
     modal: {
       width: 'auto',
-    }
+    },
+    connecting: {
+      textAlign: 'center',
+      padding: theme.spacing(2),
+    },
+    connectingTitle: {
+      fontSize: 32,
+    },
 }));
 
-export default function LandingPage() {
-    const styles = useStyles();
+export default function LandingPage({ socket, connectionEstablished }: LandingPageProps) {
+  const styles = useStyles();
 
+  if (!connectionEstablished) {
     return (
-      <Router>
-        <>
-          <Grid container direction="column" justifyContent="center">
-              <Grid item className={styles.title}>
-                  <Typography style={{ fontSize: 36 }}>Welcome to PictoBear!</Typography>
-              </Grid>
-              <Grid item>
-                <Grid container direction="row" justifyContent="center">
-                  <Grid item>
-                    <CreateGameButton socket={socket} />
-                  </Grid>
+      <Dialog open>
+        <DialogTitle className={styles.connectingTitle}>Connecting to server ...</DialogTitle>
+        <DialogContent className={styles.connecting}>
+          <CircularProgress size={60} />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Router>
+      <>
+        <Grid container direction="column" justifyContent="center">
+            <Grid item className={styles.title}>
+                <Typography style={{ fontSize: 36 }}>Welcome to PictoBear!</Typography>
+            </Grid>
+            <Grid item>
+              <Grid container direction="row" justifyContent="center">
+                <Grid item>
+                  <CreateGameButton socket={socket} />
                 </Grid>
               </Grid>
-              <Grid item>
-                <ActiveRooms socket={socket} />
-              </Grid>
-          </Grid>
-        </>
-      </Router>
-    )
+            </Grid>
+            <Grid item>
+              <ActiveRooms socket={socket} />
+            </Grid>
+        </Grid>
+      </>
+    </Router>
+  );
 }

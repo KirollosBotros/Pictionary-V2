@@ -56,7 +56,6 @@ export default function GameCanvas({ socket, game, players, onNextTurn, getHeigh
       p5.clear();
       p5.background(245,245,245);
       setCurrentDrawer(player.id);
-      console.log(word)
       onNextTurn(player.id, word);
     });
   };

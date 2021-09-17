@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 3001;
 
 const server = app.listen(PORT, () => {
-    console.log('Server running on port ', PORT);
+    console.log('Server running on port', PORT);
 });
 
 const io = socket(server, {
@@ -51,6 +51,7 @@ app.post('/create-game', (req: express.Request, res: express.Response) => {
     publicGames.push(gameObj);
   }
   console.log(gameObj);
+  logGameNumbers();
   return res.status(200).json({
     status: 'successful',
   });
@@ -100,7 +101,6 @@ app.get('/get-game', (req: express.Request, res: express.Response) => {
 });
 
 io.on('connection', (socket: Socket) => {
-
     console.log('connection: ' + socket.id);
     socket.on('createGame', (data: GameObject) => {
       data.type === 'Public' ? publicGames.push(data) : privateGames.push(data);
@@ -123,10 +123,6 @@ io.on('connection', (socket: Socket) => {
     socket.on('startedGame', (data: string) => {
       const totalGames = privateGames.concat(publicGames);
       let startedGame: GameObject = totalGames[0];
-      console.log('startedGame');
-      socket.on('disconnect', () => {
-        console.log('here');
-      });
       totalGames.forEach(game => {
         if (game.creator === data) {
           startedGame = game;
@@ -169,7 +165,6 @@ io.on('connection', (socket: Socket) => {
         });
         io.to(startedGame.creator).emit('startGame', [currWord, scoreBoard]);
         let playersLength = startedGame.players.length;
-        // used to rotate players
         const updateTurn = () => {
           guessedRight = 0;
           if (playerPointer + 1 >= startedGame.players.length) {
@@ -185,8 +180,7 @@ io.on('connection', (socket: Socket) => {
           const player = startedGame.players[playerPointer];
           currDrawer = player.id;
           currWord = words[wordPointer];
-          console.log(player);
-          console.log(startedGame.players)
+          console.log(startedGame.players);
           io.to(startedGame.creator).emit('nextTurn', [currWord, player]);
           secondsLeft = TIMER;
         }
@@ -231,6 +225,7 @@ io.on('connection', (socket: Socket) => {
     socket.on('disconnect', () => {
       console.log('disconnect');
       onDisconnect(socket);
+      logGameNumbers();
     });
 
     const onDisconnect = (socket: Socket) => {
@@ -266,3 +261,8 @@ io.on('connection', (socket: Socket) => {
       });
     }
 });
+
+const logGameNumbers = () => {
+  console.log(`There are ${publicGames.length} public games`);
+  console.log(`There are ${privateGames.length} private games`);
+}
