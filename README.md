@@ -1,4 +1,4 @@
-# Pictionary-V2
+# Pictionary Version 2.0.0
 A multiplayer online game of Pictionary, updated with new features from V1.
 ### Live game on: [playpictionary.me](https://playpictionary.me/)
 ## Tech stack:
