@@ -44,6 +44,7 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
     chatBox: {
       height: 200,
       textAlign: 'center',
+      maxWidth: 330,
       [theme.breakpoints.up(800)]: {
         height: (props: Props) => props.cnvHeight - 15,
       },
