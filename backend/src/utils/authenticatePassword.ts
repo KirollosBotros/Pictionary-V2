@@ -22,7 +22,24 @@ export const authenticatePassword = ({ req, res, privateGames, method, app } : A
       reason: 'Game not found',
     });
   }
+  
   const { password: gamePass, maxPlayers, players } = gameObj;
+
+  if (gameObj.type === 'Public') {
+    if (maxPlayers > players.length) {
+      if(method === 'POST') return true;
+      return res.json({
+        status: 'success',
+      });
+    } else {
+      if (method === 'POST') return false;
+      return res.json({
+        status: 'unsuccessful',
+        reason: 'Room is full'
+      });
+    }
+  }
+
   if (gamePass === password) {
     if (maxPlayers > players.length) {
       if (method === 'POST') return true;

@@ -91,7 +91,13 @@ app.post('/join-game', (req: express.Request, res: express.Response) => {
 
 // http://localhost:3001/validate?creator=asd&password=passss
 app.get('/validate', (req: express.Request, res: express.Response) => {
-  authenticatePassword({ req, res, privateGames, method: 'GET', app});
+  authenticatePassword({
+    req,
+    res,
+    privateGames: privateGames.concat(publicGames),
+    method: 'GET',
+    app
+  });
 });
 
 app.get('/get-game', (req: express.Request, res: express.Response) => {

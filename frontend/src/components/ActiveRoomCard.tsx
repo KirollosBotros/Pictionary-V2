@@ -23,6 +23,9 @@ const useStyles = makeStyles(theme => ({
     roomCard: {
       textDecoration: 'none',
       marginBottom: 10,
+      '&:hover': {
+        backgroundColor: '#0944A8',
+      },
       borderRadius: 5,
       [theme.breakpoints.down(960)]: {
         width: 500,
@@ -80,6 +83,9 @@ const useStyles = makeStyles(theme => ({
       margin: '0 auto',
       marginBottom: theme.spacing(2),
       marginTop: theme.spacing(1.5),
+      '&:hover': {
+        backgroundColor: '#0944A8',
+      },
     },
 }));
 
@@ -145,7 +151,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
       setError(err);
     }
   });
-  console.log('asdasd')
+
   return (
     <>
       <Button onClick={redirect} className={styles.roomCard}>
@@ -186,6 +192,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                 {...register("name", {
                   required: true,
                   maxLength: 10,
+                  validate: validatePass,
                 })}
               />
               {errors?.name?.type === 'required' && 

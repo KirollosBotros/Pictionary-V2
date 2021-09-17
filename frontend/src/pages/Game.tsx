@@ -45,6 +45,9 @@ const useStyles = makeStyles(theme => ({
       fontSize: 16,
       margin: 0,
     },
+    '&:hover': {
+      backgroundColor: '#0944A8',
+    },
     fontSize: 20,
   },
   list: {
@@ -55,6 +58,9 @@ const useStyles = makeStyles(theme => ({
     margin: '0 auto',
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(1.5),
+    '&:hover': {
+      backgroundColor: '#0944A8',
+    },
   },
   connecting: {
     textAlign: 'center',

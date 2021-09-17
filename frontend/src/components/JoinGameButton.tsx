@@ -7,6 +7,9 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 10,
     marginRight: 10,
     marginTop: 10,
+    '&:hover': {
+      backgroundColor: '#0944A8',
+    },
   },
   modal: {
     padding: 20,

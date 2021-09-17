@@ -67,6 +67,9 @@ const useStyles = makeStyles(theme => ({
   createGame: {
     margin: '0 auto',
     marginBottom: theme.spacing(2),
+    '&:hover': {
+      backgroundColor: '#4f76d1',
+    },
   },
 }));
 
