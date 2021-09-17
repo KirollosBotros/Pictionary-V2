@@ -161,7 +161,6 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
         },
         body: JSON.stringify(gameObj),
       });
-      console.log('FOUND');
       const resJSON = await res.json();
       const { status } = resJSON;
       if (status === 'successful') {
