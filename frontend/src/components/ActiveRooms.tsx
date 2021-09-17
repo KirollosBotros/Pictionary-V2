@@ -9,6 +9,17 @@ const useStyles = makeStyles(theme => ({
   roomList: {
     marginTop: 15,
   },
+  roomsTitle: {
+    textAlign: 'center',
+    marginTop: theme.spacing(3),
+    fontSize: 22,
+    [theme.breakpoints.down(490)]: {
+      maxWidth: 300,
+      fontSize: 18,
+      margin: '0 auto',
+      marginTop: theme.spacing(3),
+    },
+  },
 }));
 
 interface ActiveRoomsProps {
@@ -32,6 +43,12 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
     getGames();
   }, []);
   
+  if (publicRooms.length === 0 && privateRooms.length === 0) {
+    return (
+      <Typography className={styles.roomsTitle}>There are currently no active rooms</Typography>
+    );
+  }
+
   return (
       <Grid container direction="column" alignItems="center" className={styles.roomList}>
         <Typography>
@@ -53,5 +70,5 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
             <ActiveRoomCard isPrivate game={room} room={room.name} socket={socket} />
           </Grid>))}
       </Grid>
-  )
+  );
 }

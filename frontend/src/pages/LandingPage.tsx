@@ -15,7 +15,14 @@ const useStyles = makeStyles(theme => ({
     title: {
         color: 'black',
         fontSize: 36,
+        marginTop: theme.spacing(1.5),
         textAlign: 'center',
+    },
+    welcome: {
+      fontSize: 36,
+      [theme.breakpoints.down(430)]: {
+        fontSize: 30,
+      },
     },
     button: {
       marginLeft: 10,
@@ -53,7 +60,7 @@ export default function LandingPage({ socket, connectionEstablished }: LandingPa
       <>
         <Grid container direction="column" justifyContent="center">
             <Grid item className={styles.title}>
-                <Typography style={{ fontSize: 36 }}>Welcome to PictoBear!</Typography>
+                <Typography className={styles.welcome}>Welcome to PictoBear!</Typography>
             </Grid>
             <Grid item>
               <Grid container direction="row" justifyContent="center">

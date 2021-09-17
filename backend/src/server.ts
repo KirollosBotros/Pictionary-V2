@@ -160,7 +160,9 @@ io.on('connection', (socket: Socket) => {
               return -1;
             }
           });
+          console.log('sortedPlayers');
           const sortedPlayers = sortedScores.map(item => item[0]);
+          console.log(sortedPlayers);
           io.to(creator).emit('updateScore', [scoreBoard, sortedPlayers]);
         });
         io.to(startedGame.creator).emit('startGame', [currWord, scoreBoard]);
@@ -192,6 +194,11 @@ io.on('connection', (socket: Socket) => {
             startedGame.players.forEach(player => {
               if (player.id !== currDrawer) {
                 ++notCurr;
+              }
+            });
+            Object.keys(scoreBoard).forEach((key) => {
+              if (!startedGame.players.some(player => player.id === key)) {
+                delete scoreBoard[key];
               }
             });
             if (notCurr === startedGame.players.length) {
@@ -231,9 +238,8 @@ io.on('connection', (socket: Socket) => {
     const onDisconnect = (socket: Socket) => {
       const totalGames = publicGames.concat(privateGames);
       totalGames.forEach(game => {
-        game.players.forEach(player => {
+        game.players.forEach((player, idx) => {
           if (player.id === socket.id) {
-            const idx = game.players.indexOf(player);
             game.players.splice(idx, 1);
             io.to(game.creator).emit('userDisconnect', [player.name, game.players, player.id]);
           }

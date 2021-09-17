@@ -49,14 +49,9 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
       },
       [theme.breakpoints.down(800)]: {
         width: (props: Props) => props.cnvHeight * 1.176,
+        marginRight: 15,
       },
       [theme.breakpoints.down(700)]: {
-        height: 200,
-      },
-      [theme.breakpoints.down(615)]: {
-        height: 200,
-      },
-      [theme.breakpoints.down(450)]: {
         height: 200,
       },
       [theme.breakpoints.down(380)]: {
@@ -125,6 +120,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
     });
   }, []);
 
+
   useMemo(async () => {
     const msg = await chatCtl.setActionRequest({ 
       type: 'text', 
@@ -182,7 +178,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
   };
 
   return (
-    <Grid container direction="column" alignItems="center" justifyContent="center" spacing={3}>
+    <Grid container direction="column" alignItems="center" justifyContent="center" spacing={1}>
       <Grid container direction="row" alignItems="center" className={styles.mobileTimer}>
         <Grid item xs={2}>
           <Typography style={{ fontSize: 24, marginTop: 15 }}>{secondsLeft}</Typography>
@@ -252,12 +248,8 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
               </Grid>
             </Grid>
           </Grid>
-          <Grid item style={{ textAlign: 'center' }}>
-            <Grid container direction="column" alignItems="center">
-              <Grid item className={styles.chatBox}>
-                <MuiChat chatController={chatCtl} />
-              </Grid>
-            </Grid>
+          <Grid item className={styles.chatBox}>
+            <MuiChat chatController={chatCtl} />
           </Grid>
         </Grid>
       </Grid>

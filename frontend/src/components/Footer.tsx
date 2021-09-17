@@ -25,8 +25,8 @@ const useStyles = makeStyles(theme => ({
     bottomText: {
       color: 'white',
       fontSize: 22,
-      [theme.breakpoints.down('sm')]: {
-        fontSize: 18,
+      [theme.breakpoints.down(500)]: {
+        fontSize: 16,
       },
       textAlign: 'center',
       background: theme.palette.primary.main,

@@ -2,12 +2,13 @@ import { useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { useState, useEffect } from 'react';
 import { GameObject, Player, GameInfo } from "../types/game";
-import { Button, Dialog, makeStyles, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, TextField, Typography, CircularProgress } from "@material-ui/core";
+import { Button, Dialog, makeStyles, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, TextField, Typography, CircularProgress, List, ListItem, ListItemAvatar, Avatar, ListItemText, Box, Divider } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { joinGame } from "../utils/joinGame";
 import { validatePassword } from "../utils/validatePassword";
 import MainGame from "./MainGame";
 import host from "../config/host";
+import PersonIcon from '@material-ui/icons/Person';
 
 interface GameProps {
   socket: Socket;
@@ -23,6 +24,33 @@ const useStyles = makeStyles(theme => ({
   passwordInput: {
     marginTop: theme.spacing(1.5),
   },
+  listContainer: {
+    width: 385,
+    [theme.breakpoints.down(405)]: {
+      width: 340,
+    },
+    [theme.breakpoints.down(330)]: {
+      width: 290,
+    },
+  },
+  gameTitle: {
+    fontSize: 36,
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+  },
+  twoButtons: {
+    minWidth: 168,
+    [theme.breakpoints.down(440)]: {
+      minWidth: 100,
+      fontSize: 16,
+      margin: 0,
+    },
+    fontSize: 20,
+  },
+  list: {
+    backgroundColor: '#ebeff0',
+    marginTop: theme.spacing(2),
+  },
   button: {
     margin: '0 auto',
     marginBottom: theme.spacing(2),
@@ -35,6 +63,9 @@ const useStyles = makeStyles(theme => ({
   connectingTitle: {
     fontSize: 32,
   },
+  name: {
+    fontSize: 20,
+  }
 }));
 
 export default function Game({ socket, connectionEstablished }: GameProps) {
@@ -49,6 +80,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
   const [game, setGame] = useState<GameObject | null>(null);
   const [currWord, setCurrWord] = useState<string | null>(null);
   const [scoreBoard, setScoreBoard] = useState<Record<string, number>>({});
+  const [copyMessage, setCopyMessage] = useState('Copy Invite Link');
   const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>({ 
     mode: 'onSubmit', 
     reValidateMode: 'onSubmit' 
@@ -69,7 +101,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
         setGame(game);
         setPlayers(game.players);
       }
-    })
+    });
   }
 
   const getPlayers = async () => {
@@ -152,6 +184,13 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
     socket.emit('startedGame', game.creator);
   };
 
+  const copyMessageToClipboard = (event: React.MouseEvent<HTMLElement>) => {
+    const prod = window.location.hostname !== 'localhost';
+    const link = `${prod ? 'https://' : 'http://'}${window.location.host}${window.location.pathname}`
+    navigator.clipboard.writeText(link);
+    setCopyMessage('Copied!');
+  }
+
   if (redirectToGame && currWord) {
     return <MainGame game={game} socket={socket} currWord={currWord} scoreBoard={scoreBoard} />
   }
@@ -159,16 +198,45 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
   if (connectionEstablished) {
     return (
       <>
-        <Grid container direction="column">
-          {socket.id === game.creator &&
+        <Grid container direction="column" alignItems="center">
+          <Grid item>
+            <Typography className={styles.gameTitle}>
+              {game.name}
+            </Typography>
+          </Grid>
+          {socket.id === game.creator ?
             <Grid item>
-              <Button onClick={startGame}>Start Game</Button>
+              <Grid container direction="row" spacing={2}>
+                <Grid item>
+                  <Button onClick={startGame} className={styles.twoButtons}>Start Game</Button>
+                </Grid>
+                <Grid item>
+                  <Button onClick={copyMessageToClipboard} className={styles.twoButtons}>{copyMessage}</Button>
+                </Grid>
+              </Grid>
+            </Grid> :
+            <Grid item>
+              <Button onClick={copyMessageToClipboard} className={styles.twoButtons}>{copyMessage}</Button>
             </Grid>}
-          {players?.map(player => (
-            <Grid item>
-              {player.name}
-            </Grid>
-          ))}
+          <Box className={styles.list}>
+            <List dense={true} className={styles.listContainer}>
+              {players?.map(player => (
+                <ListItem key={player.id} style={{ marginBottom: 10 }}>
+                  <ListItemAvatar>
+                    <Avatar style={{ width: 43, height: 43 }}>
+                      <PersonIcon fontSize="large"/>
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <Typography className={styles.name}>{player.name}</Typography>
+                    }
+                    secondary={game.creator === player.id ? 'Host' : ''}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         </Grid>
         <Dialog open={(!inGame && !successJoin) || game.status === 'game'}>
           <DialogTitle style={{ textAlign: 'center' }}>
@@ -189,7 +257,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                       maxLength: 10,
                     })}
                   />
-                  {errors?.name?.type === 'required' && 
+                  {errors?.name?.type === 'required' &&
                     <FormHelperText error style={{ marginBottom: 15 }}>Please enter your name</FormHelperText>}
                   {game?.type === 'Private' &&
                     <TextField 
