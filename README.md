@@ -6,7 +6,7 @@ A multiplayer online game of Pictionary, updated with new features from V1.
 * Backend: Node.js, Express.js, Socket.io
 * DevOps: GitHub Actions
 * Cloud: Firebase, Heorku
-### Verson 2.0.0: 
+### Version 2.0.0: 
 This product is a complete rewrite of [Pictionary V1](https://github.com/KirollosBotros/Pictionary). An updated stack has been used to rearchetect the whole application. The following are the most notable changes made from a development view:
 * Use of TypeScript for better error catching during development
 * A transition from React class-based components to functional components (includes the use of Hooks)
