@@ -6,18 +6,38 @@ import { removePasswords } from "./utils/removePasswords";
 import express = require('express');
 import { getPlayerGame } from "./utils/getPlayerGame";
 import { shuffleWords, wordList } from "./utils/wordList";
+
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const socket = require('socket.io');
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 3001;
+require('dotenv').config()
+const { TO_EMAIL: to, FROM_EMAIL: from, SENDGRID_API_KEY, PROD } = process.env
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(SENDGRID_API_KEY);
 
-const server = app.listen(PORT, () => {
+const PORT = process.env.PORT || 3001;
+const server = app.listen(PORT, async() => {
     console.log('Server running on port', PORT);
+    if (PROD === 'true') {
+      const msg = {
+        from: {
+          email: from,
+          name: 'PictoBear'
+        },
+        to,
+        subject: 'Pictionary Server Started',
+        text: `The pictionary server has started and is running on port ${PORT}`,
+      };
+      sgMail.send(msg).then(() => {
+        console.log('email sent');
+      }).catch((error: any) => {
+        console.log(error.response.body);
+      });
+    }
 });
 
 const io = socket(server, {
@@ -25,6 +45,8 @@ const io = socket(server, {
         origin: '*',
     },
 });
+
+
 
 let publicGames: GameObject[] = [];
 let privateGames: GameObject[] = [];
@@ -53,6 +75,24 @@ app.post('/create-game', (req: express.Request, res: express.Response) => {
   }
   console.log(gameObj);
   logGameNumbers();
+
+  if (PROD === 'true') {
+    const msg = {
+      from: {
+        email: from,
+        name: 'PictoBear',
+      },
+      to,
+      subject: `${gameObj.players[0].name} has Created a ${type} Game`,
+      text: `Game Object:\n${JSON.stringify(gameObj, null, 1)}\n\nThere are ${connectedUsers} connected user(s)\nThere are ${publicGames.length} public game(s)\nThere are ${privateGames.length} private game(s)`,
+    };
+    sgMail.send(msg).then(() => {
+      console.log('sent create email');
+    }).catch((error: any) => {
+      console.log(error);
+    });
+  }
+
   return res.status(200).json({
     status: 'successful',
   });
