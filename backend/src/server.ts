@@ -6,6 +6,7 @@ import { removePasswords } from "./utils/removePasswords";
 import express = require('express');
 import { getPlayerGame } from "./utils/getPlayerGame";
 import { shuffleWords, wordList } from "./utils/wordList";
+const date = require('date-and-time');
 
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -21,7 +22,10 @@ sgMail.setApiKey(SENDGRID_API_KEY);
 
 const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT, async() => {
-    console.log('Server running on port', PORT);
+    const now = new Date();
+    const pattern = date.compile('MMM D YYYY h:m:s A');
+    const val = date.format(now, pattern);
+    console.log(`Server running on port, ${PORT} (${val})`);
     if (PROD === 'true') {
       const msg = {
         from: {
