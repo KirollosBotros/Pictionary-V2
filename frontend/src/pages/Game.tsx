@@ -1,8 +1,26 @@
 import { useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { useState, useEffect } from 'react';
-import { GameObject, Player, GameInfo } from "../types/game";
-import { Button, Dialog, makeStyles, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, TextField, Typography, CircularProgress, List, ListItem, ListItemAvatar, Avatar, ListItemText, Box, Divider } from "@material-ui/core";
+import { GameObject, Player } from "../types/game";
+import { 
+  Button,
+  Dialog,
+  makeStyles,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormHelperText,
+  Grid,
+  TextField,
+  Typography,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  Box
+} from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { joinGame } from "../utils/joinGame";
 import { validatePassword } from "../utils/validatePassword";
@@ -138,7 +156,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
     });
     getPlayers();
     getGame();
-  }, []);
+  }, [socket]);
 
   if (!connectionEstablished) {
     return (

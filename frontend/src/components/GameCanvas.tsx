@@ -1,5 +1,3 @@
-import { makeStyles } from '@material-ui/core'
-import React, { useEffect } from 'react'
 import { Socket } from 'socket.io-client';
 import Sketch from 'react-p5'
 import p5Types from 'p5'
@@ -14,16 +12,7 @@ interface GameCanvasProps {
   getHeight: (height: number) => void;
 }
 
-const useStyles = makeStyles(theme => ({
-  canvas: {
-    backgroundColor: '#f0f1f2',
-    width: '100%',
-    touchAction: 'none',
-  },
-}));
-
 export default function GameCanvas({ socket, game, players, onNextTurn, getHeight }: GameCanvasProps) {
-  const styles = useStyles();
   const { creator } = game;
   let counter = 0;
   const [currentDrawer, setCurrentDrawer] = useState<string>(players[counter].id);

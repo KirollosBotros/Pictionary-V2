@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Socket } from 'socket.io-client';
 import GameCanvas from '../components/GameCanvas';
 import PlayerCard from '../components/PlayerCard';
-import { GameObject, Player } from '../types/game'
+import { GameObject } from '../types/game'
 import {
   ChatController,
   MuiChat,
@@ -119,11 +119,11 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
       setScores(updatedScores);
       setSortedPlayers(sortedPlayers);
     });
-  }, []);
+  }, [socket, sortedPlayers]);
 
 
   useMemo(async () => {
-    const msg = await chatCtl.setActionRequest({ 
+    await chatCtl.setActionRequest({ 
       type: 'text', 
       placeholder: 'Guess word here',
       always: true,
@@ -134,7 +134,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
     });
     socket.off('new message');
     socket.on('new message', ([msg, author]) => {
-      if (msg.toLowerCase() === currentWord.toLowerCase()) {
+      if (msg.toLowerCase().trim() === currentWord.toLowerCase().trim()) {
         let name: string = '';
         game.players.forEach(player => {
           if (player.id === author) {
@@ -172,7 +172,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
         self: false,
       });
     });
-  }, [chatCtl, currentWord, correctGuessers]);
+  }, [chatCtl, currentWord, correctGuessers, currentDrawer, game.creator, game.players, socket, sortedPlayers]);
 
   const handleTurnChange = (currDrawer: string) => {
     setCurrentDrawer(currDrawer);
@@ -228,8 +228,9 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
                       drawBorder={currentDrawer === id}
                       guessedRight={correctGuessers.includes(id)}
                     />
-                  )
+                  );
                 }
+                return <></>;
               })}
             </Grid>
           </Grid>

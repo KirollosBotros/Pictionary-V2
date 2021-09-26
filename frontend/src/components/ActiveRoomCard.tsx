@@ -103,7 +103,6 @@ interface ActiveRoomCardProps {
 
 export default function ActiveRoomCard({ room, isPrivate, game, socket }: ActiveRoomCardProps) {
   const styles = useStyles();
-  const redirectLink = '/game/' + game.creator;
   const [openPassword, setOpenPassword] = useState(false);
   const [openName, setOpenName] = useState(false);
   const [error, setError] = useState<string | null>(null);
