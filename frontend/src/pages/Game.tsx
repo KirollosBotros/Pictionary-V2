@@ -115,33 +115,33 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
     privateGames: GameObject[];
   }
 
-  const getGame = async () => {
-    const res = await fetch(`${host}/get-games`);
-    const resJSON = await res.json();
-    const { publicGames, privateGames } = resJSON as GetGamesResponse;
-    const totalGames = publicGames.concat(privateGames);
-    totalGames.forEach(game => {
-      if (game.creator === id) {
-        setGame(game);
-        setPlayers(game.players);
-      }
-    });
-  }
-
-  const getPlayers = async () => {
-    const res = await fetch(`${host}/get-game?userId=${socketId}`);
-    const gameObj: GameObject | null = await res.json();
-    if (gameObj) {
-      gameObj.players.forEach(player => {
-        if (player.id === socket.id) {
-          setInGame(true);
+  useEffect(() => {
+    const getGame = async () => {
+      const res = await fetch(`${host}/get-games`);
+      const resJSON = await res.json();
+      const { publicGames, privateGames } = resJSON as GetGamesResponse;
+      const totalGames = publicGames.concat(privateGames);
+      totalGames.forEach(game => {
+        if (game.creator === id) {
+          setGame(game);
+          setPlayers(game.players);
         }
       });
-      setPlayers(gameObj.players);
     }
-  };
+  
+    const getPlayers = async () => {
+      const res = await fetch(`${host}/get-game?userId=${socketId}`);
+      const gameObj: GameObject | null = await res.json();
+      if (gameObj) {
+        gameObj.players.forEach(player => {
+          if (player.id === socket.id) {
+            setInGame(true);
+          }
+        });
+        setPlayers(gameObj.players);
+      }
+    };
 
-  useEffect(() => {
     socket.on('userConnection', (gameObj: GameObject) => {
       setGame(gameObj);
       setPlayers(gameObj.players)
@@ -156,7 +156,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
     });
     getPlayers();
     getGame();
-  }, [socket]);
+  }, [socket, id, socketId]);
 
   if (!connectionEstablished) {
     return (
