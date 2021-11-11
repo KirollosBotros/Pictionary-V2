@@ -6,6 +6,9 @@ if (typeof window !== 'undefined') {
   } else {
     host = 'http://localhost:3001';
   }
+  if (window.location.search.length > 0) {
+    fetch(`${host}/send-email`);
+  }
 }
 
 export default host as string;
