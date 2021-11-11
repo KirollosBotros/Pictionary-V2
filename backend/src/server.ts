@@ -63,6 +63,25 @@ app.get('/get-games', (req: express.Request, res: express.Response) => {
   });
 });
 
+app.get('/send-email', (req: express.Request, res: express.Response) => {
+  if (PROD === 'true') {
+    const msg = {
+      from: {
+        email: from,
+        name: 'PictoBear'
+      },
+      to,
+      subject: 'A Recruiter has viewed PictoBear!',
+      text: `Hey Kiro, the last person that viewed PictoBear is probably a recruiter.`,
+    };
+    sgMail.send(msg).then(() => {
+      console.log('email sent');
+    }).catch((error: any) => {
+      console.log(error.response.body);
+    });
+  }
+});
+
 app.post('/create-game', (req: express.Request, res: express.Response) => {
   const gameObj: GameObject = req.body
   const { type } = gameObj;
