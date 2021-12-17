@@ -1,22 +1,22 @@
 import { makeStyles, Grid, Typography } from "@material-ui/core";
 import ActiveRoomCard from "./ActiveRoomCard";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { Socket } from "socket.io-client";
 import { GameObject } from "../types/game";
 import host from "../config/host";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   roomList: {
     marginTop: 15,
   },
   roomsTitle: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: theme.spacing(3),
     fontSize: 22,
     [theme.breakpoints.down(490)]: {
       maxWidth: 300,
       fontSize: 18,
-      margin: '0 auto',
+      margin: "0 auto",
       marginTop: theme.spacing(3),
     },
   },
@@ -42,33 +42,48 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   useEffect(() => {
     getGames();
   }, []);
-  
+
   if (publicRooms.length === 0 && privateRooms.length === 0) {
     return (
-      <Typography className={styles.roomsTitle}>There are currently no active rooms</Typography>
+      <Typography className={styles.roomsTitle}>
+        There are currently no active rooms
+      </Typography>
     );
   }
 
   return (
-      <Grid container direction="column" alignItems="center" className={styles.roomList}>
-        <Typography>
-          {publicRooms.length !== 0 && 
-            `Public Rooms (${publicRooms.length})`}
-        </Typography>
-        {publicRooms?.map(room => (
-          <Grid item key={room.creator}>
-            <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />
-          </Grid>
-          ))
-        }
-        <Typography>
-          {privateRooms.length !== 0 && 
-            `Private Rooms (${privateRooms.length})`}
-        </Typography>
-        {privateRooms?.map(room => (
-          <Grid item key={room.creator}>
-            <ActiveRoomCard isPrivate game={room} room={room.name} socket={socket} />
-          </Grid>))}
-      </Grid>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      className={styles.roomList}
+    >
+      <Typography>
+        {publicRooms.length !== 0 && `Public Rooms (${publicRooms.length})`}
+      </Typography>
+      {publicRooms?.map((room) => (
+        <Grid item key={room.creator}>
+          <ActiveRoomCard
+            isPrivate={false}
+            game={room}
+            room={room.name}
+            socket={socket}
+          />
+        </Grid>
+      ))}
+      <Typography>
+        {privateRooms.length !== 0 && `Private Rooms (${privateRooms.length})`}
+      </Typography>
+      {privateRooms?.map((room) => (
+        <Grid item key={room.creator}>
+          <ActiveRoomCard
+            isPrivate
+            game={room}
+            room={room.name}
+            socket={socket}
+          />
+        </Grid>
+      ))}
+    </Grid>
   );
 }

@@ -120,7 +120,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
       setSortedPlayers(sortedPlayers);
     });
   }, [socket, sortedPlayers]);
-
+ 
 
   useMemo(async () => {
     await chatCtl.setActionRequest({ 

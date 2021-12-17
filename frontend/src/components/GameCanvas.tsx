@@ -1,8 +1,8 @@
-import { Socket } from 'socket.io-client';
-import Sketch from 'react-p5'
-import p5Types from 'p5'
-import { useState } from 'react'
-import { GameObject, Player } from '../types/game';
+import { Socket } from "socket.io-client";
+import Sketch from "react-p5";
+import p5Types from "p5";
+import { useState } from "react";
+import { GameObject, Player } from "../types/game";
 
 interface GameCanvasProps {
   socket: Socket;
@@ -12,38 +12,46 @@ interface GameCanvasProps {
   getHeight: (height: number) => void;
 }
 
-export default function GameCanvas({ socket, game, players, onNextTurn, getHeight }: GameCanvasProps) {
+export default function GameCanvas({
+  socket,
+  game,
+  players,
+  onNextTurn,
+  getHeight,
+}: GameCanvasProps) {
   const { creator } = game;
   let counter = 0;
-  const [currentDrawer, setCurrentDrawer] = useState<string>(players[counter].id);
+  const [currentDrawer, setCurrentDrawer] = useState<string>(
+    players[counter].id
+  );
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
   const setup = async (p5: p5Types, parent: Element) => {
     let CNV_WIDTH = p5.displayWidth / 2.55;
     if (p5.displayWidth < 500) {
-      CNV_WIDTH = p5.displayWidth * .80;
+      CNV_WIDTH = p5.displayWidth * 0.8;
     }
     let CNV_HEIGHT = CNV_WIDTH / 1.176;
     getHeight(CNV_HEIGHT);
     setWidth(CNV_WIDTH);
     setHeight(CNV_HEIGHT);
     p5.createCanvas(CNV_WIDTH, CNV_HEIGHT).parent(parent);
-    p5.background(245,245,245);
+    p5.background(245, 245, 245);
 
     // socket listeners
-    socket.on('drawing', (data: number[]) => {
+    socket.on("drawing", (data: number[]) => {
       drawLine(p5, data, [CNV_WIDTH, CNV_HEIGHT]);
     });
 
-    socket.on('clearBoard', () => {
+    socket.on("clearBoard", () => {
       p5.clear();
-      p5.background(245,245,245);
+      p5.background(245, 245, 245);
     });
 
-    socket.on('nextTurn', ([word, player]) => {
+    socket.on("nextTurn", ([word, player]) => {
       p5.clear();
-      p5.background(245,245,245);
+      p5.background(245, 245, 245);
       setCurrentDrawer(player.id);
       onNextTurn(player.id, word);
     });
@@ -68,20 +76,18 @@ export default function GameCanvas({ socket, game, players, onNextTurn, getHeigh
       RESIZED_WIDTH = p5.windowWidth / 1.35;
     }
     let RESIZED_HEIGHT = RESIZED_WIDTH / 1.176;
-    socket.off('drawing');
-    socket.on('drawing', (data: number[]) => {
+    socket.off("drawing");
+    socket.on("drawing", (data: number[]) => {
       drawLine(p5, data, [RESIZED_WIDTH, RESIZED_HEIGHT]);
     });
     getHeight(RESIZED_HEIGHT);
     setWidth(RESIZED_WIDTH);
     setHeight(RESIZED_HEIGHT);
     p5.resizeCanvas(RESIZED_WIDTH, RESIZED_HEIGHT);
-    p5.background(245,245,245);
+    p5.background(245, 245, 245);
   };
 
-  const draw = (p5: p5Types) => {
-
-  };
+  const draw = (p5: p5Types) => {};
 
   const mouseDragged = (p5: p5Types) => {
     if (socket.id === currentDrawer && width !== 0 && height !== 0) {
@@ -93,17 +99,17 @@ export default function GameCanvas({ socket, game, players, onNextTurn, getHeigh
         p5.pmouseY / height,
       ];
       p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY);
-      socket.emit('mouse', [creator, lineCords]);
+      socket.emit("mouse", [creator, lineCords]);
     }
   };
 
   const keyTyped = (p5: p5Types) => {
-    if (p5.key === 'c' && socket.id === currentDrawer) {
+    if (p5.key === "c" && socket.id === currentDrawer) {
       p5.clear();
-      p5.background(245,245,245);
-      socket.emit('clearedBoard', creator);
+      p5.background(245, 245, 245);
+      socket.emit("clearedBoard", creator);
     }
-  }
+  };
 
   return (
     <Sketch
