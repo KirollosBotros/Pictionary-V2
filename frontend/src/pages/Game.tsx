@@ -26,6 +26,7 @@ import { joinGame } from '../utils/joinGame';
 import { validatePassword } from '../utils/validatePassword';
 import MainGame from './MainGame';
 import host from '../config/host';
+import Loading from '../components/Loading';
 import PersonIcon from '@material-ui/icons/Person';
 
 interface GameProps {
@@ -79,13 +80,6 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: '#0944A8',
     },
-  },
-  connecting: {
-    textAlign: 'center',
-    padding: theme.spacing(2),
-  },
-  connectingTitle: {
-    fontSize: 32,
   },
   name: {
     fontSize: 20,
@@ -163,14 +157,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
   }, [socket, id, socketId]);
 
   if (!connectionEstablished) {
-    return (
-      <Dialog open>
-        <DialogTitle className={styles.connectingTitle}>Connecting to server ...</DialogTitle>
-        <DialogContent className={styles.connecting}>
-          <CircularProgress size={60} />
-        </DialogContent>
-      </Dialog>
-    );
+    return <Loading />;
   }
 
   if (!game) {

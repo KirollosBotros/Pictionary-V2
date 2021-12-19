@@ -1,12 +1,5 @@
-import {
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
+import Loading from '../components/Loading';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ActiveRooms from '../components/ActiveRooms';
 import CreateGameButton from '../components/CreateGameButton';
@@ -38,28 +31,10 @@ const useStyles = makeStyles((theme) => ({
   modal: {
     width: 'auto',
   },
-  connecting: {
-    textAlign: 'center',
-    padding: theme.spacing(2),
-  },
-  connectingTitle: {
-    fontSize: 32,
-  },
 }));
 
 export default function LandingPage({ socket, connectionEstablished }: LandingPageProps) {
   const styles = useStyles();
-
-  if (!connectionEstablished) {
-    return (
-      <Dialog open>
-        <DialogTitle className={styles.connectingTitle}>Connecting to server ...</DialogTitle>
-        <DialogContent className={styles.connecting}>
-          <CircularProgress size={60} />
-        </DialogContent>
-      </Dialog>
-    );
-  }
 
   return (
     <Router>
@@ -76,7 +51,7 @@ export default function LandingPage({ socket, connectionEstablished }: LandingPa
             </Grid>
           </Grid>
           <Grid item>
-            <ActiveRooms socket={socket} />
+            {connectionEstablished ? <ActiveRooms socket={socket} /> : <Loading />}
           </Grid>
         </Grid>
       </>
