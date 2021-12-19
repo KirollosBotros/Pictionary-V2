@@ -13,7 +13,6 @@ import {
   Grid,
   TextField,
   Typography,
-  CircularProgress,
   List,
   ListItem,
   ListItemAvatar,
