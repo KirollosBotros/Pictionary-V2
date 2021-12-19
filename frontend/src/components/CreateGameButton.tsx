@@ -14,7 +14,7 @@ import {
   FormControl,
   CircularProgress,
 } from "@material-ui/core";
-import { useState }  from "react";
+import { useState } from "react";
 import { Socket } from "socket.io-client";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
