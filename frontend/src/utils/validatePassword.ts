@@ -12,7 +12,7 @@ export const validatePassword = async ({ game, v }: ValidatePasswordProps) => {
     const res = await fetch(validationEndpoint);
     const resJSON = await res.json();
     const { status } = resJSON;
-    if (status === 'success') {
+    if (status === "success") {
       return true;
     } else {
       const { reason } = resJSON;
@@ -20,9 +20,9 @@ export const validatePassword = async ({ game, v }: ValidatePasswordProps) => {
         error: reason,
       };
     }
-  } catch(err) {
+  } catch (err) {
     return {
       error: err,
     };
   }
-}
+};
