@@ -1,9 +1,9 @@
-import { makeStyles, Grid, Typography } from '@material-ui/core';
-import ActiveRoomCard from './ActiveRoomCard';
-import { useState, useEffect } from 'react';
+import { Grid, makeStyles, Typography } from '@material-ui/core';
+import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { GameObject } from '../types/game';
 import host from '../config/host';
+import { GameObject } from '../types/game';
+import ActiveRoomCard from './ActiveRoomCard';
 
 const useStyles = makeStyles((theme) => ({
   roomList: {
@@ -45,17 +45,13 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
 
   if (publicRooms.length === 0 && privateRooms.length === 0) {
     return (
-      <Typography className={styles.roomsTitle}>
-        There are currently no active rooms
-      </Typography>
+      <Typography className={styles.roomsTitle}>There are currently no active rooms</Typography>
     );
   }
 
   return (
     <Grid container direction="column" alignItems="center" className={styles.roomList}>
-      <Typography>
-        {publicRooms.length !== 0 && `Public Rooms (${publicRooms.length})`}
-      </Typography>
+      <Typography>{publicRooms.length !== 0 && `Public Rooms (${publicRooms.length})`}</Typography>
       {publicRooms?.map((room) => (
         <Grid item key={room.creator}>
           <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Toolbar, Typography, Grid, makeStyles } from '@material-ui/core';
+import { Grid, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {

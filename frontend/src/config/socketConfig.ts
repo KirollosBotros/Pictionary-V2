@@ -1,5 +1,4 @@
-import openSocket from 'socket.io-client';
-import { Socket } from 'socket.io-client';
+import openSocket, { Socket } from 'socket.io-client';
 
 let socket = null;
 

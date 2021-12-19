@@ -1,14 +1,14 @@
-import socket from './config/socketConfig';
 import { MuiThemeProvider } from '@material-ui/core';
-import { theme } from './config/theme';
-import Header from './components/Header';
+import { useEffect, useState } from 'react';
+import { Route, Router } from 'react-router-dom';
 import Footer from './components/Footer';
-import LandingPage from './pages/LandingPage';
-import { Router, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import Game from './pages/Game';
-import Player from './pages/Player';
+import Header from './components/Header';
 import history from './config/history';
+import socket from './config/socketConfig';
+import { theme } from './config/theme';
+import Game from './pages/Game';
+import LandingPage from './pages/LandingPage';
+import Player from './pages/Player';
 
 function App() {
   const [connectionEstablished, setConnectionEstablished] = useState(false);
@@ -35,9 +35,7 @@ function App() {
         />
         <Route
           path="/game/:id"
-          render={(props) => (
-            <Game socket={socket} connectionEstablished={connectionEstablished} />
-          )}
+          render={(props) => <Game socket={socket} connectionEstablished={connectionEstablished} />}
         />
         <Route path="/player/:id" component={Player} />
       </Router>

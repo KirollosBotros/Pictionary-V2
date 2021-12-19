@@ -1,5 +1,5 @@
+import { Button, Grid, makeStyles, Toolbar } from '@material-ui/core';
 import React from 'react';
-import { Toolbar, Button, Grid, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {

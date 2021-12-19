@@ -1,22 +1,22 @@
 import {
   Button,
-  makeStyles,
-  Grid,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
-  TextField,
-  FormHelperText,
   FormControl,
+  FormHelperText,
+  Grid,
+  makeStyles,
+  TextField,
   Typography,
-  CircularProgress,
 } from '@material-ui/core';
 import LockSharpIcon from '@material-ui/icons/LockSharp';
+import PersonIcon from '@material-ui/icons/Person';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Socket } from 'socket.io-client';
 import { GameObject } from '../types/game';
-import PersonIcon from '@material-ui/icons/Person';
 import { joinGame } from '../utils/joinGame';
 import { validatePassword } from '../utils/validatePassword';
 
@@ -99,12 +99,7 @@ interface ActiveRoomCardProps {
   game: GameObject;
 }
 
-export default function ActiveRoomCard({
-  room,
-  isPrivate,
-  game,
-  socket,
-}: ActiveRoomCardProps) {
+export default function ActiveRoomCard({ room, isPrivate, game, socket }: ActiveRoomCardProps) {
   const styles = useStyles();
   const [openPassword, setOpenPassword] = useState(false);
   const [openName, setOpenName] = useState(false);

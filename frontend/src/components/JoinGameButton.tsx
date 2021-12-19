@@ -3,9 +3,9 @@ import {
   Dialog,
   DialogTitle,
   makeStyles,
-  withStyles,
   Slider,
   Typography,
+  withStyles,
 } from '@material-ui/core';
 import { useState } from 'react';
 import { Socket } from 'socket.io-client';

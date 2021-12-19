@@ -1,7 +1,7 @@
-import { Socket } from 'socket.io-client';
-import Sketch from 'react-p5';
 import p5Types from 'p5';
 import { useState } from 'react';
+import Sketch from 'react-p5';
+import { Socket } from 'socket.io-client';
 import { GameObject, Player } from '../types/game';
 
 interface GameCanvasProps {

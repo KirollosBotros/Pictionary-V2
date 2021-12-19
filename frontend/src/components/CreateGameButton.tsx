@@ -1,27 +1,27 @@
 import {
   Button,
+  CircularProgress,
   Dialog,
-  Grid,
-  DialogTitle,
-  makeStyles,
-  withStyles,
-  Slider,
-  Typography,
-  TextField,
   DialogActions,
   DialogContent,
-  FormHelperText,
+  DialogTitle,
   FormControl,
-  CircularProgress,
+  FormHelperText,
+  Grid,
+  makeStyles,
+  Slider,
+  TextField,
+  Typography,
+  withStyles,
 } from '@material-ui/core';
-import { useState } from 'react';
-import { Socket } from 'socket.io-client';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Socket } from 'socket.io-client';
 import history from '../config/history';
-import { GameObject } from '../types/game';
 import host from '../config/host';
+import { GameObject } from '../types/game';
 const Filter = require('bad-words');
 const filter = new Filter();
 

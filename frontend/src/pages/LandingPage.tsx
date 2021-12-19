@@ -1,9 +1,9 @@
 import { Grid, makeStyles, Typography } from '@material-ui/core';
-import Loading from '../components/Loading';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 import ActiveRooms from '../components/ActiveRooms';
 import CreateGameButton from '../components/CreateGameButton';
-import { Socket } from 'socket.io-client';
+import Loading from '../components/Loading';
 
 interface LandingPageProps {
   socket: Socket;
@@ -50,9 +50,7 @@ export default function LandingPage({ socket, connectionEstablished }: LandingPa
               </Grid>
             </Grid>
           </Grid>
-          <Grid item>
-            {connectionEstablished ? <ActiveRooms socket={socket} /> : <Loading />}
-          </Grid>
+          <Grid item>{connectionEstablished ? <ActiveRooms socket={socket} /> : <Loading />}</Grid>
         </Grid>
       </>
     </Router>

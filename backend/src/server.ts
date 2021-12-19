@@ -1,11 +1,11 @@
 import { Socket } from 'socket.io';
 import { GameObject, JoinGameProps } from './types/game';
-import { findGame } from './utils/findGame';
 import { authenticatePassword } from './utils/authenticatePassword';
-import { removePasswords } from './utils/removePasswords';
-import express = require('express');
+import { findGame } from './utils/findGame';
 import { getPlayerGame } from './utils/getPlayerGame';
+import { removePasswords } from './utils/removePasswords';
 import { shuffleWords, wordList } from './utils/wordList';
+import express = require('express');
 const date = require('date-and-time');
 
 const cors = require('cors');
@@ -302,10 +302,7 @@ io.on('connection', (socket: Socket) => {
           }
         } else {
           io.to(startedGame.creator).emit('updateTime', secondsLeft);
-          if (
-            secondsLeft === 0 ||
-            (guessedRight === playersLength - 1 && guessedRight !== 0)
-          ) {
+          if (secondsLeft === 0 || (guessedRight === playersLength - 1 && guessedRight !== 0)) {
             updateTurn();
           } else {
             --secondsLeft;

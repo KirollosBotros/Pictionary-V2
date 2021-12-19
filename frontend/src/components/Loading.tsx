@@ -1,9 +1,9 @@
 import {
-  Dialog,
-  makeStyles,
-  DialogContent,
   CircularProgress,
+  Dialog,
+  DialogContent,
   DialogTitle,
+  makeStyles,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({

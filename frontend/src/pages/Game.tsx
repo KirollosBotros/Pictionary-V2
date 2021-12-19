@@ -1,32 +1,32 @@
-import { useParams } from 'react-router-dom';
-import { Socket } from 'socket.io-client';
-import { useState, useEffect } from 'react';
-import { GameObject, Player } from '../types/game';
 import {
+  Avatar,
+  Box,
   Button,
   Dialog,
-  makeStyles,
   DialogContent,
   DialogTitle,
   FormControl,
   FormHelperText,
   Grid,
-  TextField,
-  Typography,
   List,
   ListItem,
   ListItemAvatar,
-  Avatar,
   ListItemText,
-  Box,
+  makeStyles,
+  TextField,
+  Typography,
 } from '@material-ui/core';
+import PersonIcon from '@material-ui/icons/Person';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
+import Loading from '../components/Loading';
+import host from '../config/host';
+import { GameObject, Player } from '../types/game';
 import { joinGame } from '../utils/joinGame';
 import { validatePassword } from '../utils/validatePassword';
 import MainGame from './MainGame';
-import host from '../config/host';
-import Loading from '../components/Loading';
-import PersonIcon from '@material-ui/icons/Person';
 
 interface GameProps {
   socket: Socket;
@@ -207,9 +207,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
   };
 
   if (redirectToGame && currWord) {
-    return (
-      <MainGame game={game} socket={socket} currWord={currWord} scoreBoard={scoreBoard} />
-    );
+    return <MainGame game={game} socket={socket} currWord={currWord} scoreBoard={scoreBoard} />;
   }
 
   if (connectionEstablished) {

@@ -1,11 +1,11 @@
-import { createStyles, Grid, makeStyles, Typography, Theme } from '@material-ui/core';
-import { useEffect, useState, useMemo } from 'react';
+import { createStyles, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import { ChatController, MuiChat } from 'chat-ui-react';
 import * as React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import GameCanvas from '../components/GameCanvas';
 import PlayerCard from '../components/PlayerCard';
 import { GameObject } from '../types/game';
-import { ChatController, MuiChat } from 'chat-ui-react';
 
 const TIMER = 45;
 
@@ -96,9 +96,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
   const [chatCtl] = useState(new ChatController());
   const [currentWord, setCurrentWord] = useState(currWord);
   const [scores, setScores] = useState<Record<string, number>>(scoreBoard);
-  const [sortedPlayers, setSortedPlayers] = useState<string[]>(
-    players.map((player) => player.id)
-  );
+  const [sortedPlayers, setSortedPlayers] = useState<string[]>(players.map((player) => player.id));
   const [correctGuessers, setCorrectGuessers] = useState<string[]>([]);
 
   useEffect(() => {

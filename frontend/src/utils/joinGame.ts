@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io-client';
-import { GameObject } from '../types/game';
 import history from '../config/history';
 import host from '../config/host';
+import { GameObject } from '../types/game';
 
 interface JoinGameProps {
   playerId: string;
