@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ActiveRooms from '../components/ActiveRooms';
 import CreateGameButton from '../components/CreateGameButton';
 import { Socket } from 'socket.io-client';
+import { useCookies } from 'react-cookie';
 
 interface LandingPageProps {
   socket: Socket;
@@ -35,13 +36,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LandingPage({ socket, connectionEstablished }: LandingPageProps) {
   const styles = useStyles();
+  const [cookies, setCookie] = useCookies(['name']);
 
   return (
     <Router>
       <>
         <Grid container direction="column" justifyContent="center">
           <Grid item className={styles.title}>
-            <Typography className={styles.welcome}>Welcome to PictoBear!</Typography>
+            <Typography className={styles.welcome} onClick={() => setCookie('name', 'kiro')}>
+              Welcome to PictoBear ({cookies.name})!
+            </Typography>
           </Grid>
           <Grid item>
             <Grid container direction="row" justifyContent="center">
