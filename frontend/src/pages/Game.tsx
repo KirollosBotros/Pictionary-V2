@@ -196,7 +196,10 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
   };
 
   const validatePass = async (v: any) => {
-    const validationResponse = await validatePassword({ game, v });
+    const validationResponse = await validatePassword({
+      game,
+      v,
+    });
     if (validationResponse === true) {
       return true;
     } else {
@@ -298,7 +301,11 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
           </Box>
         </Grid>
         <Dialog open={(!inGame && !successJoin) || game.status === 'game'}>
-          <DialogTitle style={{ textAlign: 'center' }}>
+          <DialogTitle
+            style={{
+              textAlign: 'center',
+            }}
+          >
             {fullGame
               ? 'Game is full'
               : game.status === 'game'

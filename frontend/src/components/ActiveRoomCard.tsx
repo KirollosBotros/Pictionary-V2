@@ -167,7 +167,13 @@ export default function ActiveRoomCard({
           alignItems="center"
           justifyContent="space-between"
         >
-          <Grid item xs={2} style={{ textAlign: 'left' }}>
+          <Grid
+            item
+            xs={2}
+            style={{
+              textAlign: 'left',
+            }}
+          >
             {isPrivate && (
               <LockSharpIcon
                 style={{
@@ -201,7 +207,11 @@ export default function ActiveRoomCard({
         onClose={handleClose}
         className={styles.modal}
       >
-        <DialogTitle style={{ textAlign: 'center' }}>
+        <DialogTitle
+          style={{
+            textAlign: 'center',
+          }}
+        >
           Join {game.name}
         </DialogTitle>
         <DialogContent>
@@ -257,7 +267,12 @@ export default function ActiveRoomCard({
         </DialogContent>
         <Button className={styles.button} onClick={handleSubmit(onSubmit)}>
           {loading ? (
-            <CircularProgress size={24} style={{ color: 'white' }} />
+            <CircularProgress
+              size={24}
+              style={{
+                color: 'white',
+              }}
+            />
           ) : (
             'Join Game'
           )}

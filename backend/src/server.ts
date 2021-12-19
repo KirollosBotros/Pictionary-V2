@@ -236,7 +236,12 @@ io.on('connection', (socket: Socket) => {
       let currWord = words[wordPointer];
 
       let scoreBoard = startedGame.players.reduce(
-        (acc: { [key: string]: number }, player) => {
+        (
+          acc: {
+            [key: string]: number;
+          },
+          player
+        ) => {
           acc[player.id] = 0;
           return acc;
         },

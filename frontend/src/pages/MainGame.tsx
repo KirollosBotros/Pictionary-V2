@@ -229,7 +229,13 @@ export default function MainGame({
             {secondsLeft}
           </Typography>
         </Grid>
-        <Grid item xs={8} style={{ textAlign: 'center' }}>
+        <Grid
+          item
+          xs={8}
+          style={{
+            textAlign: 'center',
+          }}
+        >
           {socket.id === currentDrawer ? (
             <Typography className={styles.word}>
               Your word to draw is: <strong>{currentWord}</strong>
