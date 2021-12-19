@@ -203,7 +203,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
     setMaxPlayers(2);
   };
 
-  let marks = [];
+  const marks = [];
   for (let i = 2; i <= 10; ++i) {
     marks[i - 2] = {
       value: i,

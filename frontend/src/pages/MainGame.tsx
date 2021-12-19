@@ -104,7 +104,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
   useEffect(() => {
     socket.on('userDisconnect', (data) => {
       setPlayers(data[1]);
-      let tempSorted = sortedPlayers;
+      const tempSorted = sortedPlayers;
       tempSorted.splice(sortedPlayers.indexOf(data[2]), 1);
       setSortedPlayers(tempSorted);
     });
