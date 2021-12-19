@@ -30,19 +30,13 @@ function App() {
           path="/"
           exact
           render={(props) => (
-            <LandingPage
-              socket={socket}
-              connectionEstablished={connectionEstablished}
-            />
+            <LandingPage socket={socket} connectionEstablished={connectionEstablished} />
           )}
         />
         <Route
           path="/game/:id"
           render={(props) => (
-            <Game
-              socket={socket}
-              connectionEstablished={connectionEstablished}
-            />
+            <Game socket={socket} connectionEstablished={connectionEstablished} />
           )}
         />
         <Route path="/player/:id" component={Player} />

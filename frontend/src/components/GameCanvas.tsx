@@ -21,9 +21,7 @@ export default function GameCanvas({
 }: GameCanvasProps) {
   const { creator } = game;
   let counter = 0;
-  const [currentDrawer, setCurrentDrawer] = useState<string>(
-    players[counter].id
-  );
+  const [currentDrawer, setCurrentDrawer] = useState<string>(players[counter].id);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 

@@ -47,18 +47,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LandingPage({
-  socket,
-  connectionEstablished,
-}: LandingPageProps) {
+export default function LandingPage({ socket, connectionEstablished }: LandingPageProps) {
   const styles = useStyles();
 
   if (!connectionEstablished) {
     return (
       <Dialog open>
-        <DialogTitle className={styles.connectingTitle}>
-          Connecting to server ...
-        </DialogTitle>
+        <DialogTitle className={styles.connectingTitle}>Connecting to server ...</DialogTitle>
         <DialogContent className={styles.connecting}>
           <CircularProgress size={60} />
         </DialogContent>
@@ -71,9 +66,7 @@ export default function LandingPage({
       <>
         <Grid container direction="column" justifyContent="center">
           <Grid item className={styles.title}>
-            <Typography className={styles.welcome}>
-              Welcome to PictoBear!
-            </Typography>
+            <Typography className={styles.welcome}>Welcome to PictoBear!</Typography>
           </Grid>
           <Grid item>
             <Grid container direction="row" justifyContent="center">

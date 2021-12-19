@@ -1,9 +1,6 @@
 import { GameObject } from '../types/game';
 
-export const getPlayerGame = (
-  games: GameObject[],
-  userId: string
-): GameObject | null => {
+export const getPlayerGame = (games: GameObject[], userId: string): GameObject | null => {
   let gameObj: GameObject | null = null;
   games.forEach((game) => {
     const { players } = game;

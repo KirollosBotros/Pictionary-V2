@@ -161,12 +161,7 @@ export default function ActiveRoomCard({
   return (
     <>
       <Button onClick={redirect} className={styles.roomCard}>
-        <Grid
-          container
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <Grid container direction="row" alignItems="center" justifyContent="space-between">
           <Grid
             item
             xs={2}
@@ -186,12 +181,7 @@ export default function ActiveRoomCard({
             <Typography className={styles.roomText}>{room}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <Grid
-              container
-              direction="row"
-              alignItems="center"
-              justifyContent="flex-end"
-            >
+            <Grid container direction="row" alignItems="center" justifyContent="flex-end">
               <Grid item>
                 <PersonIcon className={styles.personIcon} />
               </Grid>
@@ -202,11 +192,7 @@ export default function ActiveRoomCard({
           </Grid>
         </Grid>
       </Button>
-      <Dialog
-        open={openPassword || openName}
-        onClose={handleClose}
-        className={styles.modal}
-      >
+      <Dialog open={openPassword || openName} onClose={handleClose} className={styles.modal}>
         <DialogTitle
           style={{
             textAlign: 'center',
@@ -257,9 +243,7 @@ export default function ActiveRoomCard({
                 <FormHelperText error>{error}</FormHelperText>
               ) : (
                 errors?.password?.type === 'required' && (
-                  <FormHelperText error>
-                    Please enter the password
-                  </FormHelperText>
+                  <FormHelperText error>Please enter the password</FormHelperText>
                 )
               )}
             </FormControl>

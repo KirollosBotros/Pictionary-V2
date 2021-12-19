@@ -105,15 +105,9 @@ export default function JoinGameButton({ socket }: JoinGameButtonProps) {
       <Button className={styles.button} onClick={handleClick}>
         Join Game
       </Button>
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        className={styles.modal}
-      >
+      <Dialog open={openDialog} onClose={handleCloseDialog} className={styles.modal}>
         <DialogTitle className={styles.modal}>Join Game</DialogTitle>
-        <Typography className={styles.subText}>
-          Max Players: {maxPlayers}
-        </Typography>
+        <Typography className={styles.subText}>Max Players: {maxPlayers}</Typography>
         <div className={styles.modal}>
           <CustomSlider
             defaultValue={2}

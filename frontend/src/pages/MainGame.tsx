@@ -1,10 +1,4 @@
-import {
-  createStyles,
-  Grid,
-  makeStyles,
-  Typography,
-  Theme,
-} from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Typography, Theme } from '@material-ui/core';
 import { useEffect, useState, useMemo } from 'react';
 import * as React from 'react';
 import { Socket } from 'socket.io-client';
@@ -93,19 +87,12 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
   })
 );
 
-export default function MainGame({
-  game,
-  socket,
-  currWord,
-  scoreBoard,
-}: MainGameProps) {
+export default function MainGame({ game, socket, currWord, scoreBoard }: MainGameProps) {
   const [cnvHeight, setCnvHeight] = useState(0);
   const styles = useStyles({ cnvHeight });
   const [players, setPlayers] = useState(game.players);
   const [secondsLeft, setSecondsLeft] = useState<number>(TIMER);
-  const [currentDrawer, setCurrentDrawer] = useState<string>(
-    game.players[0].id
-  );
+  const [currentDrawer, setCurrentDrawer] = useState<string>(game.players[0].id);
   const [chatCtl] = useState(new ChatController());
   const [currentWord, setCurrentWord] = useState(currWord);
   const [scores, setScores] = useState<Record<string, number>>(scoreBoard);
@@ -142,10 +129,7 @@ export default function MainGame({
         always: true,
       },
       (response) => {
-        if (
-          !correctGuessers.includes(socket.id) &&
-          currentDrawer !== socket.id
-        ) {
+        if (!correctGuessers.includes(socket.id) && currentDrawer !== socket.id) {
           socket.emit('message', [game.creator, response.value, socket.id]);
         }
       }
@@ -206,19 +190,8 @@ export default function MainGame({
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      spacing={1}
-    >
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-        className={styles.mobileTimer}
-      >
+    <Grid container direction="column" alignItems="center" justifyContent="center" spacing={1}>
+      <Grid container direction="row" alignItems="center" className={styles.mobileTimer}>
         <Grid item xs={2}>
           <Typography
             style={{
@@ -241,9 +214,7 @@ export default function MainGame({
               Your word to draw is: <strong>{currentWord}</strong>
             </Typography>
           ) : (
-            <Typography className={styles.word}>
-              {'_ '.repeat(currentWord.length)}
-            </Typography>
+            <Typography className={styles.word}>{'_ '.repeat(currentWord.length)}</Typography>
           )}
         </Grid>
         <Grid item xs={2} />
@@ -254,9 +225,7 @@ export default function MainGame({
             Your word to draw is: <strong>{currentWord}</strong>
           </Typography>
         ) : (
-          <Typography className={styles.word}>
-            {'_ '.repeat(currentWord.length)}
-          </Typography>
+          <Typography className={styles.word}>{'_ '.repeat(currentWord.length)}</Typography>
         )}
       </Grid>
       <Grid item>
@@ -311,12 +280,7 @@ export default function MainGame({
             </Grid>
           </Grid>
           <Grid item>
-            <Grid
-              container
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-            >
+            <Grid container direction="column" justifyContent="center" alignItems="center">
               <Grid
                 item
                 style={{

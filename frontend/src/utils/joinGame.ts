@@ -11,13 +11,7 @@ interface JoinGameProps {
   socket: Socket;
 }
 
-export const joinGame = async ({
-  playerId,
-  game,
-  name,
-  password,
-  socket,
-}: JoinGameProps) => {
+export const joinGame = async ({ playerId, game, name, password, socket }: JoinGameProps) => {
   const redirectLink = '/game/' + game.creator;
   try {
     const res = await fetch(`${host}/join-game`, {

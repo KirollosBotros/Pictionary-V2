@@ -185,10 +185,7 @@ app.get('/validate', (req: express.Request, res: express.Response) => {
 
 app.get('/get-game', (req: express.Request, res: express.Response) => {
   const { userId } = req.query;
-  const gameObj = getPlayerGame(
-    privateGames.concat(publicGames),
-    userId as string
-  );
+  const gameObj = getPlayerGame(privateGames.concat(publicGames), userId as string);
   return res.status(200).json(gameObj);
 });
 
@@ -221,11 +218,7 @@ io.on('connection', (socket: Socket) => {
       }
       return;
     });
-    if (
-      startedGame?.creator &&
-      startedGame.players &&
-      startedGame.players.length > 0
-    ) {
+    if (startedGame?.creator && startedGame.players && startedGame.players.length > 0) {
       const TIMER = 45;
       const words = [...new Set(shuffleWords(wordList))];
       let secondsLeft = TIMER;
@@ -349,11 +342,7 @@ io.on('connection', (socket: Socket) => {
       game.players.forEach((player, idx) => {
         if (player.id === socket.id) {
           game.players.splice(idx, 1);
-          io.to(game.creator).emit('userDisconnect', [
-            player.name,
-            game.players,
-            player.id,
-          ]);
+          io.to(game.creator).emit('userDisconnect', [player.name, game.players, player.id]);
         }
       });
       if (game.players.length === 0) {

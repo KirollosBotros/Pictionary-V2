@@ -52,23 +52,13 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
   }
 
   return (
-    <Grid
-      container
-      direction="column"
-      alignItems="center"
-      className={styles.roomList}
-    >
+    <Grid container direction="column" alignItems="center" className={styles.roomList}>
       <Typography>
         {publicRooms.length !== 0 && `Public Rooms (${publicRooms.length})`}
       </Typography>
       {publicRooms?.map((room) => (
         <Grid item key={room.creator}>
-          <ActiveRoomCard
-            isPrivate={false}
-            game={room}
-            room={room.name}
-            socket={socket}
-          />
+          <ActiveRoomCard isPrivate={false} game={room} room={room.name} socket={socket} />
         </Grid>
       ))}
       <Typography>
@@ -76,12 +66,7 @@ export default function ActiveRooms({ socket }: ActiveRoomsProps) {
       </Typography>
       {privateRooms?.map((room) => (
         <Grid item key={room.creator}>
-          <ActiveRoomCard
-            isPrivate
-            game={room}
-            room={room.name}
-            socket={socket}
-          />
+          <ActiveRoomCard isPrivate game={room} room={room.name} socket={socket} />
         </Grid>
       ))}
     </Grid>

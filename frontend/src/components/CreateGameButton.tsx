@@ -149,10 +149,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
 
   const [type, setType] = useState<SetGameType>('Public');
 
-  const handleAlignment = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: GameType
-  ) => {
+  const handleAlignment = (event: React.MouseEvent<HTMLElement>, newAlignment: GameType) => {
     if (newAlignment !== null) {
       setType(newAlignment);
     }
@@ -219,11 +216,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
       <Button className={styles.button} onClick={handleClick}>
         Create Game
       </Button>
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        className={styles.modal}
-      >
+      <Dialog open={openDialog} onClose={handleCloseDialog} className={styles.modal}>
         <DialogTitle>Create Game</DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -315,11 +308,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                   />
                 </Grid>
                 <Grid item>
-                  <ToggleButtonGroup
-                    exclusive
-                    value={type}
-                    onChange={handleAlignment}
-                  >
+                  <ToggleButtonGroup exclusive value={type} onChange={handleAlignment}>
                     <ToggleButton disableRipple value="Public">
                       <Typography className={styles.type}>Public</Typography>
                     </ToggleButton>
@@ -346,9 +335,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                       />
                     </Grid>
                     {errors?.password?.type === 'required' && (
-                      <FormHelperText error>
-                        Please input a password
-                      </FormHelperText>
+                      <FormHelperText error>Please input a password</FormHelperText>
                     )}
                     {errors?.password?.type === 'maxLength' && (
                       <FormHelperText error>
@@ -362,10 +349,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleSubmit(onSubmit)}
-            className={styles.createGame}
-          >
+          <Button onClick={handleSubmit(onSubmit)} className={styles.createGame}>
             {loading ? (
               <CircularProgress
                 size={24}

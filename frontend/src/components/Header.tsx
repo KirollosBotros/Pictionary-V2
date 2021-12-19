@@ -31,12 +31,7 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <Toolbar className={styles.toolbar}>
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item>
             <Button disableRipple disableFocusRipple className={styles.title}>
               <a

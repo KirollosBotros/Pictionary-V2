@@ -165,9 +165,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
   if (!connectionEstablished) {
     return (
       <Dialog open>
-        <DialogTitle className={styles.connectingTitle}>
-          Connecting to server ...
-        </DialogTitle>
+        <DialogTitle className={styles.connectingTitle}>Connecting to server ...</DialogTitle>
         <DialogContent className={styles.connecting}>
           <CircularProgress size={60} />
         </DialogContent>
@@ -224,12 +222,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
 
   if (redirectToGame && currWord) {
     return (
-      <MainGame
-        game={game}
-        socket={socket}
-        currWord={currWord}
-        scoreBoard={scoreBoard}
-      />
+      <MainGame game={game} socket={socket} currWord={currWord} scoreBoard={scoreBoard} />
     );
   }
 
@@ -249,10 +242,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button
-                    onClick={copyMessageToClipboard}
-                    className={styles.twoButtons}
-                  >
+                  <Button onClick={copyMessageToClipboard} className={styles.twoButtons}>
                     {copyMessage}
                   </Button>
                 </Grid>
@@ -260,10 +250,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
             </Grid>
           ) : (
             <Grid item>
-              <Button
-                onClick={copyMessageToClipboard}
-                className={styles.twoButtons}
-              >
+              <Button onClick={copyMessageToClipboard} className={styles.twoButtons}>
                 {copyMessage}
               </Button>
             </Grid>
@@ -288,11 +275,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={
-                      <Typography className={styles.name}>
-                        {player.name}
-                      </Typography>
-                    }
+                    primary={<Typography className={styles.name}>{player.name}</Typography>}
                     secondary={game.creator === player.id ? 'Host' : ''}
                   />
                 </ListItem>
@@ -355,9 +338,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                       <FormHelperText error>{error}</FormHelperText>
                     ) : (
                       errors?.password?.type === 'required' && (
-                        <FormHelperText error>
-                          Please enter the password
-                        </FormHelperText>
+                        <FormHelperText error>Please enter the password</FormHelperText>
                       )
                     )}
                   </FormControl>
