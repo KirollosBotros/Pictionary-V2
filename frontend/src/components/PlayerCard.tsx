@@ -1,5 +1,5 @@
-import { Grid, makeStyles, Typography } from "@material-ui/core";
-import React from "react";
+import { Grid, makeStyles, Typography } from '@material-ui/core';
+import React from 'react';
 
 interface PlayerCardProps {
   name: string;
@@ -13,8 +13,8 @@ const useStyles = makeStyles((theme) => ({
   playerCard: {
     height: 50,
     borderRadius: 10,
-    backgroundColor: "#98c9fa",
-    verticalAlign: "middle",
+    backgroundColor: '#98c9fa',
+    verticalAlign: 'middle',
   },
   rank: {
     fontSize: 22,
@@ -40,7 +40,11 @@ export default function PlayerCard({
   return (
     <Grid
       item
-      style={{ textAlign: "center", verticalAlign: "center", width: 250 }}
+      style={{
+        textAlign: 'center',
+        verticalAlign: 'center',
+        width: 250,
+      }}
     >
       <Grid
         container
@@ -49,8 +53,8 @@ export default function PlayerCard({
         justifyContent="space-between"
         alignItems="center"
         style={{
-          backgroundColor: guessedRight ? "#78de93" : "#98c9fa",
-          border: drawBorder ? "3px solid #1643ab" : undefined,
+          backgroundColor: guessedRight ? '#78de93' : '#98c9fa',
+          border: drawBorder ? '3px solid #1643ab' : undefined,
         }}
       >
         <Grid item>

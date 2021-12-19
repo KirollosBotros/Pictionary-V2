@@ -4,14 +4,14 @@ import {
   makeStyles,
   Typography,
   Theme,
-} from "@material-ui/core";
-import { useEffect, useState, useMemo } from "react";
-import * as React from "react";
-import { Socket } from "socket.io-client";
-import GameCanvas from "../components/GameCanvas";
-import PlayerCard from "../components/PlayerCard";
-import { GameObject } from "../types/game";
-import { ChatController, MuiChat } from "chat-ui-react";
+} from '@material-ui/core';
+import { useEffect, useState, useMemo } from 'react';
+import * as React from 'react';
+import { Socket } from 'socket.io-client';
+import GameCanvas from '../components/GameCanvas';
+import PlayerCard from '../components/PlayerCard';
+import { GameObject } from '../types/game';
+import { ChatController, MuiChat } from 'chat-ui-react';
 
 const TIMER = 45;
 
@@ -30,23 +30,23 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
   createStyles({
     playerCard: {
       height: 50,
-      backgroundColor: "#98c9fa",
-      verticalAlign: "middle",
+      backgroundColor: '#98c9fa',
+      verticalAlign: 'middle',
     },
     desktopCarosel: {
       maxHeight: 100,
       [theme.breakpoints.down(1230)]: {
-        display: "none",
+        display: 'none',
       },
     },
     textBox: {
-      width: "100%",
-      height: "100%",
-      border: "3px solid black",
+      width: '100%',
+      height: '100%',
+      border: '3px solid black',
     },
     chatBox: {
       height: 200,
-      textAlign: "center",
+      textAlign: 'center',
       maxWidth: 330,
       [theme.breakpoints.up(800)]: {
         height: (props: Props) => props.cnvHeight - 15,
@@ -67,7 +67,7 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
     },
     word: {
       fontSize: 30,
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down('sm')]: {
         fontSize: 22,
         marginTop: theme.spacing(2),
       },
@@ -75,12 +75,12 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
     },
     mobile: {
       [theme.breakpoints.down(1230)]: {
-        display: "none",
+        display: 'none',
       },
     },
     mobileTimer: {
       [theme.breakpoints.up(1230)]: {
-        display: "none",
+        display: 'none',
       },
       [theme.breakpoints.down(1100)]: {
         marginTop: theme.spacing(2),
@@ -88,7 +88,7 @@ const useStyles = makeStyles<Theme, Props>((theme: Theme) =>
       [theme.breakpoints.down(600)]: {
         marginTop: theme.spacing(1),
       },
-      textAlign: "center",
+      textAlign: 'center',
     },
   })
 );
@@ -115,20 +115,20 @@ export default function MainGame({
   const [correctGuessers, setCorrectGuessers] = useState<string[]>([]);
 
   useEffect(() => {
-    socket.on("userDisconnect", (data) => {
+    socket.on('userDisconnect', (data) => {
       setPlayers(data[1]);
       let tempSorted = sortedPlayers;
       tempSorted.splice(sortedPlayers.indexOf(data[2]), 1);
       setSortedPlayers(tempSorted);
     });
-    socket.on("updateTime", (secondsLeft: number) => {
+    socket.on('updateTime', (secondsLeft: number) => {
       setSecondsLeft(secondsLeft);
     });
-    socket.on("nextTurn", ([word, player]) => {
+    socket.on('nextTurn', ([word, player]) => {
       setCurrentWord(word);
       setCorrectGuessers([]);
     });
-    socket.on("updateScore", ([updatedScores, sortedPlayers]) => {
+    socket.on('updateScore', ([updatedScores, sortedPlayers]) => {
       setScores(updatedScores);
       setSortedPlayers(sortedPlayers);
     });
@@ -137,8 +137,8 @@ export default function MainGame({
   useMemo(async () => {
     await chatCtl.setActionRequest(
       {
-        type: "text",
-        placeholder: "Guess word here",
+        type: 'text',
+        placeholder: 'Guess word here',
         always: true,
       },
       (response) => {
@@ -146,18 +146,18 @@ export default function MainGame({
           !correctGuessers.includes(socket.id) &&
           currentDrawer !== socket.id
         ) {
-          socket.emit("message", [game.creator, response.value, socket.id]);
+          socket.emit('message', [game.creator, response.value, socket.id]);
         }
       }
     );
-    socket.off("new message");
-    socket.on("new message", ([msg, author]) => {
+    socket.off('new message');
+    socket.on('new message', ([msg, author]) => {
       if (msg.toLowerCase().trim() === currentWord.toLowerCase().trim()) {
-        let name: string = "";
+        let name: string = '';
         game.players.forEach((player) => {
           if (player.id === author) {
             name = player.name;
-            socket.emit("guessedRight", [game.creator, player.id]);
+            socket.emit('guessedRight', [game.creator, player.id]);
             let tempGuessers = correctGuessers;
             tempGuessers.push(player.id);
             setCorrectGuessers(tempGuessers);
@@ -165,27 +165,27 @@ export default function MainGame({
         });
         const guessedRightMsg = `${name} guessed the word!`;
         chatCtl.addMessage({
-          type: "text",
+          type: 'text',
           content: guessedRightMsg,
           self: false,
         });
       } else if (author !== socket.id) {
         chatCtl.addMessage({
-          type: "text",
+          type: 'text',
           content: msg,
           self: false,
         });
       }
     });
-    socket.off("userDisconnect");
-    socket.on("userDisconnect", (data) => {
+    socket.off('userDisconnect');
+    socket.on('userDisconnect', (data) => {
       setPlayers(data[1]);
       let tempSorted = sortedPlayers;
       tempSorted.splice(sortedPlayers.indexOf(data[2]), 1);
       setSortedPlayers(tempSorted);
       const disconnectedMsg = `${data[0]} has left the game`;
       chatCtl.addMessage({
-        type: "text",
+        type: 'text',
         content: disconnectedMsg,
         self: false,
       });
@@ -220,18 +220,23 @@ export default function MainGame({
         className={styles.mobileTimer}
       >
         <Grid item xs={2}>
-          <Typography style={{ fontSize: 24, marginTop: 15 }}>
+          <Typography
+            style={{
+              fontSize: 24,
+              marginTop: 15,
+            }}
+          >
             {secondsLeft}
           </Typography>
         </Grid>
-        <Grid item xs={8} style={{ textAlign: "center" }}>
+        <Grid item xs={8} style={{ textAlign: 'center' }}>
           {socket.id === currentDrawer ? (
             <Typography className={styles.word}>
               Your word to draw is: <strong>{currentWord}</strong>
             </Typography>
           ) : (
             <Typography className={styles.word}>
-              {"_ ".repeat(currentWord.length)}
+              {'_ '.repeat(currentWord.length)}
             </Typography>
           )}
         </Grid>
@@ -244,7 +249,7 @@ export default function MainGame({
           </Typography>
         ) : (
           <Typography className={styles.word}>
-            {"_ ".repeat(currentWord.length)}
+            {'_ '.repeat(currentWord.length)}
           </Typography>
         )}
       </Grid>
@@ -253,7 +258,10 @@ export default function MainGame({
           <Grid
             item
             className={styles.desktopCarosel}
-            style={{ maxHeight: cnvHeight, overflowY: "auto" }}
+            style={{
+              maxHeight: cnvHeight,
+              overflowY: 'auto',
+            }}
           >
             <Grid
               container
@@ -263,11 +271,17 @@ export default function MainGame({
               alignItems="center"
             >
               <Grid item>
-                <Typography style={{ fontSize: 42 }}>{secondsLeft}</Typography>
+                <Typography
+                  style={{
+                    fontSize: 42,
+                  }}
+                >
+                  {secondsLeft}
+                </Typography>
               </Grid>
               {sortedPlayers?.map((player, idx) => {
-                let name = "";
-                let id = "";
+                let name = '';
+                let id = '';
                 players.forEach((playerObj) => {
                   if (player === playerObj.id) {
                     name = playerObj.name;
@@ -275,7 +289,7 @@ export default function MainGame({
                   }
                 });
                 // change up this stuff to account for rank change
-                if (name !== "") {
+                if (name !== '') {
                   return (
                     <PlayerCard
                       name={name}
@@ -297,7 +311,12 @@ export default function MainGame({
               justifyContent="center"
               alignItems="center"
             >
-              <Grid item style={{ touchAction: "none" }}>
+              <Grid
+                item
+                style={{
+                  touchAction: 'none',
+                }}
+              >
                 <GameCanvas
                   socket={socket}
                   game={game}

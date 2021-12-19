@@ -1,22 +1,22 @@
-import { makeStyles, Grid, Typography } from "@material-ui/core";
-import ActiveRoomCard from "./ActiveRoomCard";
-import { useState, useEffect } from "react";
-import { Socket } from "socket.io-client";
-import { GameObject } from "../types/game";
-import host from "../config/host";
+import { makeStyles, Grid, Typography } from '@material-ui/core';
+import ActiveRoomCard from './ActiveRoomCard';
+import { useState, useEffect } from 'react';
+import { Socket } from 'socket.io-client';
+import { GameObject } from '../types/game';
+import host from '../config/host';
 
 const useStyles = makeStyles((theme) => ({
   roomList: {
     marginTop: 15,
   },
   roomsTitle: {
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: theme.spacing(3),
     fontSize: 22,
     [theme.breakpoints.down(490)]: {
       maxWidth: 300,
       fontSize: 18,
-      margin: "0 auto",
+      margin: '0 auto',
       marginTop: theme.spacing(3),
     },
   },

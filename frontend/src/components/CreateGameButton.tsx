@@ -13,16 +13,16 @@ import {
   FormHelperText,
   FormControl,
   CircularProgress,
-} from "@material-ui/core";
-import { useState } from "react";
-import { Socket } from "socket.io-client";
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
-import { useForm } from "react-hook-form";
-import history from "../config/history";
-import { GameObject } from "../types/game";
-import host from "../config/host";
-const Filter = require("bad-words");
+} from '@material-ui/core';
+import { useState } from 'react';
+import { Socket } from 'socket.io-client';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { useForm } from 'react-hook-form';
+import history from '../config/history';
+import { GameObject } from '../types/game';
+import host from '../config/host';
+const Filter = require('bad-words');
 const filter = new Filter();
 
 const useStyles = makeStyles((theme) => ({
@@ -30,14 +30,14 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 10,
     marginRight: 10,
     marginTop: 10,
-    backgroundColor: "#9813F0",
-    "&:hover": {
-      backgroundColor: "#b553d4",
+    backgroundColor: '#9813F0',
+    '&:hover': {
+      backgroundColor: '#b553d4',
     },
   },
   nameInput: {
     marginBottom: theme.spacing(1),
-    width: "100%",
+    width: '100%',
   },
   modal: {
     marginRight: 5,
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down(325)]: {
       minWidth: 0,
     },
-    textAlign: "center",
+    textAlign: 'center',
   },
   passwordInput: {
     marginTop: 20,
@@ -71,18 +71,18 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 550,
   },
   type: {
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: 12,
     },
     fontSize: 18,
     fontWeight: 550,
-    color: "black",
+    color: 'black',
   },
   createGame: {
-    margin: "0 auto",
+    margin: '0 auto',
     marginBottom: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#4f76d1",
+    '&:hover': {
+      backgroundColor: '#4f76d1',
     },
   },
 }));
@@ -95,11 +95,11 @@ const CustomSlider = withStyles((theme) => ({
   thumb: {
     height: 24,
     width: 24,
-    border: "2px solid currentColor",
+    border: '2px solid currentColor',
     marginTop: -8,
     marginLeft: -12,
-    "&:focus, &:hover, &$active": {
-      boxShadow: "inherit",
+    '&:focus, &:hover, &$active': {
+      boxShadow: 'inherit',
     },
   },
   mark: {
@@ -109,7 +109,7 @@ const CustomSlider = withStyles((theme) => ({
     marginTop: 0,
   },
   valueLabel: {
-    left: "calc(-50% + 4px)",
+    left: 'calc(-50% + 4px)',
   },
   track: {
     height: 8,
@@ -123,7 +123,7 @@ const CustomSlider = withStyles((theme) => ({
 
 interface IFormInput {
   maxPlayers: number;
-  type: "Public" | "Private";
+  type: 'Public' | 'Private';
   password?: string;
   name: string;
   playerName: string;
@@ -144,10 +144,10 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
     formState: { errors },
   } = useForm<IFormInput>();
 
-  type GameType = "Public" | "Private" | null;
+  type GameType = 'Public' | 'Private' | null;
   type SetGameType = NonNullable<GameType>;
 
-  const [type, setType] = useState<SetGameType>("Public");
+  const [type, setType] = useState<SetGameType>('Public');
 
   const handleAlignment = (
     event: React.MouseEvent<HTMLElement>,
@@ -174,19 +174,19 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
           name: playerName,
         },
       ],
-      status: "lobby",
+      status: 'lobby',
     };
     try {
       const res = await fetch(`${host}/create-game`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(gameObj),
       });
       const resJSON = await res.json();
       const { status } = resJSON;
-      if (status === "successful") {
+      if (status === 'successful') {
         history.push(`/game/${gameObj.creator}`);
       } else {
         const { reason } = resJSON;
@@ -232,49 +232,70 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                 <Grid item>
                   <TextField
                     variant="outlined"
-                    inputProps={{ maxLength: 10 }}
+                    inputProps={{
+                      maxLength: 10,
+                    }}
                     required
                     label="Enter Your Name"
                     className={styles.nameInput}
-                    {...register("playerName", {
+                    {...register('playerName', {
                       required: true,
                       maxLength: 10,
                       validate: (v) => !filter.isProfane(v),
                     })}
                   />
                 </Grid>
-                {errors?.playerName?.type === "required" && (
-                  <FormHelperText style={{ marginBottom: 15 }} error>
+                {errors?.playerName?.type === 'required' && (
+                  <FormHelperText
+                    style={{
+                      marginBottom: 15,
+                    }}
+                    error
+                  >
                     Please enter your name
                   </FormHelperText>
                 )}
-                {errors?.playerName?.type === "validate" && (
-                  <FormHelperText style={{ marginBottom: 15 }} error>
+                {errors?.playerName?.type === 'validate' && (
+                  <FormHelperText
+                    style={{
+                      marginBottom: 15,
+                    }}
+                    error
+                  >
                     Please enter a clean name
                   </FormHelperText>
                 )}
                 <Grid item>
                   <TextField
                     variant="outlined"
-                    inputProps={{ maxLength: 10 }}
+                    inputProps={{
+                      maxLength: 10,
+                    }}
                     required
                     label="Enter Game Name"
                     className={styles.nameInput}
-                    {...register("name", {
+                    {...register('name', {
                       required: true,
                       maxLength: 10,
                     })}
                   />
                 </Grid>
-                {errors?.name?.type === "required" && (
-                  <FormHelperText style={{ marginBottom: 15 }} error>
+                {errors?.name?.type === 'required' && (
+                  <FormHelperText
+                    style={{
+                      marginBottom: 15,
+                    }}
+                    error
+                  >
                     Please input a game name
                   </FormHelperText>
                 )}
               </FormControl>
               <Typography
                 className={styles.subText}
-                style={{ textAlign: "left" }}
+                style={{
+                  textAlign: 'left',
+                }}
               >
                 Max Players: {maxPlayers}
               </Typography>
@@ -283,7 +304,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                   <CustomSlider
                     defaultValue={2}
                     onChange={(_, val: number | number[]) => {
-                      if (typeof val === "number") {
+                      if (typeof val === 'number') {
                         setMaxPlayers(val);
                       }
                     }}
@@ -307,27 +328,29 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                     </ToggleButton>
                   </ToggleButtonGroup>
                 </Grid>
-                {type === "Private" && (
+                {type === 'Private' && (
                   <FormControl>
                     <Grid item>
                       <TextField
                         variant="outlined"
                         required
-                        inputProps={{ maxLength: 10 }}
+                        inputProps={{
+                          maxLength: 10,
+                        }}
                         label="Enter Password"
                         className={styles.passwordInput}
-                        {...register("password", {
+                        {...register('password', {
                           required: true,
                           maxLength: 10,
                         })}
                       />
                     </Grid>
-                    {errors?.password?.type === "required" && (
+                    {errors?.password?.type === 'required' && (
                       <FormHelperText error>
                         Please input a password
                       </FormHelperText>
                     )}
-                    {errors?.password?.type === "maxLength" && (
+                    {errors?.password?.type === 'maxLength' && (
                       <FormHelperText error>
                         Password must be less than 10 characters
                       </FormHelperText>
@@ -344,9 +367,14 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
             className={styles.createGame}
           >
             {loading ? (
-              <CircularProgress size={24} style={{ color: "white" }} />
+              <CircularProgress
+                size={24}
+                style={{
+                  color: 'white',
+                }}
+              />
             ) : (
-              "Create Game"
+              'Create Game'
             )}
           </Button>
         </DialogActions>

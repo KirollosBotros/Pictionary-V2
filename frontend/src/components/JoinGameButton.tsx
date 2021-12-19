@@ -6,17 +6,17 @@ import {
   withStyles,
   Slider,
   Typography,
-} from "@material-ui/core";
-import { useState } from "react";
-import { Socket } from "socket.io-client";
+} from '@material-ui/core';
+import { useState } from 'react';
+import { Socket } from 'socket.io-client';
 
 const useStyles = makeStyles((theme) => ({
   button: {
     marginLeft: 10,
     marginRight: 10,
     marginTop: 10,
-    "&:hover": {
-      backgroundColor: "#0944A8",
+    '&:hover': {
+      backgroundColor: '#0944A8',
     },
   },
   modal: {
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down(325)]: {
       minWidth: 0,
     },
-    textAlign: "center",
+    textAlign: 'center',
   },
   subText: {
     fontSize: 18,
@@ -57,11 +57,11 @@ const CustomSlider = withStyles((theme) => ({
   thumb: {
     height: 24,
     width: 24,
-    border: "2px solid currentColor",
+    border: '2px solid currentColor',
     marginTop: -8,
     marginLeft: -12,
-    "&:focus, &:hover, &$active": {
-      boxShadow: "inherit",
+    '&:focus, &:hover, &$active': {
+      boxShadow: 'inherit',
     },
   },
   mark: {
@@ -71,7 +71,7 @@ const CustomSlider = withStyles((theme) => ({
     marginTop: 0,
   },
   valueLabel: {
-    left: "calc(-50% + 4px)",
+    left: 'calc(-50% + 4px)',
   },
   track: {
     height: 8,
@@ -118,7 +118,7 @@ export default function JoinGameButton({ socket }: JoinGameButtonProps) {
           <CustomSlider
             defaultValue={2}
             onChange={(_, val) => {
-              if (typeof val === "number") {
+              if (typeof val === 'number') {
                 setMaxPlayers(val);
               }
             }}

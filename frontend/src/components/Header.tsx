@@ -1,27 +1,27 @@
-import React from "react";
-import { Toolbar, Button, Grid, makeStyles } from "@material-ui/core";
+import React from 'react';
+import { Toolbar, Button, Grid, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     backgroundColor: theme.palette.primary.main,
   },
   header: {
-    width: "100vw",
+    width: '100vw',
     marginLeft: -8,
     marginTop: -10,
   },
   title: {
-    color: "white",
+    color: 'white',
     fontSize: 36,
     [theme.breakpoints.down(500)]: {
       fontSize: 25,
     },
-    textAlign: "center",
+    textAlign: 'center',
     background: theme.palette.primary.main,
   },
   link: {
-    textDecoration: "none",
-    color: "white",
+    textDecoration: 'none',
+    color: 'white',
   },
 }));
 
@@ -43,7 +43,7 @@ export default function Header() {
                 href="/"
                 className={styles.link}
                 onClick={() => {
-                  window.location.href = "/";
+                  window.location.href = '/';
                 }}
               >
                 PictoBear

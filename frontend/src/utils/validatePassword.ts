@@ -1,5 +1,5 @@
-import host from "../config/host";
-import { GameObject } from "../types/game";
+import host from '../config/host';
+import { GameObject } from '../types/game';
 
 interface ValidatePasswordProps {
   game: GameObject;
@@ -12,7 +12,7 @@ export const validatePassword = async ({ game, v }: ValidatePasswordProps) => {
     const res = await fetch(validationEndpoint);
     const resJSON = await res.json();
     const { status } = resJSON;
-    if (status === "success") {
+    if (status === 'success') {
       return true;
     } else {
       const { reason } = resJSON;

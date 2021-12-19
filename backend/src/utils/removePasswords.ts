@@ -1,4 +1,4 @@
-import { GameObject } from "../types/game";
+import { GameObject } from '../types/game';
 
 export const removePasswords = (games: GameObject[]) => {
   const temp = games;

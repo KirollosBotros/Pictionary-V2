@@ -1,7 +1,7 @@
-import { Socket } from "socket.io-client";
-import { GameObject } from "../types/game";
-import history from "../config/history";
-import host from "../config/host";
+import { Socket } from 'socket.io-client';
+import { GameObject } from '../types/game';
+import history from '../config/history';
+import host from '../config/host';
 
 interface JoinGameProps {
   playerId: string;
@@ -18,12 +18,12 @@ export const joinGame = async ({
   password,
   socket,
 }: JoinGameProps) => {
-  const redirectLink = "/game/" + game.creator;
+  const redirectLink = '/game/' + game.creator;
   try {
     const res = await fetch(`${host}/join-game`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         creator: game.creator,
@@ -34,15 +34,15 @@ export const joinGame = async ({
     });
     const resJSON = await res.json();
     const { status } = resJSON;
-    socket.emit("updatePlayers", game);
-    if (status === "successful") {
-      socket.emit("joinGame", {
+    socket.emit('updatePlayers', game);
+    if (status === 'successful') {
+      socket.emit('joinGame', {
         name,
         id: playerId,
         gameId: game.creator,
       });
       history.push(redirectLink);
-      return "success";
+      return 'success';
     }
     return;
   } catch (err) {

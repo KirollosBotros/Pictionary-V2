@@ -1,4 +1,4 @@
-import { GameObject } from "../types/game";
+import { GameObject } from '../types/game';
 
 export const getPlayerGame = (
   games: GameObject[],

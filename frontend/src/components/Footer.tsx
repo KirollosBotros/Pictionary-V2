@@ -1,6 +1,6 @@
-import React from "react";
-import { Toolbar, Typography, Grid, makeStyles } from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import React from 'react';
+import { Toolbar, Typography, Grid, makeStyles } from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -9,31 +9,31 @@ const useStyles = makeStyles((theme) => ({
   lockIcon: {
     marginTop: 4,
     marginRight: 4,
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       marginRight: 0,
     },
   },
   footer: {
     left: 0,
     bottom: 0,
-    width: "100%",
-    position: "fixed",
+    width: '100%',
+    position: 'fixed',
     [theme.breakpoints.down(400)]: {
-      display: "none",
+      display: 'none',
     },
   },
   bottomText: {
-    color: "white",
+    color: 'white',
     fontSize: 22,
     [theme.breakpoints.down(500)]: {
       fontSize: 16,
     },
-    textAlign: "center",
+    textAlign: 'center',
     background: theme.palette.primary.main,
   },
   click: {
-    textDecoration: "none",
-    color: "white",
+    textDecoration: 'none',
+    color: 'white',
   },
 }));
 

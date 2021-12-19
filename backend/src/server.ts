@@ -1,45 +1,45 @@
-import { Socket } from "socket.io";
-import { GameObject, JoinGameProps } from "./types/game";
-import { findGame } from "./utils/findGame";
-import { authenticatePassword } from "./utils/authenticatePassword";
-import { removePasswords } from "./utils/removePasswords";
-import express = require("express");
-import { getPlayerGame } from "./utils/getPlayerGame";
-import { shuffleWords, wordList } from "./utils/wordList";
-const date = require("date-and-time");
+import { Socket } from 'socket.io';
+import { GameObject, JoinGameProps } from './types/game';
+import { findGame } from './utils/findGame';
+import { authenticatePassword } from './utils/authenticatePassword';
+import { removePasswords } from './utils/removePasswords';
+import express = require('express');
+import { getPlayerGame } from './utils/getPlayerGame';
+import { shuffleWords, wordList } from './utils/wordList';
+const date = require('date-and-time');
 
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const socket = require("socket.io");
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const socket = require('socket.io');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-require("dotenv").config();
+require('dotenv').config();
 const { TO_EMAIL: to, FROM_EMAIL: from, SENDGRID_API_KEY, PROD } = process.env;
-const sgMail = require("@sendgrid/mail");
+const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(SENDGRID_API_KEY);
 
 const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT, async () => {
   const now = new Date();
-  const pattern = date.compile("MMM D YYYY h:m:s A");
+  const pattern = date.compile('MMM D YYYY h:m:s A');
   const val = date.format(now, pattern);
   console.log(`Server running on port, ${PORT} (${val})`);
-  if (PROD === "true") {
+  if (PROD === 'true') {
     const msg = {
       from: {
         email: from,
-        name: "PictoBear",
+        name: 'PictoBear',
       },
       to,
-      subject: "Pictionary Server Started",
+      subject: 'Pictionary Server Started',
       text: `The pictionary server has started and is running on port ${PORT}`,
     };
     sgMail
       .send(msg)
       .then(() => {
-        console.log("email sent");
+        console.log('email sent');
       })
       .catch((error: any) => {
         console.log(error.response.body);
@@ -49,7 +49,7 @@ const server = app.listen(PORT, async () => {
 
 const io = socket(server, {
   cors: {
-    origin: "*",
+    origin: '*',
   },
 });
 
@@ -57,28 +57,28 @@ let publicGames: GameObject[] = [];
 let privateGames: GameObject[] = [];
 let connectedUsers = 0;
 
-app.get("/get-games", (req: express.Request, res: express.Response) => {
+app.get('/get-games', (req: express.Request, res: express.Response) => {
   res.json({
     privateGames: removePasswords(privateGames),
     publicGames,
   });
 });
 
-app.get("/send-email", (req: express.Request, res: express.Response) => {
-  if (PROD === "true") {
+app.get('/send-email', (req: express.Request, res: express.Response) => {
+  if (PROD === 'true') {
     const msg = {
       from: {
         email: from,
-        name: "PictoBear",
+        name: 'PictoBear',
       },
       to,
-      subject: "A Recruiter has viewed PictoBear!",
+      subject: 'A Recruiter has viewed PictoBear!',
       text: `Hey Kiro, the last person that viewed PictoBear is probably a recruiter.`,
     };
     sgMail
       .send(msg)
       .then(() => {
-        console.log("email sent");
+        console.log('email sent');
       })
       .catch((error: any) => {
         console.log(error.response.body);
@@ -86,16 +86,16 @@ app.get("/send-email", (req: express.Request, res: express.Response) => {
   }
 });
 
-app.post("/create-game", (req: express.Request, res: express.Response) => {
+app.post('/create-game', (req: express.Request, res: express.Response) => {
   const gameObj: GameObject = req.body;
   const { type } = gameObj;
   if (!gameObj) {
     return res.status(200).json({
-      status: "error",
-      reason: "Cannot find game",
+      status: 'error',
+      reason: 'Cannot find game',
     });
   }
-  if (type === "Private") {
+  if (type === 'Private') {
     privateGames.push(gameObj);
   } else {
     publicGames.push(gameObj);
@@ -103,11 +103,11 @@ app.post("/create-game", (req: express.Request, res: express.Response) => {
   console.log(gameObj);
   logGameNumbers();
 
-  if (PROD === "true") {
+  if (PROD === 'true') {
     const msg = {
       from: {
         email: from,
-        name: "PictoBear",
+        name: 'PictoBear',
       },
       to,
       subject: `${gameObj.players[0].name} has Created a ${type} Game`,
@@ -122,7 +122,7 @@ app.post("/create-game", (req: express.Request, res: express.Response) => {
     sgMail
       .send(msg)
       .then(() => {
-        console.log("sent create email");
+        console.log('sent create email');
       })
       .catch((error: any) => {
         console.log(error);
@@ -130,37 +130,37 @@ app.post("/create-game", (req: express.Request, res: express.Response) => {
   }
 
   return res.status(200).json({
-    status: "successful",
+    status: 'successful',
   });
 });
 
-app.post("/join-game", (req: express.Request, res: express.Response) => {
+app.post('/join-game', (req: express.Request, res: express.Response) => {
   const { creator, name, id } = req.body;
   const gameObj = findGame(creator, privateGames.concat(publicGames));
   if (!gameObj) {
     return res.status(200).json({
-      status: "unsuccessful",
-      reason: "Game does not exist",
+      status: 'unsuccessful',
+      reason: 'Game does not exist',
     });
   }
   if (gameObj.players.length >= gameObj.maxPlayers) {
     return res.status(200).json({
-      status: "unsuccessful",
-      reason: "Game is full",
+      status: 'unsuccessful',
+      reason: 'Game is full',
     });
   }
-  if (gameObj.type === "Private") {
+  if (gameObj.type === 'Private') {
     const valid = authenticatePassword({
       req,
       res,
       privateGames,
-      method: "POST",
+      method: 'POST',
       app,
     });
     if (!valid) {
       return res.status(200).json({
-        status: "unsuccessful",
-        reason: "Unauthenticated",
+        status: 'unsuccessful',
+        reason: 'Unauthenticated',
       });
     }
   }
@@ -168,22 +168,22 @@ app.post("/join-game", (req: express.Request, res: express.Response) => {
   gameObj.players.push(newPlayer);
   console.log(gameObj);
   return res.status(200).json({
-    status: "successful",
+    status: 'successful',
   });
 });
 
 // http://localhost:3001/validate?creator=asd&password=passss
-app.get("/validate", (req: express.Request, res: express.Response) => {
+app.get('/validate', (req: express.Request, res: express.Response) => {
   authenticatePassword({
     req,
     res,
     privateGames: privateGames.concat(publicGames),
-    method: "GET",
+    method: 'GET',
     app,
   });
 });
 
-app.get("/get-game", (req: express.Request, res: express.Response) => {
+app.get('/get-game', (req: express.Request, res: express.Response) => {
   const { userId } = req.query;
   const gameObj = getPlayerGame(
     privateGames.concat(publicGames),
@@ -192,32 +192,32 @@ app.get("/get-game", (req: express.Request, res: express.Response) => {
   return res.status(200).json(gameObj);
 });
 
-io.on("connection", (socket: Socket) => {
+io.on('connection', (socket: Socket) => {
   ++connectedUsers;
   console.log(`There are ${connectedUsers} connected users`);
 
-  socket.on("createGame", (data: GameObject) => {
-    data.type === "Public" ? publicGames.push(data) : privateGames.push(data);
+  socket.on('createGame', (data: GameObject) => {
+    data.type === 'Public' ? publicGames.push(data) : privateGames.push(data);
   });
 
-  socket.on("getGames", () => {
-    socket.emit("getGamesResponse", [publicGames, privateGames]);
+  socket.on('getGames', () => {
+    socket.emit('getGamesResponse', [publicGames, privateGames]);
   });
 
-  socket.on("joinGame", (data: JoinGameProps) => {
+  socket.on('joinGame', (data: JoinGameProps) => {
     const { gameId } = data;
     socket.join(gameId);
     const gameObj = findGame(gameId, privateGames.concat(publicGames));
-    io.to(gameId).emit("userConnection", gameObj);
+    io.to(gameId).emit('userConnection', gameObj);
   });
 
-  socket.on("startedGame", (data: string) => {
+  socket.on('startedGame', (data: string) => {
     const totalGames = privateGames.concat(publicGames);
     let startedGame: GameObject = totalGames[0];
     totalGames.forEach((game) => {
       if (game.creator === data) {
         startedGame = game;
-        game.status = "game";
+        game.status = 'game';
       }
       return;
     });
@@ -242,7 +242,7 @@ io.on("connection", (socket: Socket) => {
         },
         {}
       );
-      socket.on("guessedRight", ([creator, playerId]) => {
+      socket.on('guessedRight', ([creator, playerId]) => {
         ++guessedRight;
         const points = secondsLeft;
         scoreBoard[playerId] += points;
@@ -258,12 +258,12 @@ io.on("connection", (socket: Socket) => {
             return -1;
           }
         });
-        console.log("sortedPlayers");
+        console.log('sortedPlayers');
         const sortedPlayers = sortedScores.map((item) => item[0]);
         console.log(sortedPlayers);
-        io.to(creator).emit("updateScore", [scoreBoard, sortedPlayers]);
+        io.to(creator).emit('updateScore', [scoreBoard, sortedPlayers]);
       });
-      io.to(startedGame.creator).emit("startGame", [currWord, scoreBoard]);
+      io.to(startedGame.creator).emit('startGame', [currWord, scoreBoard]);
       let playersLength = startedGame.players.length;
       const updateTurn = () => {
         guessedRight = 0;
@@ -281,7 +281,7 @@ io.on("connection", (socket: Socket) => {
         currDrawer = player.id;
         currWord = words[wordPointer];
         console.log(startedGame.players);
-        io.to(startedGame.creator).emit("nextTurn", [currWord, player]);
+        io.to(startedGame.creator).emit('nextTurn', [currWord, player]);
         secondsLeft = TIMER;
       };
       setInterval(() => {
@@ -303,7 +303,7 @@ io.on("connection", (socket: Socket) => {
             updateTurn();
           }
         } else {
-          io.to(startedGame.creator).emit("updateTime", secondsLeft);
+          io.to(startedGame.creator).emit('updateTime', secondsLeft);
           if (
             secondsLeft === 0 ||
             (guessedRight === playersLength - 1 && guessedRight !== 0)
@@ -317,21 +317,21 @@ io.on("connection", (socket: Socket) => {
     }
   });
 
-  socket.on("message", ([creator, message, author]: string[]) => {
-    io.to(creator).emit("new message", [message, author]);
+  socket.on('message', ([creator, message, author]: string[]) => {
+    io.to(creator).emit('new message', [message, author]);
   });
 
-  socket.on("mouse", (data: (string | number[])[]) => {
+  socket.on('mouse', (data: (string | number[])[]) => {
     const lineCords = data[1];
-    io.to(data[0]).emit("drawing", lineCords);
+    io.to(data[0]).emit('drawing', lineCords);
   });
 
-  socket.on("clearedBoard", (creator: string) => {
-    io.to(creator).emit("clearBoard");
+  socket.on('clearedBoard', (creator: string) => {
+    io.to(creator).emit('clearBoard');
   });
 
-  socket.on("disconnect", () => {
-    console.log("disconnect");
+  socket.on('disconnect', () => {
+    console.log('disconnect');
     --connectedUsers;
     console.log(`There are ${connectedUsers} connected users`);
     onDisconnect(socket);
@@ -344,7 +344,7 @@ io.on("connection", (socket: Socket) => {
       game.players.forEach((player, idx) => {
         if (player.id === socket.id) {
           game.players.splice(idx, 1);
-          io.to(game.creator).emit("userDisconnect", [
+          io.to(game.creator).emit('userDisconnect', [
             player.name,
             game.players,
             player.id,
@@ -352,7 +352,7 @@ io.on("connection", (socket: Socket) => {
         }
       });
       if (game.players.length === 0) {
-        if (game.type === "Public") {
+        if (game.type === 'Public') {
           const newPublic = publicGames.filter((publicGame) => {
             if (game.creator === publicGame.creator) {
               return false;
@@ -361,7 +361,7 @@ io.on("connection", (socket: Socket) => {
           });
           publicGames = newPublic;
         }
-        if (game.type === "Private") {
+        if (game.type === 'Private') {
           const newPrivate = privateGames.filter((privateGame) => {
             if (game.creator === privateGame.creator) {
               return false;

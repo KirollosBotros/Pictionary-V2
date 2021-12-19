@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
-import { Socket } from "socket.io-client";
-import { useState, useEffect } from "react";
-import { GameObject, Player } from "../types/game";
+import { useParams } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
+import { useState, useEffect } from 'react';
+import { GameObject, Player } from '../types/game';
 import {
   Button,
   Dialog,
@@ -20,13 +20,13 @@ import {
   Avatar,
   ListItemText,
   Box,
-} from "@material-ui/core";
-import { useForm } from "react-hook-form";
-import { joinGame } from "../utils/joinGame";
-import { validatePassword } from "../utils/validatePassword";
-import MainGame from "./MainGame";
-import host from "../config/host";
-import PersonIcon from "@material-ui/icons/Person";
+} from '@material-ui/core';
+import { useForm } from 'react-hook-form';
+import { joinGame } from '../utils/joinGame';
+import { validatePassword } from '../utils/validatePassword';
+import MainGame from './MainGame';
+import host from '../config/host';
+import PersonIcon from '@material-ui/icons/Person';
 
 interface GameProps {
   socket: Socket;
@@ -63,25 +63,25 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 16,
       margin: 0,
     },
-    "&:hover": {
-      backgroundColor: "#0944A8",
+    '&:hover': {
+      backgroundColor: '#0944A8',
     },
     fontSize: 20,
   },
   list: {
-    backgroundColor: "#ebeff0",
+    backgroundColor: '#ebeff0',
     marginTop: theme.spacing(2),
   },
   button: {
-    margin: "0 auto",
+    margin: '0 auto',
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(1.5),
-    "&:hover": {
-      backgroundColor: "#0944A8",
+    '&:hover': {
+      backgroundColor: '#0944A8',
     },
   },
   connecting: {
-    textAlign: "center",
+    textAlign: 'center',
     padding: theme.spacing(2),
   },
   connectingTitle: {
@@ -104,14 +104,14 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
   const [game, setGame] = useState<GameObject | null>(null);
   const [currWord, setCurrWord] = useState<string | null>(null);
   const [scoreBoard, setScoreBoard] = useState<Record<string, number>>({});
-  const [copyMessage, setCopyMessage] = useState("Copy Invite Link");
+  const [copyMessage, setCopyMessage] = useState('Copy Invite Link');
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>({
-    mode: "onSubmit",
-    reValidateMode: "onSubmit",
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
   });
 
   interface GetGamesResponse {
@@ -146,14 +146,14 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
       }
     };
 
-    socket.on("userConnection", (gameObj: GameObject) => {
+    socket.on('userConnection', (gameObj: GameObject) => {
       setGame(gameObj);
       setPlayers(gameObj.players);
     });
-    socket.on("userDisconnect", (data) => {
+    socket.on('userDisconnect', (data) => {
       setPlayers(data[1]);
     });
-    socket.on("startGame", ([currWord, scoreBoard]) => {
+    socket.on('startGame', ([currWord, scoreBoard]) => {
       setCurrWord(currWord);
       setScoreBoard(scoreBoard);
       setRedirectToGame(true);
@@ -190,7 +190,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
       password,
       socket,
     });
-    if (joinGameRes === "success") {
+    if (joinGameRes === 'success') {
       setSuccessJoin(true);
     }
   };
@@ -207,16 +207,16 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
   };
 
   const startGame = () => {
-    socket.emit("startedGame", game.creator);
+    socket.emit('startedGame', game.creator);
   };
 
   const copyMessageToClipboard = (event: React.MouseEvent<HTMLElement>) => {
-    const prod = window.location.hostname !== "localhost";
-    const link = `${prod ? "https://" : "http://"}${window.location.host}${
+    const prod = window.location.hostname !== 'localhost';
+    const link = `${prod ? 'https://' : 'http://'}${window.location.host}${
       window.location.pathname
     }`;
     navigator.clipboard.writeText(link);
-    setCopyMessage("Copied!");
+    setCopyMessage('Copied!');
   };
 
   if (redirectToGame && currWord) {
@@ -268,9 +268,19 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
           <Box className={styles.list}>
             <List dense={true} className={styles.listContainer}>
               {players?.map((player) => (
-                <ListItem key={player.id} style={{ marginBottom: 10 }}>
+                <ListItem
+                  key={player.id}
+                  style={{
+                    marginBottom: 10,
+                  }}
+                >
                   <ListItemAvatar>
-                    <Avatar style={{ width: 43, height: 43 }}>
+                    <Avatar
+                      style={{
+                        width: 43,
+                        height: 43,
+                      }}
+                    >
                       <PersonIcon fontSize="large" />
                     </Avatar>
                   </ListItemAvatar>
@@ -280,22 +290,22 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                         {player.name}
                       </Typography>
                     }
-                    secondary={game.creator === player.id ? "Host" : ""}
+                    secondary={game.creator === player.id ? 'Host' : ''}
                   />
                 </ListItem>
               ))}
             </List>
           </Box>
         </Grid>
-        <Dialog open={(!inGame && !successJoin) || game.status === "game"}>
-          <DialogTitle style={{ textAlign: "center" }}>
+        <Dialog open={(!inGame && !successJoin) || game.status === 'game'}>
+          <DialogTitle style={{ textAlign: 'center' }}>
             {fullGame
-              ? "Game is full"
-              : game.status === "game"
-              ? "Game Already Started"
+              ? 'Game is full'
+              : game.status === 'game'
+              ? 'Game Already Started'
               : `Join ${game?.name}`}
           </DialogTitle>
-          {game.status !== "game" && (
+          {game.status !== 'game' && (
             <>
               <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -303,34 +313,41 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                     <TextField
                       variant="outlined"
                       required
-                      inputProps={{ maxLength: 10 }}
+                      inputProps={{
+                        maxLength: 10,
+                      }}
                       label="Enter Name"
-                      {...register("name", {
+                      {...register('name', {
                         required: true,
                         maxLength: 10,
                       })}
                     />
-                    {errors?.name?.type === "required" && (
-                      <FormHelperText error style={{ marginBottom: 15 }}>
+                    {errors?.name?.type === 'required' && (
+                      <FormHelperText
+                        error
+                        style={{
+                          marginBottom: 15,
+                        }}
+                      >
                         Please enter your name
                       </FormHelperText>
                     )}
-                    {game?.type === "Private" && (
+                    {game?.type === 'Private' && (
                       <TextField
                         variant="outlined"
                         label="Enter Password"
                         className={styles.passwordInput}
                         required
-                        {...register("password", {
-                          required: game?.type === "Private",
+                        {...register('password', {
+                          required: game?.type === 'Private',
                           validate: validatePass,
                         })}
                       />
                     )}
-                    {errors?.password?.type === "validate" || error ? (
+                    {errors?.password?.type === 'validate' || error ? (
                       <FormHelperText error>{error}</FormHelperText>
                     ) : (
-                      errors?.password?.type === "required" && (
+                      errors?.password?.type === 'required' && (
                         <FormHelperText error>
                           Please enter the password
                         </FormHelperText>
@@ -345,11 +362,15 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                 onClick={handleSubmit(onSubmit)}
               >
                 {fullGame ? (
-                  <Typography style={{ color: "white" }}>
+                  <Typography
+                    style={{
+                      color: 'white',
+                    }}
+                  >
                     Room is Full
                   </Typography>
                 ) : (
-                  "Join Game"
+                  'Join Game'
                 )}
               </Button>
             </>

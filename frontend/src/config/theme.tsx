@@ -1,9 +1,9 @@
-import { createTheme } from "@material-ui/core";
+import { createTheme } from '@material-ui/core';
 
-const PRIMARY_BLUE = "#0944A8";
-const SECONDARY_BLUE = "#1C6CF5";
+const PRIMARY_BLUE = '#0944A8';
+const SECONDARY_BLUE = '#1C6CF5';
 // const TERTIARY_BLUE = '#367FFF';
-const PRIMARY_PURPLE = "#5A2DAD";
+const PRIMARY_PURPLE = '#5A2DAD';
 // const SECONDARY_PURPLE = '#9813F0';
 
 export const theme = createTheme({
@@ -18,12 +18,12 @@ export const theme = createTheme({
   overrides: {
     MuiButton: {
       text: {
-        color: "white",
+        color: 'white',
       },
       root: {
-        textTransform: "none",
+        textTransform: 'none',
         background: PRIMARY_BLUE,
-        "&:hover": {
+        '&:hover': {
           backgroundColor: SECONDARY_BLUE,
         },
       },

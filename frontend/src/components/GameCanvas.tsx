@@ -1,8 +1,8 @@
-import { Socket } from "socket.io-client";
-import Sketch from "react-p5";
-import p5Types from "p5";
-import { useState } from "react";
-import { GameObject, Player } from "../types/game";
+import { Socket } from 'socket.io-client';
+import Sketch from 'react-p5';
+import p5Types from 'p5';
+import { useState } from 'react';
+import { GameObject, Player } from '../types/game';
 
 interface GameCanvasProps {
   socket: Socket;
@@ -40,16 +40,16 @@ export default function GameCanvas({
     p5.background(245, 245, 245);
 
     // socket listeners
-    socket.on("drawing", (data: number[]) => {
+    socket.on('drawing', (data: number[]) => {
       drawLine(p5, data, [CNV_WIDTH, CNV_HEIGHT]);
     });
 
-    socket.on("clearBoard", () => {
+    socket.on('clearBoard', () => {
       p5.clear();
       p5.background(245, 245, 245);
     });
 
-    socket.on("nextTurn", ([word, player]) => {
+    socket.on('nextTurn', ([word, player]) => {
       p5.clear();
       p5.background(245, 245, 245);
       setCurrentDrawer(player.id);
@@ -76,8 +76,8 @@ export default function GameCanvas({
       RESIZED_WIDTH = p5.windowWidth / 1.35;
     }
     let RESIZED_HEIGHT = RESIZED_WIDTH / 1.176;
-    socket.off("drawing");
-    socket.on("drawing", (data: number[]) => {
+    socket.off('drawing');
+    socket.on('drawing', (data: number[]) => {
       drawLine(p5, data, [RESIZED_WIDTH, RESIZED_HEIGHT]);
     });
     getHeight(RESIZED_HEIGHT);
@@ -99,15 +99,15 @@ export default function GameCanvas({
         p5.pmouseY / height,
       ];
       p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY);
-      socket.emit("mouse", [creator, lineCords]);
+      socket.emit('mouse', [creator, lineCords]);
     }
   };
 
   const keyTyped = (p5: p5Types) => {
-    if (p5.key === "c" && socket.id === currentDrawer) {
+    if (p5.key === 'c' && socket.id === currentDrawer) {
       p5.clear();
       p5.background(245, 245, 245);
-      socket.emit("clearedBoard", creator);
+      socket.emit('clearedBoard', creator);
     }
   };
 

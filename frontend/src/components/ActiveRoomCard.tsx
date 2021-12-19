@@ -10,22 +10,22 @@ import {
   FormControl,
   Typography,
   CircularProgress,
-} from "@material-ui/core";
-import LockSharpIcon from "@material-ui/icons/LockSharp";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Socket } from "socket.io-client";
-import { GameObject } from "../types/game";
-import PersonIcon from "@material-ui/icons/Person";
-import { joinGame } from "../utils/joinGame";
-import { validatePassword } from "../utils/validatePassword";
+} from '@material-ui/core';
+import LockSharpIcon from '@material-ui/icons/LockSharp';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Socket } from 'socket.io-client';
+import { GameObject } from '../types/game';
+import PersonIcon from '@material-ui/icons/Person';
+import { joinGame } from '../utils/joinGame';
+import { validatePassword } from '../utils/validatePassword';
 
 const useStyles = makeStyles((theme) => ({
   roomCard: {
-    textDecoration: "none",
+    textDecoration: 'none',
     marginBottom: 10,
-    "&:hover": {
-      backgroundColor: "#0944A8",
+    '&:hover': {
+      backgroundColor: '#0944A8',
     },
     borderRadius: 5,
     [theme.breakpoints.down(960)]: {
@@ -46,10 +46,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down(317)]: {
       width: 250,
     },
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up('md')]: {
       width: 600,
     },
-    [theme.breakpoints.up("lg")]: {
+    [theme.breakpoints.up('lg')]: {
       width: 650,
     },
   },
@@ -57,32 +57,32 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 5,
     lineHeight: 0,
     marginRight: 6,
-    color: "#1bb33c",
+    color: '#1bb33c',
     [theme.breakpoints.down(356)]: {
-      display: "none",
+      display: 'none',
     },
   },
   nameInput: {},
   roomText: {
     fontSize: 20,
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: 16,
     },
   },
   link: {
-    textDecoration: "none",
-    color: "white",
+    textDecoration: 'none',
+    color: 'white',
   },
   modal: {},
   passwordInput: {
     marginTop: theme.spacing(2),
   },
   button: {
-    margin: "0 auto",
+    margin: '0 auto',
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(1.5),
-    "&:hover": {
-      backgroundColor: "#0944A8",
+    '&:hover': {
+      backgroundColor: '#0944A8',
     },
   },
 }));
@@ -115,8 +115,8 @@ export default function ActiveRoomCard({
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>({
-    mode: "onSubmit",
-    reValidateMode: "onSubmit",
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
   });
 
   const redirect = () => {
@@ -167,8 +167,14 @@ export default function ActiveRoomCard({
           alignItems="center"
           justifyContent="space-between"
         >
-          <Grid item xs={2} style={{ textAlign: "left" }}>
-            {isPrivate && <LockSharpIcon style={{ marginBottom: -7 }} />}
+          <Grid item xs={2} style={{ textAlign: 'left' }}>
+            {isPrivate && (
+              <LockSharpIcon
+                style={{
+                  marginBottom: -7,
+                }}
+              />
+            )}
           </Grid>
           <Grid item xs={8}>
             <Typography className={styles.roomText}>{room}</Typography>
@@ -195,7 +201,7 @@ export default function ActiveRoomCard({
         onClose={handleClose}
         className={styles.modal}
       >
-        <DialogTitle style={{ textAlign: "center" }}>
+        <DialogTitle style={{ textAlign: 'center' }}>
           Join {game.name}
         </DialogTitle>
         <DialogContent>
@@ -203,18 +209,25 @@ export default function ActiveRoomCard({
             <FormControl>
               <TextField
                 variant="outlined"
-                inputProps={{ maxLength: 10 }}
+                inputProps={{
+                  maxLength: 10,
+                }}
                 required
                 className={styles.nameInput}
                 label="Enter Name"
-                {...register("name", {
+                {...register('name', {
                   required: true,
                   maxLength: 10,
                   validate: validatePass,
                 })}
               />
-              {errors?.name?.type === "required" && (
-                <FormHelperText error style={{ marginBottom: 15 }}>
+              {errors?.name?.type === 'required' && (
+                <FormHelperText
+                  error
+                  style={{
+                    marginBottom: 15,
+                  }}
+                >
                   Please enter your name
                 </FormHelperText>
               )}
@@ -224,16 +237,16 @@ export default function ActiveRoomCard({
                   required
                   className={styles.passwordInput}
                   label="Enter Password"
-                  {...register("password", {
+                  {...register('password', {
                     required: isPrivate,
                     validate: validatePass,
                   })}
                 />
               )}
-              {errors?.password?.type === "validate" || error ? (
+              {errors?.password?.type === 'validate' || error ? (
                 <FormHelperText error>{error}</FormHelperText>
               ) : (
-                errors?.password?.type === "required" && (
+                errors?.password?.type === 'required' && (
                   <FormHelperText error>
                     Please enter the password
                   </FormHelperText>
@@ -244,9 +257,9 @@ export default function ActiveRoomCard({
         </DialogContent>
         <Button className={styles.button} onClick={handleSubmit(onSubmit)}>
           {loading ? (
-            <CircularProgress size={24} style={{ color: "white" }} />
+            <CircularProgress size={24} style={{ color: 'white' }} />
           ) : (
-            "Join Game"
+            'Join Game'
           )}
         </Button>
       </Dialog>

@@ -6,11 +6,11 @@ import {
   Grid,
   makeStyles,
   Typography,
-} from "@material-ui/core";
-import { BrowserRouter as Router } from "react-router-dom";
-import ActiveRooms from "../components/ActiveRooms";
-import CreateGameButton from "../components/CreateGameButton";
-import { Socket } from "socket.io-client";
+} from '@material-ui/core';
+import { BrowserRouter as Router } from 'react-router-dom';
+import ActiveRooms from '../components/ActiveRooms';
+import CreateGameButton from '../components/CreateGameButton';
+import { Socket } from 'socket.io-client';
 
 interface LandingPageProps {
   socket: Socket;
@@ -19,10 +19,10 @@ interface LandingPageProps {
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    color: "black",
+    color: 'black',
     fontSize: 36,
     marginTop: theme.spacing(1.5),
-    textAlign: "center",
+    textAlign: 'center',
   },
   welcome: {
     fontSize: 36,
@@ -36,10 +36,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
   },
   modal: {
-    width: "auto",
+    width: 'auto',
   },
   connecting: {
-    textAlign: "center",
+    textAlign: 'center',
     padding: theme.spacing(2),
   },
   connectingTitle: {
