@@ -10,7 +10,8 @@
     "build": "tsc",
     "postinstall": "yarn build",
     "watch": "tsc -w",
-    "logs": "heroku logs --tail"
+    "logs": "heroku logs --tail",
+    "kill": "lsof -ti:3001 | xargs kill"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
