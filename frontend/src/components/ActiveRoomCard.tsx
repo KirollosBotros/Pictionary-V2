@@ -228,6 +228,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                   variant="outlined"
                   required
                   className={styles.passwordInput}
+                  data-testid="password"
                   label="Enter Password"
                   {...register('password', {
                     required: isPrivate,
@@ -236,7 +237,9 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                 />
               )}
               {errors?.password?.type === 'validate' || error ? (
-                <FormHelperText error>{error}</FormHelperText>
+                <FormHelperText data-testid="incorrect-password" error>
+                  {error}
+                </FormHelperText>
               ) : (
                 errors?.password?.type === 'required' && (
                   <FormHelperText error>Please enter the password</FormHelperText>

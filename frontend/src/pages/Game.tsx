@@ -232,7 +232,11 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button onClick={copyMessageToClipboard} className={styles.twoButtons}>
+                  <Button
+                    onClick={copyMessageToClipboard}
+                    className={styles.twoButtons}
+                    data-testid="copy-invite-link"
+                  >
                     {copyMessage}
                   </Button>
                 </Grid>
@@ -240,7 +244,11 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
             </Grid>
           ) : (
             <Grid item>
-              <Button onClick={copyMessageToClipboard} className={styles.twoButtons}>
+              <Button
+                onClick={copyMessageToClipboard}
+                className={styles.twoButtons}
+                data-testid="copy-invite-link"
+              >
                 {copyMessage}
               </Button>
             </Grid>
@@ -267,6 +275,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                   <ListItemText
                     primary={<Typography className={styles.name}>{player.name}</Typography>}
                     secondary={game.creator === player.id ? 'Host' : ''}
+                    data-testid="host"
                   />
                 </ListItem>
               ))}
