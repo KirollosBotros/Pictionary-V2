@@ -1,4 +1,4 @@
-describe('My First Test', () => {
+describe('Player Flow', () => {
   it('Create game', () => {
     cy.visit('http://localhost:3000')
     cy.get('[data-testid=create-game]').click()
@@ -14,5 +14,7 @@ describe('My First Test', () => {
     cy.get('[data-testid=lobby-title]').contains('Test game')
 
     cy.get('[data-testid="start-game"]').click()
+    cy.get('[data-testid="timer"]').should('be.visible')
+    cy.get('[data-testid="pictobear"]').click()
   });
 });

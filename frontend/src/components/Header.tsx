@@ -40,6 +40,7 @@ export default function Header() {
                 onClick={() => {
                   window.location.href = '/';
                 }}
+                data-testid="pictobear"
               >
                 PictoBear
               </a>
