@@ -1,17 +1,17 @@
-describe('Player Flow', () => {
+describe('Game Flow', () => {
   it('Create game', () => {
     cy.visit('http://localhost:3000')
     cy.get('[data-testid=create-game]').click()
     cy.get('[data-testid=enter-your-name]').click()
     cy.get('[data-testid=enter-your-name]').type('Kiro')
-    cy.get('[data-testid=enter-game-name').type('Test game')
+    cy.get('[data-testid=enter-game-name').type('Test game1')
     cy.get('[data-testid=slider]').click()
     cy.get('[data-testid=private]').click()
     cy.get('[data-testid=password]').type('password')
     cy.get('[data-testid=create-game-final').click()
 
     cy.url().should('include', '/game/')
-    cy.get('[data-testid=lobby-title]').contains('Test game')
+    cy.get('[data-testid=lobby-title]').contains('Test game1')
 
     cy.get('[data-testid="start-game"]').click()
     cy.get('[data-testid="timer"]').should('be.visible')
@@ -19,11 +19,19 @@ describe('Player Flow', () => {
   });
 
   it('Join game', async() => {
+    console.log(process.env.CLEAR_KEY)
+    await fetch('http://localhost:3001/clear-games', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
     cy.visit('http://localhost:3000')
     const gameObj = {
       creator: 'id',
       type: 'Private',
-      name: 'Test game',
+      name: 'Test game2',
       maxPlayers: 6,
       password: 'password',
       players: [
