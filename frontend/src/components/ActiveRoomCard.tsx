@@ -205,6 +205,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                 }}
                 required
                 className={styles.nameInput}
+                data-testid="enter-join-name"
                 label="Enter Name"
                 {...register('name', {
                   required: true,
@@ -244,7 +245,11 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
             </FormControl>
           </form>
         </DialogContent>
-        <Button className={styles.button} onClick={handleSubmit(onSubmit)}>
+        <Button
+          className={styles.button}
+          onClick={handleSubmit(onSubmit)}
+          data-testid="join-game-final"
+        >
           {loading ? (
             <CircularProgress
               size={24}
