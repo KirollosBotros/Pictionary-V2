@@ -155,7 +155,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
 
   return (
     <>
-      <Button onClick={redirect} className={styles.roomCard}>
+      <Button onClick={redirect} className={styles.roomCard} data-testid="room-card">
         <Grid container direction="row" alignItems="center" justifyContent="space-between">
           <Grid
             item

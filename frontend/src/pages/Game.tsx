@@ -215,13 +215,19 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
       <>
         <Grid container direction="column" alignItems="center">
           <Grid item>
-            <Typography className={styles.gameTitle}>{game.name}</Typography>
+            <Typography className={styles.gameTitle} data-testid="lobby-title">
+              {game.name}
+            </Typography>
           </Grid>
           {socket.id === game.creator ? (
             <Grid item>
               <Grid container direction="row" spacing={2}>
                 <Grid item>
-                  <Button onClick={startGame} className={styles.twoButtons}>
+                  <Button
+                    onClick={startGame}
+                    className={styles.twoButtons}
+                    data-testid="start-game"
+                  >
                     Start Game
                   </Button>
                 </Grid>

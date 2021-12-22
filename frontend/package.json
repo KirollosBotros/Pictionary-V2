@@ -27,7 +27,7 @@
     "dev": "react-scripts start",
     "start-server": "yarn dev",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "cypress run",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
