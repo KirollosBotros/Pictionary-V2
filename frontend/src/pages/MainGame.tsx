@@ -196,6 +196,7 @@ export default function MainGame({ game, socket, currWord, scoreBoard }: MainGam
               fontSize: 24,
               marginTop: 15,
             }}
+            data-testid="timer"
           >
             {secondsLeft}
           </Typography>

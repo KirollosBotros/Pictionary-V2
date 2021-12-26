@@ -215,18 +215,28 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
       <>
         <Grid container direction="column" alignItems="center">
           <Grid item>
-            <Typography className={styles.gameTitle}>{game.name}</Typography>
+            <Typography className={styles.gameTitle} data-testid="lobby-title">
+              {game.name}
+            </Typography>
           </Grid>
           {socket.id === game.creator ? (
             <Grid item>
               <Grid container direction="row" spacing={2}>
                 <Grid item>
-                  <Button onClick={startGame} className={styles.twoButtons}>
+                  <Button
+                    onClick={startGame}
+                    className={styles.twoButtons}
+                    data-testid="start-game"
+                  >
                     Start Game
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button onClick={copyMessageToClipboard} className={styles.twoButtons}>
+                  <Button
+                    onClick={copyMessageToClipboard}
+                    className={styles.twoButtons}
+                    data-testid="copy-invite-link"
+                  >
                     {copyMessage}
                   </Button>
                 </Grid>
@@ -234,7 +244,11 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
             </Grid>
           ) : (
             <Grid item>
-              <Button onClick={copyMessageToClipboard} className={styles.twoButtons}>
+              <Button
+                onClick={copyMessageToClipboard}
+                className={styles.twoButtons}
+                data-testid="copy-invite-link"
+              >
                 {copyMessage}
               </Button>
             </Grid>
@@ -261,6 +275,7 @@ export default function Game({ socket, connectionEstablished }: GameProps) {
                   <ListItemText
                     primary={<Typography className={styles.name}>{player.name}</Typography>}
                     secondary={game.creator === player.id ? 'Host' : ''}
+                    data-testid="host"
                   />
                 </ListItem>
               ))}

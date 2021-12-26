@@ -213,7 +213,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
 
   return (
     <>
-      <Button className={styles.button} onClick={handleClick}>
+      <Button className={styles.button} onClick={handleClick} data-testid="create-game">
         Create Game
       </Button>
       <Dialog open={openDialog} onClose={handleCloseDialog} className={styles.modal}>
@@ -230,6 +230,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                     }}
                     required
                     label="Enter Your Name"
+                    data-testid="enter-your-name"
                     className={styles.nameInput}
                     {...register('playerName', {
                       required: true,
@@ -265,6 +266,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                       maxLength: 10,
                     }}
                     required
+                    data-testid="enter-game-name"
                     label="Enter Game Name"
                     className={styles.nameInput}
                     {...register('name', {
@@ -303,17 +305,20 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                     }}
                     step={1}
                     marks={marks}
+                    data-testid="slider"
                     min={2}
                     max={10}
                   />
                 </Grid>
                 <Grid item>
                   <ToggleButtonGroup exclusive value={type} onChange={handleAlignment}>
-                    <ToggleButton disableRipple value="Public">
+                    <ToggleButton disableRipple value="Public" data-testid="public">
                       <Typography className={styles.type}>Public</Typography>
                     </ToggleButton>
                     <ToggleButton disableRipple value="Private">
-                      <Typography className={styles.type}>Private</Typography>
+                      <Typography className={styles.type} data-testid="private">
+                        Private
+                      </Typography>
                     </ToggleButton>
                   </ToggleButtonGroup>
                 </Grid>
@@ -327,6 +332,7 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
                           maxLength: 10,
                         }}
                         label="Enter Password"
+                        data-testid="password"
                         className={styles.passwordInput}
                         {...register('password', {
                           required: true,
@@ -349,7 +355,11 @@ export default function CreateGameButton({ socket }: CreateGameButtonProps) {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit(onSubmit)} className={styles.createGame}>
+          <Button
+            onClick={handleSubmit(onSubmit)}
+            className={styles.createGame}
+            data-testid="create-game-final"
+          >
             {loading ? (
               <CircularProgress
                 size={24}

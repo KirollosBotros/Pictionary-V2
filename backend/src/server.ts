@@ -6,6 +6,7 @@ import { getPlayerGame } from './utils/getPlayerGame';
 import { removePasswords } from './utils/removePasswords';
 import { shuffleWords, wordList } from './utils/wordList';
 import express = require('express');
+
 const date = require('date-and-time');
 
 const cors = require('cors');
@@ -84,6 +85,21 @@ app.get('/send-email', (req: express.Request, res: express.Response) => {
         console.log(error.response.body);
       });
   }
+});
+
+app.post('/clear-games', (req: express.Request, res: express.Response) => {
+  const { host } = req.headers;
+  console.log(host);
+  if (host === 'localhost:3001') {
+    publicGames = [];
+    privateGames = [];
+    res.status(200).json({
+      status: 'sucess',
+    });
+  }
+  res.status(401).json({
+    error: 'Unauthenticated',
+  });
 });
 
 app.post('/create-game', (req: express.Request, res: express.Response) => {

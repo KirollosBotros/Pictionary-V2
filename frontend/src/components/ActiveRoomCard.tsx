@@ -155,7 +155,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
 
   return (
     <>
-      <Button onClick={redirect} className={styles.roomCard}>
+      <Button onClick={redirect} className={styles.roomCard} data-testid="room-card">
         <Grid container direction="row" alignItems="center" justifyContent="space-between">
           <Grid
             item
@@ -205,6 +205,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                 }}
                 required
                 className={styles.nameInput}
+                data-testid="enter-join-name"
                 label="Enter Name"
                 {...register('name', {
                   required: true,
@@ -227,6 +228,7 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                   variant="outlined"
                   required
                   className={styles.passwordInput}
+                  data-testid="password"
                   label="Enter Password"
                   {...register('password', {
                     required: isPrivate,
@@ -235,7 +237,9 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
                 />
               )}
               {errors?.password?.type === 'validate' || error ? (
-                <FormHelperText error>{error}</FormHelperText>
+                <FormHelperText data-testid="incorrect-password" error>
+                  {error}
+                </FormHelperText>
               ) : (
                 errors?.password?.type === 'required' && (
                   <FormHelperText error>Please enter the password</FormHelperText>
@@ -244,7 +248,11 @@ export default function ActiveRoomCard({ room, isPrivate, game, socket }: Active
             </FormControl>
           </form>
         </DialogContent>
-        <Button className={styles.button} onClick={handleSubmit(onSubmit)}>
+        <Button
+          className={styles.button}
+          onClick={handleSubmit(onSubmit)}
+          data-testid="join-game-final"
+        >
           {loading ? (
             <CircularProgress
               size={24}
