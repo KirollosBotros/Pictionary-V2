@@ -1,7 +1,7 @@
 let host = null;
 
 if (typeof window !== 'undefined') {
-  if (window.location.hostname === 'playpictionary.me') {
+  if (window.location.hostname === 'pictionary-frontend.web.app') {
     host = 'https://pictionary-v2-backend.herokuapp.com';
   } else {
     host = 'http://localhost:3001';
