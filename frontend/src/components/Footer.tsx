@@ -1,6 +1,5 @@
 import { Grid, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -49,7 +48,7 @@ export default function Footer() {
               <Grid item className={styles.lockIcon}>
                 <LockOutlinedIcon />
               </Grid>
-              <Typography className={styles.bottomText}>V 2.0.0</Typography>
+              <Typography className={styles.bottomText}>V 2.0.1</Typography>
             </Grid>
           </Grid>
           <Grid item>
