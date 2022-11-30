@@ -48,7 +48,7 @@ export default function Footer() {
               <Grid item className={styles.lockIcon}>
                 <LockOutlinedIcon />
               </Grid>
-              <Typography className={styles.bottomText}>V 2.0.1</Typography>
+              <Typography className={styles.bottomText}>V 2.0.2</Typography>
             </Grid>
           </Grid>
           <Grid item>
