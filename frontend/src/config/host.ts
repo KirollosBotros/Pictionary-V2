@@ -2,7 +2,7 @@ let host = null;
 
 if (typeof window !== 'undefined') {
   if (window.location.hostname === 'pictionary-frontend.web.app') {
-    host = 'https://pictionary-v2-backend.herokuapp.com';
+    host = 'https://pictionary-v2.onrender.com';
   } else {
     host = 'http://localhost:3001';
   }
