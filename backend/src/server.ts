@@ -40,7 +40,7 @@ const server = app.listen(PORT, async () => {
     sgMail
       .send(msg)
       .then(() => {
-        console.log('email sent');
+        console.log('email sent to kiro');
       })
       .catch((error: any) => {
         console.log(error.response.body);
