@@ -41,7 +41,7 @@ export default function LandingPage({ socket, connectionEstablished }: LandingPa
       <>
         <Grid container direction="column" justifyContent="center">
           <Grid item className={styles.title}>
-            <Typography className={styles.welcome}>Welcome to PictoBear!</Typography>
+            <Typography className={styles.welcome}>Welcome to PictoBear! The ultimate Pictionary game!</Typography>
           </Grid>
           <Grid item>
             <Grid container direction="row" justifyContent="center">
